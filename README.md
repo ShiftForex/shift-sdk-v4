@@ -64,10 +64,6 @@ export interface TradingFee {
     fee_group: FeeGroup;
 }
 
-export type QueryType = 'user' | 'user_power_list';
-
-export type MutationType = 'create_critical_task' | 'update_critical_task';
-
 export const SdkClientInstance = new SdkClient('endpoint')
 ```
 
