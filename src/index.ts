@@ -1,4 +1,4 @@
-//@ts-nocheck
+////@ts-nocheck
 import {gql, GraphQLClient, RequestDocument, Variables} from 'graphql-request';
 import {RequestConfig} from 'graphql-request/build/esm/types';
 
@@ -111,15 +111,21 @@ export enum NotificationTrigger {
     kyc_rejected = 'kyc_rejected',
     kyc_incomplete = 'kyc_incomplete',
     trade_completed = 'trade_completed',
+    order_new = 'order_new',
     order_completed = 'order_completed',
     order_rejected = 'order_rejected',
     order_cancelled = 'order_cancelled',
+    conversion_new = 'conversion_new',
     conversion_completed = 'conversion_completed',
     conversion_rejected = 'conversion_rejected',
     payment_new = 'payment_new',
     payment_rejected = 'payment_rejected',
     payment_completed = 'payment_completed',
     payment_unconfirmed = 'payment_unconfirmed',
+    crypto_address_added = 'crypto_address_added',
+    manual_balance_update = 'manual_balance_update',
+    mfa_enabled = 'mfa_enabled',
+    mfa_disabled = 'mfa_disabled',
 }
 
 export enum Role {
@@ -261,17 +267,17 @@ export enum Permission {
     create_payment_manual = 'create_payment_manual',
 }
 
+export enum DelayedRequestStatus {
+    pending = 'pending',
+    approved = 'approved',
+    rejected = 'rejected',
+}
+
 export enum HedgingOrderStatus {
     new = 'new',
     pending = 'pending',
     completed = 'completed',
     cancelled = 'cancelled',
-    rejected = 'rejected',
-}
-
-export enum DelayedRequestStatus {
-    pending = 'pending',
-    approved = 'approved',
     rejected = 'rejected',
 }
 
@@ -290,6 +296,11 @@ export enum KycProvider {
     PRIMETRUST = 'PRIMETRUST',
     SUM_AND_SUBSTANCE = 'SUM_AND_SUBSTANCE',
     MANUAL = 'MANUAL',
+}
+
+export enum VerificationResult {
+    SUCCESS = 'SUCCESS',
+    ERROR = 'ERROR',
 }
 
 export enum QueryEnum {
@@ -328,6 +339,8 @@ export enum QueryEnum {
     instruments_strategies = 'instruments_strategies',
     hedging_orders = 'hedging_orders',
     system_settings = 'system_settings',
+    notification_settings = 'notification_settings',
+    geo_restrictions = 'geo_restrictions',
     accounts_portfolio_report = 'accounts_portfolio_report',
     orders_summary_report = 'orders_summary_report',
     conversions_summary_report = 'conversions_summary_report',
@@ -337,7 +350,6 @@ export enum QueryEnum {
     permissions_subjects = 'permissions_subjects',
     permissions_share = 'permissions_share',
     kyc_preference = 'kyc_preference',
-    notifications_templates = 'notifications_templates',
     webhooks = 'webhooks',
     hedging_adapter_ids = 'hedging_adapter_ids',
     hedging_adapters = 'hedging_adapters',
@@ -347,6 +359,8 @@ export enum QueryEnum {
     countries = 'countries',
     provinces = 'provinces',
     delayed_requests = 'delayed_requests',
+    mfa_secret_code = 'mfa_secret_code',
+    verify_mfa_secret_token = 'verify_mfa_secret_token',
     find_config_changes = 'find_config_changes',
     config_changes_events = 'config_changes_events',
     portfolio_history = 'portfolio_history',
@@ -366,6 +380,12 @@ export enum TradingVolumeType {
     daily = 'daily',
     weekly = 'weekly',
     monthly = 'monthly',
+}
+
+export enum AuthenticationProvider {
+    cognito = 'cognito',
+    auth0 = 'auth0',
+    local = 'local',
 }
 
 export enum PortfolioHistoryInterval {
@@ -446,6 +466,8 @@ export enum MutationEnum {
     update_system_setting = 'update_system_setting',
     update_system_settings = 'update_system_settings',
     update_maintenance_mode = 'update_maintenance_mode',
+    update_notifications_settings = 'update_notifications_settings',
+    update_geo_restrictions = 'update_geo_restrictions',
     create_super_admins = 'create_super_admins',
     delete_super_admins = 'delete_super_admins',
     create_readonly_admins = 'create_readonly_admins',
@@ -457,7 +479,6 @@ export enum MutationEnum {
     create_kyc_session = 'create_kyc_session',
     create_kyc_prime_trust_token = 'create_kyc_prime_trust_token',
     update_kyc_preference = 'update_kyc_preference',
-    update_notification_template = 'update_notification_template',
     create_webhook = 'create_webhook',
     update_webhook = 'update_webhook',
     delete_webhook = 'delete_webhook',
@@ -598,7 +619,7 @@ export interface Payment {
     native_asset?: string;
     created_by?: string;
     created_at: string;
-    date?: string;
+    manual_transaction_date?: string;
     fees_included: ToggleSwitch;
     updated_at: string;
     version: number;
@@ -609,6 +630,7 @@ export interface Payment {
     updated_at_iso: string;
     approved_at_iso?: string;
     aml_screening_result?: AmlScreeningResult;
+    account_transactions: AccountTransaction[];
 }
 
 export interface Int {
@@ -637,6 +659,7 @@ export interface Order {
     expires_at?: string;
     version: number;
     parent_order_id?: string;
+    notes?: string;
     user?: User;
     created_at_iso: string;
     updated_at_iso: string;
@@ -763,6 +786,7 @@ export interface User {
     nationality?: string;
     crypto_pay: ToggleSwitch;
     kyc_type?: KycType;
+    unique_id?: string;
     version?: number;
     fee_group: FeeGroup;
     limit_group: LimitGroup;
@@ -795,6 +819,28 @@ export interface User {
 export interface Setting {
     name: string;
     value?: string;
+}
+
+export interface NotificationOptions {
+    client: NotificationTrigger[];
+    push: NotificationTrigger[];
+    email: NotificationTrigger[];
+    sms: NotificationTrigger[];
+}
+
+export interface RegionBlacklistItem {
+    code: string;
+    list: BlacklistItem[];
+}
+
+export interface BlacklistItem {
+    code: string;
+    name?: string;
+}
+
+export interface GeoRestrictions {
+    region_blacklist: RegionBlacklistItem[];
+    country_blacklist: BlacklistItem[];
 }
 
 export interface PermissionShare {
@@ -833,13 +879,6 @@ export interface CognitoPool {
     is_active: ToggleSwitch;
 }
 
-export interface NotificationOptions {
-    client: NotificationTrigger[];
-    push: NotificationTrigger[];
-    email: NotificationTrigger[];
-    sms: NotificationTrigger[];
-}
-
 export interface TradingLimit {
     limit_group_id: string;
     instrument_id: string;
@@ -861,6 +900,11 @@ export interface UsersTradingVolume {
     notion_daily_volume?: number;
     notion_weekly_volume?: number;
     notion_monthly_volume?: number;
+}
+
+export interface ExposureItem {
+    currency_id: string;
+    amount: number;
 }
 
 export interface Account {
@@ -910,11 +954,6 @@ export interface EstimateOrderResult {
     fees: EstimateOrderFee[];
 }
 
-export interface ExposureItem {
-    currency_id: string;
-    amount: number;
-}
-
 export interface HedgingAdapter {
     serial_id?: number;
     hedging_adapter_id: string;
@@ -925,6 +964,8 @@ export interface HedgingAdapter {
     disable_instrument_on_hedging_error: ToggleSwitch;
     disable_strategy_hedging_on_error: ToggleSwitch;
     account_balances_sync_enabled: ToggleSwitch;
+    hedging_error_attempts_threshold?: number;
+    hedging_error_attempts_count?: number;
     created_at: string;
     created_at_iso: string;
 }
@@ -1098,6 +1139,22 @@ export interface CreateApiKeyResult {
     api_key_secret: string;
 }
 
+export interface DelayedRequest {
+    serial_id: number;
+    delayed_request_id?: string;
+    request_name?: string;
+    mutation?: string;
+    variables?: string;
+    approval_status?: DelayedRequestStatus;
+    admin_id?: string;
+    admin_email?: string;
+    admin_ip?: string;
+    approved_by?: string;
+    approved_by_ip?: string;
+    created_at: string;
+    approved_at: string;
+}
+
 export interface InstrumentPriceHistory {
     instrument_id: string;
     high: number;
@@ -1161,22 +1218,6 @@ export interface TimelineEvent {
     event_name: NotificationTrigger;
     event_data: string;
     created_at: string;
-}
-
-export interface DelayedRequest {
-    serial_id: number;
-    delayed_request_id?: string;
-    request_name?: string;
-    mutation?: string;
-    variables?: string;
-    approval_status?: DelayedRequestStatus;
-    admin_id?: string;
-    admin_email?: string;
-    admin_ip?: string;
-    approved_by?: string;
-    approved_by_ip?: string;
-    created_at: string;
-    approved_at: string;
 }
 
 export interface HealthcheckResult {
@@ -1263,6 +1304,7 @@ export interface CreateConversionQuoteResult {
     expires_at: string;
     fees: EstimateOrderFee[];
     expires_at_iso: string;
+    current_time_iso: string;
 }
 
 export interface Conversion {
@@ -1333,6 +1375,7 @@ export interface FavoriteAddressCrypto {
     address_tag_value?: string;
     network?: string;
     name?: string;
+    created_at?: string;
 }
 
 export interface FavoriteFiatDestination {
@@ -1453,23 +1496,6 @@ export interface KycPreference {
     type: KycType;
 }
 
-export interface NotificationTemplate {
-    notification_template_id: string;
-    notification_trigger: string;
-    email_subject?: string;
-    email_body_html?: string;
-    email_body_plain?: string;
-    sms_body?: string;
-    push_title?: string;
-    push_message?: string;
-    push_body?: string;
-    is_active: ToggleSwitch;
-    created_at?: string;
-    updated_at?: string;
-    created_at_iso: string;
-    updated_at_iso: string;
-}
-
 export interface Webhook {
     webhook_id: string;
     url: string;
@@ -1481,6 +1507,20 @@ export interface Webhook {
     triggers: NotificationTrigger[];
     created_at_iso: string;
     updated_at_iso: string;
+}
+
+export interface MfaResult {
+    status: VerificationResult;
+    accessToken: string;
+}
+
+export interface RegionBlacklistItemInput {
+    code: string;
+}
+
+export interface BlacklistItemInput {
+    code: string;
+    name?: string;
 }
 
 export type QueryType =
@@ -1519,6 +1559,8 @@ export type QueryType =
     | 'instruments_strategies'
     | 'hedging_orders'
     | 'system_settings'
+    | 'notification_settings'
+    | 'geo_restrictions'
     | 'accounts_portfolio_report'
     | 'orders_summary_report'
     | 'conversions_summary_report'
@@ -1528,7 +1570,6 @@ export type QueryType =
     | 'permissions_subjects'
     | 'permissions_share'
     | 'kyc_preference'
-    | 'notifications_templates'
     | 'webhooks'
     | 'hedging_adapter_ids'
     | 'hedging_adapters'
@@ -1538,6 +1579,8 @@ export type QueryType =
     | 'countries'
     | 'provinces'
     | 'delayed_requests'
+    | 'mfa_secret_code'
+    | 'verify_mfa_secret_token'
     | 'find_config_changes'
     | 'config_changes_events'
     | 'portfolio_history';
@@ -1619,6 +1662,8 @@ export type MutationType =
     | 'update_system_setting'
     | 'update_system_settings'
     | 'update_maintenance_mode'
+    | 'update_notifications_settings'
+    | 'update_geo_restrictions'
     | 'create_super_admins'
     | 'delete_super_admins'
     | 'create_readonly_admins'
@@ -1630,7 +1675,6 @@ export type MutationType =
     | 'create_kyc_session'
     | 'create_kyc_prime_trust_token'
     | 'update_kyc_preference'
-    | 'update_notification_template'
     | 'create_webhook'
     | 'update_webhook'
     | 'delete_webhook'
@@ -1789,6 +1833,7 @@ export interface CreateOrderArgs {
     time_in_force: OrderTimeInForce;
     price?: number;
     expires_at?: string;
+    notes?: string;
 }
 
 export interface CancelMultipleOrdersArgs {
@@ -1952,7 +1997,7 @@ export interface CreateWithdrawalFiatArgs {
     fiat_beneficiary_city?: string;
     fiat_beneficiary_postal_code?: string;
     fiat_bank_swift?: string;
-    date?: string;
+    manual_transaction_date?: string;
 }
 
 export interface CreatePaymentManualArgs {
@@ -1993,8 +2038,8 @@ export interface CreatePaymentManualArgs {
     fiat_beneficiary_address_line_1?: string;
     fiat_beneficiary_address_line_2?: string;
     fiat_beneficiary_postal_code?: string;
-    status: PaymentStatus;
-    approval_status: PaymentApprovalStatus;
+    status?: PaymentStatus;
+    approval_status?: PaymentApprovalStatus;
     approval_reason?: string;
     approved_by?: string;
     body_amount?: number;
@@ -2007,16 +2052,16 @@ export interface CreatePaymentManualArgs {
     reference?: string;
     native_asset?: string;
     created_by?: string;
-    date?: string;
-    fees_included: ToggleSwitch;
+    manual_transaction_date?: string;
+    fees_included?: ToggleSwitch;
     estimated_crypto_network_fee?: number;
     crypto_estimation_details?: string;
     create_account_operations: boolean;
-    crypto_confirmations_received: number;
-    version: number;
-    approved_at: string;
-    created_at: string;
-    updated_at: string;
+    crypto_confirmations_received?: number;
+    version?: number;
+    approved_at?: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface CreateConversionOrderArgs {
@@ -2072,6 +2117,7 @@ export interface DeleteUserArgs {}
 
 export interface VerifyUserMfaTokenArgs {
     token: string;
+    user_id?: string;
 }
 
 export interface AddPushTokenArgs {
@@ -2108,6 +2154,7 @@ export interface UpdateUserArgs {
     nationality?: string;
     crypto_pay?: ToggleSwitch;
     kyc_type?: KycType;
+    unique_id?: string;
     user_id?: string;
     favorite_instruments: string[];
     notifications_settings: NotificationTrigger[];
@@ -2196,7 +2243,7 @@ export interface EstimatePaymentFeeArgs {
     amount: number;
     crypto_network?: string;
     psp_service_id?: string;
-    crypto_network_fee_preference: CryptoNetworkFeePreference;
+    crypto_network_fee_preference?: CryptoNetworkFeePreference;
     crypto_address?: string;
     crypto_address_tag_type?: CryptoAddressTagType;
     crypto_address_tag_value?: string;
@@ -2296,15 +2343,15 @@ export interface CreatePaymentLimitArgs {
     currency_id: string;
     deposit_enabled: ToggleSwitch;
     deposit_min_amount: number;
-    deposit_daily_limit: number;
-    deposit_weekly_limit: number;
-    deposit_monthly_limit: number;
+    deposit_daily_limit?: number;
+    deposit_weekly_limit?: number;
+    deposit_monthly_limit?: number;
     deposit_auto_approval_amount: number;
     withdrawal_enabled: ToggleSwitch;
     withdrawal_min_amount: number;
-    withdrawal_daily_limit: number;
-    withdrawal_weekly_limit: number;
-    withdrawal_monthly_limit: number;
+    withdrawal_daily_limit?: number;
+    withdrawal_weekly_limit?: number;
+    withdrawal_monthly_limit?: number;
     withdrawal_auto_approval_amount: number;
 }
 
@@ -2442,6 +2489,15 @@ export interface UpdateMaintenanceModeArgs {
     maintenance_message: string;
 }
 
+export interface UpdateNotificationsSettingsArgs {
+    client: NotificationTrigger[];
+    push: NotificationTrigger[];
+    email: NotificationTrigger[];
+    sms: NotificationTrigger[];
+}
+
+export interface UpdateGeoRestrictionsArgs {}
+
 export interface CreateSuperAdminsArgs {
     emails: string[];
 }
@@ -2487,37 +2543,29 @@ export interface CreateKycManualRequestArgs {
     company_name?: string;
     company_position?: string;
     nationality?: string;
+    unique_id?: string;
+    user_id?: string;
 }
 
 export interface CreateKycSumAndSubstanceTokenArgs {
     level_name: string;
+    user_id?: string;
 }
 
 export interface CreateKycSessionArgs {
     kyc_service_id: string;
+    user_id?: string;
 }
 
 export interface CreateKycPrimeTrustTokenArgs {
     is_company: boolean;
+    user_id?: string;
 }
 
 export interface UpdateKycPreferenceArgs {
     provider?: KycProvider;
     provider_url?: string;
     type?: KycType;
-}
-
-export interface UpdateNotificationTemplateArgs {
-    notification_trigger?: string;
-    email_subject?: string;
-    email_body_html?: string;
-    email_body_plain?: string;
-    sms_body?: string;
-    push_title?: string;
-    push_message?: string;
-    push_body?: string;
-    is_active?: ToggleSwitch;
-    notification_template_id: string;
 }
 
 export interface CreateWebhookArgs {
@@ -2552,6 +2600,8 @@ export interface CreateHedgingAdapterArgs {
     disable_instrument_on_hedging_error: ToggleSwitch;
     disable_strategy_hedging_on_error: ToggleSwitch;
     account_balances_sync_enabled: ToggleSwitch;
+    hedging_error_attempts_threshold?: number;
+    hedging_error_attempts_count?: number;
     create_broker_user_id?: boolean;
 }
 
@@ -2565,6 +2615,8 @@ export interface UpdateHedgingAdapterArgs {
     disable_instrument_on_hedging_error?: ToggleSwitch;
     disable_strategy_hedging_on_error?: ToggleSwitch;
     account_balances_sync_enabled?: ToggleSwitch;
+    hedging_error_attempts_threshold?: number;
+    hedging_error_attempts_count?: number;
     hedging_adapter_id: string;
     create_broker_user_id?: boolean;
 }
@@ -2576,9 +2628,9 @@ export interface DeleteHedgingAdapterArgs {
 export interface CreateTradingLimitArgs {
     limit_group_id: string;
     instrument_id: string;
-    daily_limit: number;
-    weekly_limit: number;
-    monthly_limit: number;
+    daily_limit?: number;
+    weekly_limit?: number;
+    monthly_limit?: number;
     notion_currency?: string;
 }
 
@@ -2853,6 +2905,10 @@ export interface SystemSettingsArgs {
     search?: string;
 }
 
+export interface NotificationSettingsArgs {}
+
+export interface GeoRestrictionsArgs {}
+
 export interface AccountsPortfolioReportArgs {
     currencies: string[];
 }
@@ -2883,11 +2939,6 @@ export interface PermissionsShareArgs {
 }
 
 export interface KycPreferenceArgs {}
-
-export interface NotificationsTemplatesArgs {
-    notification_trigger?: string;
-    is_active?: ToggleSwitch;
-}
 
 export interface WebhooksArgs {
     is_active?: ToggleSwitch;
@@ -2937,6 +2988,17 @@ export interface DelayedRequestsArgs {
     search?: string;
 }
 
+export interface MfaSecretCodeArgs {
+    access_token?: string;
+    provider: AuthenticationProvider;
+}
+
+export interface VerifyMfaSecretTokenArgs {
+    secret_token: string;
+    provider: AuthenticationProvider;
+    access_token?: string;
+}
+
 export interface FindConfigChangesArgs {
     config_change_id?: string;
     config_change_group_id?: string;
@@ -2973,7 +3035,7 @@ export function buildGraphQLQuery(fields) {
     return queryFields.join(' ');
 }
 
-export class ShiftV4Sdk {
+export class SdkClient {
     private gql_client: GraphQLClient;
     private global_headers: {[x: string]: string} = {};
 
@@ -2989,7 +3051,7 @@ export class ShiftV4Sdk {
         this.global_headers['authorization'] = `Bearer ${token}`;
     }
 
-    async gql_request(document: RequestDocument, variables?: Variables, requestHeaders?: HeadersInit, name?: string) {
+    async gql_request(document: RequestDocument, variables?: any, requestHeaders?: HeadersInit, name?: string) {
         return this.gql_client.request(document, variables, {...this.global_headers, ...requestHeaders}).then((res) => {
             if (name) return res[name];
             return res;
@@ -3008,8 +3070,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($user_id: String,$client_order_id: String,$instrument_id: String!,$quantity: Float!,$quantity_mode: OrderQuantityMode,$type: OrderType!,$side: OrderSide!,$time_in_force: OrderTimeInForce!,$price: Float,$expires_at: String) {
-                    create_order(user_id:$user_id,client_order_id:$client_order_id,instrument_id:$instrument_id,quantity:$quantity,quantity_mode:$quantity_mode,type:$type,side:$side,time_in_force:$time_in_force,price:$price,expires_at:$expires_at)
+                mutation($user_id: String,$client_order_id: String,$instrument_id: String!,$quantity: Float!,$quantity_mode: OrderQuantityMode,$type: OrderType!,$side: OrderSide!,$time_in_force: OrderTimeInForce!,$price: Float,$expires_at: String,$notes: String) {
+                    create_order(user_id:$user_id,client_order_id:$client_order_id,instrument_id:$instrument_id,quantity:$quantity,quantity_mode:$quantity_mode,type:$type,side:$side,time_in_force:$time_in_force,price:$price,expires_at:$expires_at,notes:$notes)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3446,8 +3508,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$date: String) {
-                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,date:$date)
+                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String) {
+                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3471,8 +3533,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($remote_txid: String,$user_id: String!,$currency_id: String!,$amount: Float!,$type: PaymentType!,$psp_service_id: String,$psp_event_bridge_event_id: String,$crypto_transaction_id: String,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_address_reference: String,$crypto_network: String,$crypto_source_address: String,$crypto_network_fee_preference: String,$crypto_network_fee_amount: Float,$crypto_network_fee_currency: String,$fiat_transfer_type: String,$fiat_bank_name: String,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_address: String,$fiat_bank_postal_code: String,$fiat_bank_bic: String,$fiat_bank_swift: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_beneficiary_name: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_beneficiary_postal_code: String,$status: PaymentStatus!,$approval_status: PaymentApprovalStatus!,$approval_reason: String,$approved_by: String,$body_amount: Float,$fee_amount: Float,$record_account_transaction_id: String,$revert_account_transaction_id: String,$ip_address: String,$message: String,$error_message: String,$reference: String,$native_asset: String,$created_by: String,$date: String,$fees_included: ToggleSwitch!,$estimated_crypto_network_fee: Float,$crypto_estimation_details: String,$create_account_operations: Boolean!,$crypto_confirmations_received: Int!,$version: Float!,$approved_at: String!,$created_at: String!,$updated_at: String!) {
-                    create_payment_manual(remote_txid:$remote_txid,user_id:$user_id,currency_id:$currency_id,amount:$amount,type:$type,psp_service_id:$psp_service_id,psp_event_bridge_event_id:$psp_event_bridge_event_id,crypto_transaction_id:$crypto_transaction_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_address_reference:$crypto_address_reference,crypto_network:$crypto_network,crypto_source_address:$crypto_source_address,crypto_network_fee_preference:$crypto_network_fee_preference,crypto_network_fee_amount:$crypto_network_fee_amount,crypto_network_fee_currency:$crypto_network_fee_currency,fiat_transfer_type:$fiat_transfer_type,fiat_bank_name:$fiat_bank_name,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_address:$fiat_bank_address,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_bank_bic:$fiat_bank_bic,fiat_bank_swift:$fiat_bank_swift,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,status:$status,approval_status:$approval_status,approval_reason:$approval_reason,approved_by:$approved_by,body_amount:$body_amount,fee_amount:$fee_amount,record_account_transaction_id:$record_account_transaction_id,revert_account_transaction_id:$revert_account_transaction_id,ip_address:$ip_address,message:$message,error_message:$error_message,reference:$reference,native_asset:$native_asset,created_by:$created_by,date:$date,fees_included:$fees_included,estimated_crypto_network_fee:$estimated_crypto_network_fee,crypto_estimation_details:$crypto_estimation_details,create_account_operations:$create_account_operations,crypto_confirmations_received:$crypto_confirmations_received,version:$version,approved_at:$approved_at,created_at:$created_at,updated_at:$updated_at)
+                mutation($remote_txid: String,$user_id: String!,$currency_id: String!,$amount: Float!,$type: PaymentType!,$psp_service_id: String,$psp_event_bridge_event_id: String,$crypto_transaction_id: String,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_address_reference: String,$crypto_network: String,$crypto_source_address: String,$crypto_network_fee_preference: String,$crypto_network_fee_amount: Float,$crypto_network_fee_currency: String,$fiat_transfer_type: String,$fiat_bank_name: String,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_address: String,$fiat_bank_postal_code: String,$fiat_bank_bic: String,$fiat_bank_swift: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_beneficiary_name: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_beneficiary_postal_code: String,$status: PaymentStatus,$approval_status: PaymentApprovalStatus,$approval_reason: String,$approved_by: String,$body_amount: Float,$fee_amount: Float,$record_account_transaction_id: String,$revert_account_transaction_id: String,$ip_address: String,$message: String,$error_message: String,$reference: String,$native_asset: String,$created_by: String,$manual_transaction_date: String,$fees_included: ToggleSwitch,$estimated_crypto_network_fee: Float,$crypto_estimation_details: String,$create_account_operations: Boolean!,$crypto_confirmations_received: Int,$version: Float,$approved_at: String,$created_at: String,$updated_at: String) {
+                    create_payment_manual(remote_txid:$remote_txid,user_id:$user_id,currency_id:$currency_id,amount:$amount,type:$type,psp_service_id:$psp_service_id,psp_event_bridge_event_id:$psp_event_bridge_event_id,crypto_transaction_id:$crypto_transaction_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_address_reference:$crypto_address_reference,crypto_network:$crypto_network,crypto_source_address:$crypto_source_address,crypto_network_fee_preference:$crypto_network_fee_preference,crypto_network_fee_amount:$crypto_network_fee_amount,crypto_network_fee_currency:$crypto_network_fee_currency,fiat_transfer_type:$fiat_transfer_type,fiat_bank_name:$fiat_bank_name,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_address:$fiat_bank_address,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_bank_bic:$fiat_bank_bic,fiat_bank_swift:$fiat_bank_swift,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,status:$status,approval_status:$approval_status,approval_reason:$approval_reason,approved_by:$approved_by,body_amount:$body_amount,fee_amount:$fee_amount,record_account_transaction_id:$record_account_transaction_id,revert_account_transaction_id:$revert_account_transaction_id,ip_address:$ip_address,message:$message,error_message:$error_message,reference:$reference,native_asset:$native_asset,created_by:$created_by,manual_transaction_date:$manual_transaction_date,fees_included:$fees_included,estimated_crypto_network_fee:$estimated_crypto_network_fee,crypto_estimation_details:$crypto_estimation_details,create_account_operations:$create_account_operations,crypto_confirmations_received:$crypto_confirmations_received,version:$version,approved_at:$approved_at,created_at:$created_at,updated_at:$updated_at)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3667,8 +3729,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation ($token: String!) {
-                    verify_user_mfa_token(token: $token)
+                mutation ($token: String!, $user_id: String) {
+                    verify_user_mfa_token(token: $token, user_id: $user_id)
                 }
             `,
             args || {},
@@ -3717,8 +3779,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($parent_user_id: String,$username: String,$email: String,$mobile_nr: String,$language: String,$timezone: String,$primary_market_currency: String,$is_active: ToggleSwitch,$first_name: String,$last_name: String,$address_country: String,$address_state: String,$address_city: String,$address_line_1: String,$address_line_2: String,$address_zip: String,$date_of_birth: String,$mfa_for_withdraw: ToggleSwitch,$tax_id: String,$company_registration_nr: String,$company_name: String,$company_position: String,$updated_at: String,$nationality: String,$crypto_pay: ToggleSwitch,$kyc_type: KycType,$user_id: String,$favorite_instruments: String!,$notifications_settings: NotificationTrigger!,$mfa_token: String,$mfa_status: ToggleSwitch) {
-                    update_user(parent_user_id:$parent_user_id,username:$username,email:$email,mobile_nr:$mobile_nr,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,is_active:$is_active,first_name:$first_name,last_name:$last_name,address_country:$address_country,address_state:$address_state,address_city:$address_city,address_line_1:$address_line_1,address_line_2:$address_line_2,address_zip:$address_zip,date_of_birth:$date_of_birth,mfa_for_withdraw:$mfa_for_withdraw,tax_id:$tax_id,company_registration_nr:$company_registration_nr,company_name:$company_name,company_position:$company_position,updated_at:$updated_at,nationality:$nationality,crypto_pay:$crypto_pay,kyc_type:$kyc_type,user_id:$user_id,favorite_instruments:$favorite_instruments,notifications_settings:$notifications_settings,mfa_token:$mfa_token,mfa_status:$mfa_status)
+                mutation($parent_user_id: String,$username: String,$email: String,$mobile_nr: String,$language: String,$timezone: String,$primary_market_currency: String,$is_active: ToggleSwitch,$first_name: String,$last_name: String,$address_country: String,$address_state: String,$address_city: String,$address_line_1: String,$address_line_2: String,$address_zip: String,$date_of_birth: String,$mfa_for_withdraw: ToggleSwitch,$tax_id: String,$company_registration_nr: String,$company_name: String,$company_position: String,$updated_at: String,$nationality: String,$crypto_pay: ToggleSwitch,$kyc_type: KycType,$unique_id: String,$user_id: String,$favorite_instruments: String!,$notifications_settings: NotificationTrigger!,$mfa_token: String,$mfa_status: ToggleSwitch) {
+                    update_user(parent_user_id:$parent_user_id,username:$username,email:$email,mobile_nr:$mobile_nr,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,is_active:$is_active,first_name:$first_name,last_name:$last_name,address_country:$address_country,address_state:$address_state,address_city:$address_city,address_line_1:$address_line_1,address_line_2:$address_line_2,address_zip:$address_zip,date_of_birth:$date_of_birth,mfa_for_withdraw:$mfa_for_withdraw,tax_id:$tax_id,company_registration_nr:$company_registration_nr,company_name:$company_name,company_position:$company_position,updated_at:$updated_at,nationality:$nationality,crypto_pay:$crypto_pay,kyc_type:$kyc_type,unique_id:$unique_id,user_id:$user_id,favorite_instruments:$favorite_instruments,notifications_settings:$notifications_settings,mfa_token:$mfa_token,mfa_status:$mfa_status)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3927,7 +3989,7 @@ export class ShiftV4Sdk {
                     $amount: Float!
                     $crypto_network: String
                     $psp_service_id: String
-                    $crypto_network_fee_preference: CryptoNetworkFeePreference!
+                    $crypto_network_fee_preference: CryptoNetworkFeePreference
                     $crypto_address: String
                     $crypto_address_tag_type: CryptoAddressTagType
                     $crypto_address_tag_value: String
@@ -4217,7 +4279,7 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($limit_group_id: String!,$currency_id: String!,$deposit_enabled: ToggleSwitch!,$deposit_min_amount: Float!,$deposit_daily_limit: Float!,$deposit_weekly_limit: Float!,$deposit_monthly_limit: Float!,$deposit_auto_approval_amount: Float!,$withdrawal_enabled: ToggleSwitch!,$withdrawal_min_amount: Float!,$withdrawal_daily_limit: Float!,$withdrawal_weekly_limit: Float!,$withdrawal_monthly_limit: Float!,$withdrawal_auto_approval_amount: Float!) {
+                mutation($limit_group_id: String!,$currency_id: String!,$deposit_enabled: ToggleSwitch!,$deposit_min_amount: Float!,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$deposit_auto_approval_amount: Float!,$withdrawal_enabled: ToggleSwitch!,$withdrawal_min_amount: Float!,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$withdrawal_auto_approval_amount: Float!) {
                     create_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4602,6 +4664,54 @@ export class ShiftV4Sdk {
         );
     }
 
+    async update_notifications_settings({
+        args,
+        fields,
+        headers,
+    }: {
+        args: UpdateNotificationsSettingsArgs;
+        fields: (keyof NotificationOptions | Partial<Record<keyof NotificationOptions, any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<NotificationOptions> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                mutation($client: NotificationTrigger!,$push: NotificationTrigger!,$email: NotificationTrigger!,$sms: NotificationTrigger!) {
+                    update_notifications_settings(client:$client,push:$push,email:$email,sms:$sms)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            args || {},
+            headers,
+            'update_notifications_settings',
+        );
+    }
+
+    async update_geo_restrictions({
+        fields,
+        headers,
+    }: {
+        fields: (keyof GeoRestrictions | Partial<Record<keyof GeoRestrictions, any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<GeoRestrictions> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                mutation {
+                    update_geo_restrictions
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            {},
+            headers,
+            'update_geo_restrictions',
+        );
+    }
+
     async create_super_admins({args, headers}: {args: CreateSuperAdminsArgs; headers?: HeadersInit}): Promise<boolean> {
         if (!headers) headers = {};
         return this.gql_request(
@@ -4742,6 +4852,8 @@ export class ShiftV4Sdk {
                     $company_name: String
                     $company_position: String
                     $nationality: String
+                    $unique_id: String
+                    $user_id: String
                 ) {
                     create_kyc_manual_request(
                         mobile_nr: $mobile_nr
@@ -4760,6 +4872,8 @@ export class ShiftV4Sdk {
                         company_name: $company_name
                         company_position: $company_position
                         nationality: $nationality
+                        unique_id: $unique_id
+                        user_id: $user_id
                     )
                 }
             `,
@@ -4779,8 +4893,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation ($level_name: String!) {
-                    create_kyc_sum_and_substance_token(level_name: $level_name)
+                mutation ($level_name: String!, $user_id: String) {
+                    create_kyc_sum_and_substance_token(level_name: $level_name, user_id: $user_id)
                 }
             `,
             args || {},
@@ -4793,8 +4907,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation ($kyc_service_id: String!) {
-                    create_kyc_session(kyc_service_id: $kyc_service_id)
+                mutation ($kyc_service_id: String!, $user_id: String) {
+                    create_kyc_session(kyc_service_id: $kyc_service_id, user_id: $user_id)
                 }
             `,
             args || {},
@@ -4813,8 +4927,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation ($is_company: Boolean!) {
-                    create_kyc_prime_trust_token(is_company: $is_company)
+                mutation ($is_company: Boolean!, $user_id: String) {
+                    create_kyc_prime_trust_token(is_company: $is_company, user_id: $user_id)
                 }
             `,
             args || {},
@@ -4845,48 +4959,6 @@ export class ShiftV4Sdk {
             args || {},
             headers,
             'update_kyc_preference',
-        );
-    }
-
-    async update_notification_template({
-        args,
-        headers,
-    }: {
-        args: UpdateNotificationTemplateArgs;
-        headers?: HeadersInit;
-    }): Promise<boolean> {
-        if (!headers) headers = {};
-        return this.gql_request(
-            gql`
-                mutation (
-                    $notification_trigger: String
-                    $email_subject: String
-                    $email_body_html: String
-                    $email_body_plain: String
-                    $sms_body: String
-                    $push_title: String
-                    $push_message: String
-                    $push_body: String
-                    $is_active: ToggleSwitch
-                    $notification_template_id: String!
-                ) {
-                    update_notification_template(
-                        notification_trigger: $notification_trigger
-                        email_subject: $email_subject
-                        email_body_html: $email_body_html
-                        email_body_plain: $email_body_plain
-                        sms_body: $sms_body
-                        push_title: $push_title
-                        push_message: $push_message
-                        push_body: $push_body
-                        is_active: $is_active
-                        notification_template_id: $notification_template_id
-                    )
-                }
-            `,
-            args || {},
-            headers,
-            'update_notification_template',
         );
     }
 
@@ -4967,8 +5039,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($hedging_adapter_id: String!,$service_url: String!,$service_api_key: String!,$broker_user_id: String!,$hedging_enabled: ToggleSwitch!,$hedging_order_type: OrderType,$hedging_order_ttl_ms: Int,$instruments_settings_sync_enabled: ToggleSwitch,$disable_instrument_on_hedging_error: ToggleSwitch!,$disable_strategy_hedging_on_error: ToggleSwitch!,$account_balances_sync_enabled: ToggleSwitch!,$create_broker_user_id: Boolean) {
-                    create_hedging_adapter(hedging_adapter_id:$hedging_adapter_id,service_url:$service_url,service_api_key:$service_api_key,broker_user_id:$broker_user_id,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_ttl_ms:$hedging_order_ttl_ms,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,disable_instrument_on_hedging_error:$disable_instrument_on_hedging_error,disable_strategy_hedging_on_error:$disable_strategy_hedging_on_error,account_balances_sync_enabled:$account_balances_sync_enabled,create_broker_user_id:$create_broker_user_id)
+                mutation($hedging_adapter_id: String!,$service_url: String!,$service_api_key: String!,$broker_user_id: String!,$hedging_enabled: ToggleSwitch!,$hedging_order_type: OrderType,$hedging_order_ttl_ms: Int,$instruments_settings_sync_enabled: ToggleSwitch,$disable_instrument_on_hedging_error: ToggleSwitch!,$disable_strategy_hedging_on_error: ToggleSwitch!,$account_balances_sync_enabled: ToggleSwitch!,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$create_broker_user_id: Boolean) {
+                    create_hedging_adapter(hedging_adapter_id:$hedging_adapter_id,service_url:$service_url,service_api_key:$service_api_key,broker_user_id:$broker_user_id,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_ttl_ms:$hedging_order_ttl_ms,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,disable_instrument_on_hedging_error:$disable_instrument_on_hedging_error,disable_strategy_hedging_on_error:$disable_strategy_hedging_on_error,account_balances_sync_enabled:$account_balances_sync_enabled,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,create_broker_user_id:$create_broker_user_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5000,6 +5072,8 @@ export class ShiftV4Sdk {
                     $disable_instrument_on_hedging_error: ToggleSwitch
                     $disable_strategy_hedging_on_error: ToggleSwitch
                     $account_balances_sync_enabled: ToggleSwitch
+                    $hedging_error_attempts_threshold: Int
+                    $hedging_error_attempts_count: Int
                     $hedging_adapter_id: String!
                     $create_broker_user_id: Boolean
                 ) {
@@ -5013,6 +5087,8 @@ export class ShiftV4Sdk {
                         disable_instrument_on_hedging_error: $disable_instrument_on_hedging_error
                         disable_strategy_hedging_on_error: $disable_strategy_hedging_on_error
                         account_balances_sync_enabled: $account_balances_sync_enabled
+                        hedging_error_attempts_threshold: $hedging_error_attempts_threshold
+                        hedging_error_attempts_count: $hedging_error_attempts_count
                         hedging_adapter_id: $hedging_adapter_id
                         create_broker_user_id: $create_broker_user_id
                     )
@@ -5056,7 +5132,7 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($limit_group_id: String!,$instrument_id: String!,$daily_limit: Float!,$weekly_limit: Float!,$monthly_limit: Float!,$notion_currency: String) {
+                mutation($limit_group_id: String!,$instrument_id: String!,$daily_limit: Float,$weekly_limit: Float,$monthly_limit: Float,$notion_currency: String) {
                     create_trading_limit(limit_group_id:$limit_group_id,instrument_id:$instrument_id,daily_limit:$daily_limit,weekly_limit:$weekly_limit,monthly_limit:$monthly_limit,notion_currency:$notion_currency)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -6029,6 +6105,52 @@ export class ShiftV4Sdk {
         );
     }
 
+    async notification_settings({
+        fields,
+        headers,
+    }: {
+        fields: (keyof NotificationOptions | Partial<Record<keyof NotificationOptions, any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<NotificationOptions> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                query {
+                    notification_settings
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            {},
+            headers,
+            'notification_settings',
+        );
+    }
+
+    async geo_restrictions({
+        fields,
+        headers,
+    }: {
+        fields: (keyof GeoRestrictions | Partial<Record<keyof GeoRestrictions, any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<GeoRestrictions> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                query {
+                    geo_restrictions
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            {},
+            headers,
+            'geo_restrictions',
+        );
+    }
+
     async accounts_portfolio_report({
         args,
         fields,
@@ -6234,31 +6356,6 @@ export class ShiftV4Sdk {
             {},
             headers,
             'kyc_preference',
-        );
-    }
-
-    async notifications_templates({
-        args,
-        fields,
-        headers,
-    }: {
-        args?: NotificationsTemplatesArgs;
-        fields: (keyof NotificationTemplate | Partial<Record<keyof NotificationTemplate[], any[]>>)[];
-        headers?: HeadersInit;
-    }): Promise<NotificationTemplate[]> {
-        if (!headers) headers = {};
-        return this.gql_request(
-            gql`
-                query($notification_trigger: String,$is_active: ToggleSwitch) {
-                    notifications_templates(notification_trigger:$notification_trigger,is_active:$is_active)
-                        {
-                            ${buildGraphQLQuery(fields)}
-                        }
-                }
-                `,
-            args || {},
-            headers,
-            'notifications_templates',
         );
     }
 
@@ -6471,6 +6568,45 @@ export class ShiftV4Sdk {
             args || {},
             headers,
             'delayed_requests',
+        );
+    }
+
+    async mfa_secret_code({args, headers}: {args: MfaSecretCodeArgs; headers?: HeadersInit}): Promise<string> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                query ($access_token: String, $provider: AuthenticationProvider!) {
+                    mfa_secret_code(access_token: $access_token, provider: $provider)
+                }
+            `,
+            args || {},
+            headers,
+            'mfa_secret_code',
+        );
+    }
+
+    async verify_mfa_secret_token({
+        args,
+        fields,
+        headers,
+    }: {
+        args: VerifyMfaSecretTokenArgs;
+        fields: (keyof MfaResult | Partial<Record<keyof MfaResult, any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<MfaResult> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                query($secret_token: String!,$provider: AuthenticationProvider!,$access_token: String) {
+                    verify_mfa_secret_token(secret_token:$secret_token,provider:$provider,access_token:$access_token)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            args || {},
+            headers,
+            'verify_mfa_secret_token',
         );
     }
 

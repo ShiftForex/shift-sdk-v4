@@ -5,3 +5,4 @@
 .env
 
 /src/ignore
+build-all.sh
