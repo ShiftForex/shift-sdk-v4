@@ -3035,7 +3035,7 @@ export function buildGraphQLQuery(fields) {
     return queryFields.join(' ');
 }
 
-export class SdkClient {
+export class ShiftV4Sdk {
     private gql_client: GraphQLClient;
     private global_headers: {[x: string]: string} = {};
 
