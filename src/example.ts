@@ -1,7 +1,7 @@
 import {CreateOrderArgs, OrderSide, OrderTimeInForce, OrderType, ShiftV4Sdk} from '.';
 
 async function main() {
-    const client = new ShiftV4Sdk('https://vakotrade.cryptosrvc-dev.com/graphql');
+    const client = new ShiftV4Sdk('https://vakotrade-demo.cryptosrvc.com/graphql');
 
     client.setGlobalAuthToken('jwt');
     client.setGlobalCustomHeader('custom-header', 'custom-value');
