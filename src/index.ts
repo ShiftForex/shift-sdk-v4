@@ -57,6 +57,7 @@ export enum OrderType {
     limit = 'limit',
     market = 'market',
     stop_market = 'stop_market',
+    stop_limit = 'stop_limit',
 }
 
 export enum OrderSide {
@@ -265,6 +266,7 @@ export enum Permission {
     timeline = 'timeline',
     find_config_changes = 'find_config_changes',
     create_payment_manual = 'create_payment_manual',
+    send_test_email = 'send_test_email',
 }
 
 export enum DelayedRequestStatus {
@@ -363,6 +365,8 @@ export enum QueryEnum {
     verify_mfa_secret_token = 'verify_mfa_secret_token',
     find_config_changes = 'find_config_changes',
     config_changes_events = 'config_changes_events',
+    get_user_ip_geo_history = 'get_user_ip_geo_history',
+    get_user_ip_geo_history_dashboard = 'get_user_ip_geo_history_dashboard',
     portfolio_history = 'portfolio_history',
 }
 
@@ -467,6 +471,7 @@ export enum MutationEnum {
     update_system_settings = 'update_system_settings',
     update_maintenance_mode = 'update_maintenance_mode',
     update_notifications_settings = 'update_notifications_settings',
+    update_delayed_mutations = 'update_delayed_mutations',
     update_geo_restrictions = 'update_geo_restrictions',
     create_super_admins = 'create_super_admins',
     delete_super_admins = 'delete_super_admins',
@@ -491,6 +496,7 @@ export enum MutationEnum {
     send_push = 'send_push',
     update_delayed_request = 'update_delayed_request',
     delete_delayed_request = 'delete_delayed_request',
+    send_test_email = 'send_test_email',
 }
 
 export enum __TypeKind {
@@ -659,6 +665,7 @@ export interface Order {
     expires_at?: string;
     version: number;
     parent_order_id?: string;
+    stop_price?: number;
     notes?: string;
     user?: User;
     created_at_iso: string;
@@ -1220,6 +1227,16 @@ export interface TimelineEvent {
     created_at: string;
 }
 
+export interface UserIpGeoHistory {
+    date_ts: string;
+    user_id: string;
+    ip_address: string;
+    country?: string;
+    region?: string;
+    lat?: number;
+    lon?: number;
+}
+
 export interface HealthcheckResult {
     maintenance_message?: string;
     maintenance_mode?: boolean;
@@ -1583,6 +1600,8 @@ export type QueryType =
     | 'verify_mfa_secret_token'
     | 'find_config_changes'
     | 'config_changes_events'
+    | 'get_user_ip_geo_history'
+    | 'get_user_ip_geo_history_dashboard'
     | 'portfolio_history';
 
 export interface PagerInput {
@@ -1592,6 +1611,10 @@ export interface PagerInput {
 
 export interface SortInput {
     direction?: SortDirection;
+}
+
+export interface DateTime {
+    DateTime?: DateTime;
 }
 
 export type MutationType =
@@ -1663,6 +1686,7 @@ export type MutationType =
     | 'update_system_settings'
     | 'update_maintenance_mode'
     | 'update_notifications_settings'
+    | 'update_delayed_mutations'
     | 'update_geo_restrictions'
     | 'create_super_admins'
     | 'delete_super_admins'
@@ -1686,7 +1710,8 @@ export type MutationType =
     | 'delete_trading_limit'
     | 'send_push'
     | 'update_delayed_request'
-    | 'delete_delayed_request';
+    | 'delete_delayed_request'
+    | 'send_test_email';
 
 export interface FavoriteAddressCryptoItem {
     currency_id: string;
@@ -1834,6 +1859,8 @@ export interface CreateOrderArgs {
     price?: number;
     expires_at?: string;
     notes?: string;
+    stop_price?: number;
+    market_price?: number;
 }
 
 export interface CancelMultipleOrdersArgs {
@@ -2496,6 +2523,10 @@ export interface UpdateNotificationsSettingsArgs {
     sms: NotificationTrigger[];
 }
 
+export interface UpdateDelayedMutationsArgs {
+    mutations: string[];
+}
+
 export interface UpdateGeoRestrictionsArgs {}
 
 export interface CreateSuperAdminsArgs {
@@ -2661,6 +2692,11 @@ export interface UpdateDelayedRequestArgs {
 
 export interface DeleteDelayedRequestArgs {
     delayed_request_id?: string;
+}
+
+export interface SendTestEmailArgs {
+    trigger: NotificationTrigger;
+    to: string;
 }
 
 export interface OpenOrdersArgs {
@@ -3014,6 +3050,19 @@ export interface FindConfigChangesArgs {
 
 export interface ConfigChangesEventsArgs {}
 
+export interface GetUserIpGeoHistoryArgs {
+    date_ts?: string;
+    user_id?: string;
+    ip_address?: string;
+    country?: string;
+}
+
+export interface GetUserIpGeoHistoryDashboardArgs {
+    ip_address?: string;
+    from_date?: DateTime;
+    to_date?: string;
+}
+
 export interface PortfolioHistoryArgs {
     currency_id: string;
     user_id?: string;
@@ -3070,8 +3119,8 @@ export class ShiftV4Sdk {
         if (!headers) headers = {};
         return this.gql_request(
             gql`
-                mutation($user_id: String,$client_order_id: String,$instrument_id: String!,$quantity: Float!,$quantity_mode: OrderQuantityMode,$type: OrderType!,$side: OrderSide!,$time_in_force: OrderTimeInForce!,$price: Float,$expires_at: String,$notes: String) {
-                    create_order(user_id:$user_id,client_order_id:$client_order_id,instrument_id:$instrument_id,quantity:$quantity,quantity_mode:$quantity_mode,type:$type,side:$side,time_in_force:$time_in_force,price:$price,expires_at:$expires_at,notes:$notes)
+                mutation($user_id: String,$client_order_id: String,$instrument_id: String!,$quantity: Float!,$quantity_mode: OrderQuantityMode,$type: OrderType!,$side: OrderSide!,$time_in_force: OrderTimeInForce!,$price: Float,$expires_at: String,$notes: String,$stop_price: Float,$market_price: Float) {
+                    create_order(user_id:$user_id,client_order_id:$client_order_id,instrument_id:$instrument_id,quantity:$quantity,quantity_mode:$quantity_mode,type:$type,side:$side,time_in_force:$time_in_force,price:$price,expires_at:$expires_at,notes:$notes,stop_price:$stop_price,market_price:$market_price)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4689,6 +4738,26 @@ export class ShiftV4Sdk {
         );
     }
 
+    async update_delayed_mutations({
+        args,
+        headers,
+    }: {
+        args: UpdateDelayedMutationsArgs;
+        headers?: HeadersInit;
+    }): Promise<string[]> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                mutation ($mutations: String!) {
+                    update_delayed_mutations(mutations: $mutations)
+                }
+            `,
+            args || {},
+            headers,
+            'update_delayed_mutations',
+        );
+    }
+
     async update_geo_restrictions({
         fields,
         headers,
@@ -5255,6 +5324,20 @@ export class ShiftV4Sdk {
             args || {},
             headers,
             'delete_delayed_request',
+        );
+    }
+
+    async send_test_email({args, headers}: {args: SendTestEmailArgs; headers?: HeadersInit}): Promise<boolean> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                mutation ($trigger: NotificationTrigger!, $to: String!) {
+                    send_test_email(trigger: $trigger, to: $to)
+                }
+            `,
+            args || {},
+            headers,
+            'send_test_email',
         );
     }
 
@@ -6646,6 +6729,56 @@ export class ShiftV4Sdk {
             {},
             headers,
             'config_changes_events',
+        );
+    }
+
+    async get_user_ip_geo_history({
+        args,
+        fields,
+        headers,
+    }: {
+        args?: GetUserIpGeoHistoryArgs;
+        fields: (keyof UserIpGeoHistory | Partial<Record<keyof UserIpGeoHistory[], any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<UserIpGeoHistory[]> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                query($date_ts: String,$user_id: String,$ip_address: String,$country: String) {
+                    get_user_ip_geo_history(date_ts:$date_ts,user_id:$user_id,ip_address:$ip_address,country:$country)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            args || {},
+            headers,
+            'get_user_ip_geo_history',
+        );
+    }
+
+    async get_user_ip_geo_history_dashboard({
+        args,
+        fields,
+        headers,
+    }: {
+        args?: GetUserIpGeoHistoryDashboardArgs;
+        fields: (keyof UserIpGeoHistory | Partial<Record<keyof UserIpGeoHistory[], any[]>>)[];
+        headers?: HeadersInit;
+    }): Promise<UserIpGeoHistory[]> {
+        if (!headers) headers = {};
+        return this.gql_request(
+            gql`
+                query($ip_address: String,$from_date: DateTime,$to_date: String) {
+                    get_user_ip_geo_history_dashboard(ip_address:$ip_address,from_date:$from_date,to_date:$to_date)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,
+            args || {},
+            headers,
+            'get_user_ip_geo_history_dashboard',
         );
     }
 
