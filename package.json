@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "test": "jest",
-    "gen-types": "npx no-brainer-sdk@latest https://vakotrade-demo.cryptosrvc.com/graphql ./src/index.ts"
+    "gen-types": "npx no-brainer-sdk@latest https://vakotrade.cryptosrvc-dev.com/graphql ./src/index.ts"
   },
   "keywords": [],
   "author": "Pawel-Kica",

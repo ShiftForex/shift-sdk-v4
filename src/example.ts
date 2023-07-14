@@ -13,7 +13,7 @@ async function main() {
     const args: CreateOrderArgs = {
         instrument_id: 'BTCUSD',
         quantity: 1,
-        type: OrderType.limit,
+        type: OrderType.market,
         side: OrderSide.buy,
         time_in_force: OrderTimeInForce.gtc,
     };
