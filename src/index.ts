@@ -3084,7 +3084,7 @@ async cancel_order({args,  headers}:{args: CancelOrderArgs,  headers?:HeadersIni
                 `,args || {},headers,'cancel_order')
                 }
 
-async cancel_all_orders({args, fields,  headers}:{args?: CancelAllOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order[],any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
+async cancel_all_orders({args, fields,  headers}:{args?: CancelAllOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 mutation($user_id: String) {
@@ -3860,7 +3860,7 @@ async delete_permission_share({args,  headers}:{args: DeletePermissionShareArgs,
                 `,args || {},headers,'delete_permission_share')
                 }
 
-async admin_from_preset({args, fields,  headers}:{args: AdminFromPresetArgs, fields:((keyof PermissionShare) | Partial<Record<keyof PermissionShare[],any[]>>)[], headers?:HeadersInit}):Promise<PermissionShare[]>{ 
+async admin_from_preset({args, fields,  headers}:{args: AdminFromPresetArgs, fields:((keyof PermissionShare) | Partial<Record<keyof PermissionShare,any[]>>)[], headers?:HeadersInit}):Promise<PermissionShare[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 mutation($preset_name: String!,$emails: String!) {
@@ -4072,7 +4072,7 @@ async send_test_email({args,  headers}:{args: SendTestEmailArgs,  headers?:Heade
                 `,args || {},headers,'send_test_email')
                 }
 
-async create_kyc_user_data({args, fields,  headers}:{args: CreateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData[],any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
+async create_kyc_user_data({args, fields,  headers}:{args: CreateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 mutation($user_id: String!) {
@@ -4084,7 +4084,7 @@ async create_kyc_user_data({args, fields,  headers}:{args: CreateKycUserDataArgs
                 `,args || {},headers,'create_kyc_user_data')
                 }
 
-async update_kyc_user_data({args, fields,  headers}:{args: UpdateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData[],any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
+async update_kyc_user_data({args, fields,  headers}:{args: UpdateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 mutation($user_id: String!) {
@@ -4152,7 +4152,7 @@ async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklist
                 `,args || {},headers,'create_ip_blacklist_item')
                 }
 
-async create_ip_blacklist_items({args, fields,  headers}:{args: CreateIpBlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem[],any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
+async create_ip_blacklist_items({args, fields,  headers}:{args: CreateIpBlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 mutation($ip_addresses: String!,$reason: String) {
@@ -4186,7 +4186,7 @@ async remove_ip_blacklist_item({args,  headers}:{args: RemoveIpBlacklistItemArgs
 
 
 
-        async open_orders({args, fields,  headers}:{args: OpenOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order[],any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
+        async open_orders({args, fields,  headers}:{args: OpenOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$side: OrderSide,$instrument_id: String,$message: String,$user_id: String,$search: String,$status: OrderStatus!) {
@@ -4198,7 +4198,7 @@ async remove_ip_blacklist_item({args,  headers}:{args: RemoveIpBlacklistItemArgs
                 `,args || {},headers,'open_orders')
                 }
 
-async closed_orders({args, fields,  headers}:{args: ClosedOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order[],any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
+async closed_orders({args, fields,  headers}:{args: ClosedOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$side: OrderSide,$instrument_id: String,$message: String,$user_id: String,$search: String,$status: OrderStatus!) {
@@ -4222,7 +4222,7 @@ async estimate_order({args, fields,  headers}:{args: EstimateOrderArgs, fields:(
                 `,args || {},headers,'estimate_order')
                 }
 
-async trades({args, fields,  headers}:{args?: TradesArgs, fields:((keyof Trade) | Partial<Record<keyof Trade[],any[]>>)[], headers?:HeadersInit}):Promise<Trade[]>{ 
+async trades({args, fields,  headers}:{args?: TradesArgs, fields:((keyof Trade) | Partial<Record<keyof Trade,any[]>>)[], headers?:HeadersInit}):Promise<Trade[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($trade_id: String,$instrument_id: String,$order_id: String,$side: String,$counter_order_id: String,$user_id: String,$search: String) {
@@ -4258,7 +4258,7 @@ async healthcheck({ fields,  headers}:{ fields:((keyof HealthcheckResult) | Part
                 `,{},headers,'healthcheck')
                 }
 
-async instruments({args, fields,  headers}:{args?: InstrumentsArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument[],any[]>>)[], headers?:HeadersInit}):Promise<Instrument[]>{ 
+async instruments({args, fields,  headers}:{args?: InstrumentsArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($instrument_id: String,$is_active: ToggleSwitch,$search: String) {
@@ -4270,7 +4270,7 @@ async instruments({args, fields,  headers}:{args?: InstrumentsArgs, fields:((key
                 `,args || {},headers,'instruments')
                 }
 
-async instrument_price_bars({args, fields,  headers}:{args: InstrumentPriceBarsArgs, fields:((keyof InstrumentPriceHistory) | Partial<Record<keyof InstrumentPriceHistory[],any[]>>)[], headers?:HeadersInit}):Promise<InstrumentPriceHistory[]>{ 
+async instrument_price_bars({args, fields,  headers}:{args: InstrumentPriceBarsArgs, fields:((keyof InstrumentPriceHistory) | Partial<Record<keyof InstrumentPriceHistory,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentPriceHistory[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($periodicity: InstrumentHistoryPeriodicity,$limit: Int,$instrument_id: String!) {
@@ -4282,7 +4282,7 @@ async instrument_price_bars({args, fields,  headers}:{args: InstrumentPriceBarsA
                 `,args || {},headers,'instrument_price_bars')
                 }
 
-async currencies({args, fields,  headers}:{args?: CurrenciesArgs, fields:((keyof Currency) | Partial<Record<keyof Currency[],any[]>>)[], headers?:HeadersInit}):Promise<Currency[]>{ 
+async currencies({args, fields,  headers}:{args?: CurrenciesArgs, fields:((keyof Currency) | Partial<Record<keyof Currency,any[]>>)[], headers?:HeadersInit}):Promise<Currency[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($search: String,$type: CurrencyType,$is_active: ToggleSwitch) {
@@ -4306,7 +4306,7 @@ async deposit_bank_details_fiat({args, fields,  headers}:{args: DepositBankDetai
                 `,args || {},headers,'deposit_bank_details_fiat')
                 }
 
-async payments({args, fields,  headers}:{args: PaymentsArgs, fields:((keyof Payment) | Partial<Record<keyof Payment[],any[]>>)[], headers?:HeadersInit}):Promise<Payment[]>{ 
+async payments({args, fields,  headers}:{args: PaymentsArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($payment_id: String,$currency_id: String,$type: PaymentType,$reference: String,$created_by: String,$payment_id_in: String!,$payment_id_not_in: String!,$user_id: String,$user_id_in: String!,$user_id_not_in: String!,$search: String,$status: PaymentStatus!,$approval_status: PaymentApprovalStatus!) {
@@ -4330,7 +4330,7 @@ async deposit_address_crypto({args, fields,  headers}:{args: DepositAddressCrypt
                 `,args || {},headers,'deposit_address_crypto')
                 }
 
-async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddressesCryptoArgs, fields:((keyof DepositAddressCrypto) | Partial<Record<keyof DepositAddressCrypto[],any[]>>)[], headers?:HeadersInit}):Promise<DepositAddressCrypto[]>{ 
+async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddressesCryptoArgs, fields:((keyof DepositAddressCrypto) | Partial<Record<keyof DepositAddressCrypto,any[]>>)[], headers?:HeadersInit}):Promise<DepositAddressCrypto[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($deposit_address_crypto_id: String,$currency_id: String,$address: String,$address_tag_type: CryptoAddressTagType,$address_tag_value: String,$network: String,$psp_service_id: String,$reference: String,$user_id: String,$search: String) {
@@ -4342,7 +4342,7 @@ async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddresses
                 `,args || {},headers,'deposit_addresses_crypto')
                 }
 
-async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion[],any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
+async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String,$search: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String) {
@@ -4354,7 +4354,7 @@ async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((key
                 `,args || {},headers,'conversions')
                 }
 
-async conversion_quotes({args, fields,  headers}:{args?: ConversionQuotesArgs, fields:((keyof ConversionQuote) | Partial<Record<keyof ConversionQuote[],any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuote[]>{ 
+async conversion_quotes({args, fields,  headers}:{args?: ConversionQuotesArgs, fields:((keyof ConversionQuote) | Partial<Record<keyof ConversionQuote,any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuote[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String,$search: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String) {
@@ -4366,7 +4366,7 @@ async conversion_quotes({args, fields,  headers}:{args?: ConversionQuotesArgs, f
                 `,args || {},headers,'conversion_quotes')
                 }
 
-async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesRisksArgs, fields:((keyof ConversionQuotesRisks) | Partial<Record<keyof ConversionQuotesRisks[],any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuotesRisks[]>{ 
+async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesRisksArgs, fields:((keyof ConversionQuotesRisks) | Partial<Record<keyof ConversionQuotesRisks,any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuotesRisks[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($source_currency_id: String,$target_currency_id: String,$instrument_id: String,$include_all_quotes: Boolean,$user_id: String) {
@@ -4378,7 +4378,7 @@ async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesR
                 `,args || {},headers,'conversion_quotes_risks')
                 }
 
-async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | Partial<Record<keyof User[],any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
+async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($parent_user_id: String,$username: String,$email: String,$user_id: String,$search: String,$kyc_status: UserKycStatus,$kyc_level: String,$kyc_type: KycType) {
@@ -4412,7 +4412,7 @@ async user({args, fields,  headers}:{args?: UserArgs, fields:((keyof User) | Par
                 `,args || {},headers,'user')
                 }
 
-async account_transactions({args, fields,  headers}:{args?: AccountTransactionsArgs, fields:((keyof AccountTransaction) | Partial<Record<keyof AccountTransaction[],any[]>>)[], headers?:HeadersInit}):Promise<AccountTransaction[]>{ 
+async account_transactions({args, fields,  headers}:{args?: AccountTransactionsArgs, fields:((keyof AccountTransaction) | Partial<Record<keyof AccountTransaction,any[]>>)[], headers?:HeadersInit}):Promise<AccountTransaction[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($account_transaction_id: String,$parent_transaction_id: String,$client_transaction_id: String,$account_id: String,$payment_id: String,$currency_id: String,$transaction_class: AccountTransactionClass,$type: AccountTransactionType,$order_id: String,$trade_id: String,$conversion_id: String,$comment: String,$user_id: String,$search: String,$instrument_id: String) {
@@ -4424,7 +4424,7 @@ async account_transactions({args, fields,  headers}:{args?: AccountTransactionsA
                 `,args || {},headers,'account_transactions')
                 }
 
-async accounts_balances({args, fields,  headers}:{args?: AccountsBalancesArgs, fields:((keyof AccountBalance) | Partial<Record<keyof AccountBalance[],any[]>>)[], headers?:HeadersInit}):Promise<AccountBalance[]>{ 
+async accounts_balances({args, fields,  headers}:{args?: AccountsBalancesArgs, fields:((keyof AccountBalance) | Partial<Record<keyof AccountBalance,any[]>>)[], headers?:HeadersInit}):Promise<AccountBalance[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String) {
@@ -4436,7 +4436,7 @@ async accounts_balances({args, fields,  headers}:{args?: AccountsBalancesArgs, f
                 `,args || {},headers,'accounts_balances')
                 }
 
-async accounts({args, fields,  headers}:{args?: AccountsArgs, fields:((keyof Account) | Partial<Record<keyof Account[],any[]>>)[], headers?:HeadersInit}):Promise<Account[]>{ 
+async accounts({args, fields,  headers}:{args?: AccountsArgs, fields:((keyof Account) | Partial<Record<keyof Account,any[]>>)[], headers?:HeadersInit}):Promise<Account[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($account_id: String,$currency_id: String,$user_id: String) {
@@ -4448,7 +4448,7 @@ async accounts({args, fields,  headers}:{args?: AccountsArgs, fields:((keyof Acc
                 `,args || {},headers,'accounts')
                 }
 
-async limits_groups({args, fields,  headers}:{args?: LimitsGroupsArgs, fields:((keyof LimitGroup) | Partial<Record<keyof LimitGroup[],any[]>>)[], headers?:HeadersInit}):Promise<LimitGroup[]>{ 
+async limits_groups({args, fields,  headers}:{args?: LimitsGroupsArgs, fields:((keyof LimitGroup) | Partial<Record<keyof LimitGroup,any[]>>)[], headers?:HeadersInit}):Promise<LimitGroup[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($limit_group_id: String,$name: String,$description: String) {
@@ -4460,7 +4460,7 @@ async limits_groups({args, fields,  headers}:{args?: LimitsGroupsArgs, fields:((
                 `,args || {},headers,'limits_groups')
                 }
 
-async fees_groups({args, fields,  headers}:{args?: FeesGroupsArgs, fields:((keyof FeeGroup) | Partial<Record<keyof FeeGroup[],any[]>>)[], headers?:HeadersInit}):Promise<FeeGroup[]>{ 
+async fees_groups({args, fields,  headers}:{args?: FeesGroupsArgs, fields:((keyof FeeGroup) | Partial<Record<keyof FeeGroup,any[]>>)[], headers?:HeadersInit}):Promise<FeeGroup[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($fee_group_id: String,$name: String,$description: String,$beneficiary_user_id: String) {
@@ -4472,7 +4472,7 @@ async fees_groups({args, fields,  headers}:{args?: FeesGroupsArgs, fields:((keyo
                 `,args || {},headers,'fees_groups')
                 }
 
-async payments_fees({args, fields,  headers}:{args?: PaymentsFeesArgs, fields:((keyof PaymentFee) | Partial<Record<keyof PaymentFee[],any[]>>)[], headers?:HeadersInit}):Promise<PaymentFee[]>{ 
+async payments_fees({args, fields,  headers}:{args?: PaymentsFeesArgs, fields:((keyof PaymentFee) | Partial<Record<keyof PaymentFee,any[]>>)[], headers?:HeadersInit}):Promise<PaymentFee[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($currency_id: String,$fee_group_id: String) {
@@ -4484,7 +4484,7 @@ async payments_fees({args, fields,  headers}:{args?: PaymentsFeesArgs, fields:((
                 `,args || {},headers,'payments_fees')
                 }
 
-async trading_fees({args, fields,  headers}:{args?: TradingFeesArgs, fields:((keyof TradingFee) | Partial<Record<keyof TradingFee[],any[]>>)[], headers?:HeadersInit}):Promise<TradingFee[]>{ 
+async trading_fees({args, fields,  headers}:{args?: TradingFeesArgs, fields:((keyof TradingFee) | Partial<Record<keyof TradingFee,any[]>>)[], headers?:HeadersInit}):Promise<TradingFee[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($instrument_id: String,$fee_group_id: String) {
@@ -4496,7 +4496,7 @@ async trading_fees({args, fields,  headers}:{args?: TradingFeesArgs, fields:((ke
                 `,args || {},headers,'trading_fees')
                 }
 
-async payments_routes({args, fields,  headers}:{args?: PaymentsRoutesArgs, fields:((keyof PaymentRoute) | Partial<Record<keyof PaymentRoute[],any[]>>)[], headers?:HeadersInit}):Promise<PaymentRoute[]>{ 
+async payments_routes({args, fields,  headers}:{args?: PaymentsRoutesArgs, fields:((keyof PaymentRoute) | Partial<Record<keyof PaymentRoute,any[]>>)[], headers?:HeadersInit}):Promise<PaymentRoute[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($payment_route_id: String,$currency_id: String,$psp_service_id: String,$crypto_network: String) {
@@ -4508,7 +4508,7 @@ async payments_routes({args, fields,  headers}:{args?: PaymentsRoutesArgs, field
                 `,args || {},headers,'payments_routes')
                 }
 
-async crypto_networks({ fields,  headers}:{ fields:((keyof CryptoNetwork) | Partial<Record<keyof CryptoNetwork[],any[]>>)[], headers?:HeadersInit}):Promise<CryptoNetwork[]>{ 
+async crypto_networks({ fields,  headers}:{ fields:((keyof CryptoNetwork) | Partial<Record<keyof CryptoNetwork,any[]>>)[], headers?:HeadersInit}):Promise<CryptoNetwork[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query {
@@ -4530,7 +4530,7 @@ async psp_services({  headers}:{  headers?:HeadersInit}={}):Promise<string[]>{
                 `,{},headers,'psp_services')
                 }
 
-async payments_limits({args, fields,  headers}:{args?: PaymentsLimitsArgs, fields:((keyof PaymentLimit) | Partial<Record<keyof PaymentLimit[],any[]>>)[], headers?:HeadersInit}):Promise<PaymentLimit[]>{ 
+async payments_limits({args, fields,  headers}:{args?: PaymentsLimitsArgs, fields:((keyof PaymentLimit) | Partial<Record<keyof PaymentLimit,any[]>>)[], headers?:HeadersInit}):Promise<PaymentLimit[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($limit_group_id: String,$currency_id: String) {
@@ -4542,7 +4542,7 @@ async payments_limits({args, fields,  headers}:{args?: PaymentsLimitsArgs, field
                 `,args || {},headers,'payments_limits')
                 }
 
-async api_keys({args, fields,  headers}:{args?: ApiKeysArgs, fields:((keyof ApiKey) | Partial<Record<keyof ApiKey[],any[]>>)[], headers?:HeadersInit}):Promise<ApiKey[]>{ 
+async api_keys({args, fields,  headers}:{args?: ApiKeysArgs, fields:((keyof ApiKey) | Partial<Record<keyof ApiKey,any[]>>)[], headers?:HeadersInit}):Promise<ApiKey[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String,$search: String) {
@@ -4554,7 +4554,7 @@ async api_keys({args, fields,  headers}:{args?: ApiKeysArgs, fields:((keyof ApiK
                 `,args || {},headers,'api_keys')
                 }
 
-async cognito_pools({args, fields,  headers}:{args?: CognitoPoolsArgs, fields:((keyof CognitoPool) | Partial<Record<keyof CognitoPool[],any[]>>)[], headers?:HeadersInit}):Promise<CognitoPool[]>{ 
+async cognito_pools({args, fields,  headers}:{args?: CognitoPoolsArgs, fields:((keyof CognitoPool) | Partial<Record<keyof CognitoPool,any[]>>)[], headers?:HeadersInit}):Promise<CognitoPool[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($search: String) {
@@ -4566,7 +4566,7 @@ async cognito_pools({args, fields,  headers}:{args?: CognitoPoolsArgs, fields:((
                 `,args || {},headers,'cognito_pools')
                 }
 
-async instruments_strategies({args, fields,  headers}:{args?: InstrumentsStrategiesArgs, fields:((keyof InstrumentStrategy) | Partial<Record<keyof InstrumentStrategy[],any[]>>)[], headers?:HeadersInit}):Promise<InstrumentStrategy[]>{ 
+async instruments_strategies({args, fields,  headers}:{args?: InstrumentsStrategiesArgs, fields:((keyof InstrumentStrategy) | Partial<Record<keyof InstrumentStrategy,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentStrategy[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($hedging_adapter_id: String,$instrument_id: String,$search: String) {
@@ -4578,7 +4578,7 @@ async instruments_strategies({args, fields,  headers}:{args?: InstrumentsStrateg
                 `,args || {},headers,'instruments_strategies')
                 }
 
-async hedging_orders({args, fields,  headers}:{args?: HedgingOrdersArgs, fields:((keyof HedgingOrder) | Partial<Record<keyof HedgingOrder[],any[]>>)[], headers?:HeadersInit}):Promise<HedgingOrder[]>{ 
+async hedging_orders({args, fields,  headers}:{args?: HedgingOrdersArgs, fields:((keyof HedgingOrder) | Partial<Record<keyof HedgingOrder,any[]>>)[], headers?:HeadersInit}):Promise<HedgingOrder[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($hedging_adapter_id: String,$side: OrderSide,$status: HedgingOrderStatus,$error_message: String,$search: String) {
@@ -4590,7 +4590,7 @@ async hedging_orders({args, fields,  headers}:{args?: HedgingOrdersArgs, fields:
                 `,args || {},headers,'hedging_orders')
                 }
 
-async system_settings({args, fields,  headers}:{args?: SystemSettingsArgs, fields:((keyof Setting) | Partial<Record<keyof Setting[],any[]>>)[], headers?:HeadersInit}):Promise<Setting[]>{ 
+async system_settings({args, fields,  headers}:{args?: SystemSettingsArgs, fields:((keyof Setting) | Partial<Record<keyof Setting,any[]>>)[], headers?:HeadersInit}):Promise<Setting[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($search: String) {
@@ -4626,7 +4626,7 @@ async geo_restrictions({ fields,  headers}:{ fields:((keyof GeoRestrictions) | P
                 `,{},headers,'geo_restrictions')
                 }
 
-async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfolioReportArgs, fields:((keyof AccountsPortfolioReportItem) | Partial<Record<keyof AccountsPortfolioReportItem[],any[]>>)[], headers?:HeadersInit}):Promise<AccountsPortfolioReportItem[]>{ 
+async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfolioReportArgs, fields:((keyof AccountsPortfolioReportItem) | Partial<Record<keyof AccountsPortfolioReportItem,any[]>>)[], headers?:HeadersInit}):Promise<AccountsPortfolioReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($currencies: String!) {
@@ -4638,7 +4638,7 @@ async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfoli
                 `,args || {},headers,'accounts_portfolio_report')
                 }
 
-async orders_summary_report({args, fields,  headers}:{args?: OrdersSummaryReportArgs, fields:((keyof OrdersSummaryReportItem) | Partial<Record<keyof OrdersSummaryReportItem[],any[]>>)[], headers?:HeadersInit}):Promise<OrdersSummaryReportItem[]>{ 
+async orders_summary_report({args, fields,  headers}:{args?: OrdersSummaryReportArgs, fields:((keyof OrdersSummaryReportItem) | Partial<Record<keyof OrdersSummaryReportItem,any[]>>)[], headers?:HeadersInit}):Promise<OrdersSummaryReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String) {
@@ -4650,7 +4650,7 @@ async orders_summary_report({args, fields,  headers}:{args?: OrdersSummaryReport
                 `,args || {},headers,'orders_summary_report')
                 }
 
-async conversions_summary_report({args, fields,  headers}:{args?: ConversionsSummaryReportArgs, fields:((keyof ConversionsSummaryReportItem) | Partial<Record<keyof ConversionsSummaryReportItem[],any[]>>)[], headers?:HeadersInit}):Promise<ConversionsSummaryReportItem[]>{ 
+async conversions_summary_report({args, fields,  headers}:{args?: ConversionsSummaryReportArgs, fields:((keyof ConversionsSummaryReportItem) | Partial<Record<keyof ConversionsSummaryReportItem,any[]>>)[], headers?:HeadersInit}):Promise<ConversionsSummaryReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String) {
@@ -4674,7 +4674,7 @@ async liquidity_report({ fields,  headers}:{ fields:((keyof LiquidityReportResul
                 `,{},headers,'liquidity_report')
                 }
 
-async daily_balances_report({args, fields,  headers}:{args?: DailyBalancesReportArgs, fields:((keyof DailyBalancesReportItem) | Partial<Record<keyof DailyBalancesReportItem[],any[]>>)[], headers?:HeadersInit}):Promise<DailyBalancesReportItem[]>{ 
+async daily_balances_report({args, fields,  headers}:{args?: DailyBalancesReportArgs, fields:((keyof DailyBalancesReportItem) | Partial<Record<keyof DailyBalancesReportItem,any[]>>)[], headers?:HeadersInit}):Promise<DailyBalancesReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String) {
@@ -4686,7 +4686,7 @@ async daily_balances_report({args, fields,  headers}:{args?: DailyBalancesReport
                 `,args || {},headers,'daily_balances_report')
                 }
 
-async permissions({ fields,  headers}:{ fields:((keyof Permission) | Partial<Record<keyof Permission[],any[]>>)[], headers?:HeadersInit}):Promise<Permission[]>{ 
+async permissions({ fields,  headers}:{ fields:((keyof Permission) | Partial<Record<keyof Permission,any[]>>)[], headers?:HeadersInit}):Promise<Permission[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query {
@@ -4708,7 +4708,7 @@ async permissions_subjects({  headers}:{  headers?:HeadersInit}={}):Promise<stri
                 `,{},headers,'permissions_subjects')
                 }
 
-async permissions_share({args, fields,  headers}:{args?: PermissionsShareArgs, fields:((keyof PermissionShare) | Partial<Record<keyof PermissionShare[],any[]>>)[], headers?:HeadersInit}):Promise<PermissionShare[]>{ 
+async permissions_share({args, fields,  headers}:{args?: PermissionsShareArgs, fields:((keyof PermissionShare) | Partial<Record<keyof PermissionShare,any[]>>)[], headers?:HeadersInit}):Promise<PermissionShare[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($search: String,$user_id: String,$subject: String,$group_by: FindPermissionsShareGroupBy) {
@@ -4732,7 +4732,7 @@ async kyc_preference({ fields,  headers}:{ fields:((keyof KycPreference) | Parti
                 `,{},headers,'kyc_preference')
                 }
 
-async webhooks({args, fields,  headers}:{args?: WebhooksArgs, fields:((keyof Webhook) | Partial<Record<keyof Webhook[],any[]>>)[], headers?:HeadersInit}):Promise<Webhook[]>{ 
+async webhooks({args, fields,  headers}:{args?: WebhooksArgs, fields:((keyof Webhook) | Partial<Record<keyof Webhook,any[]>>)[], headers?:HeadersInit}):Promise<Webhook[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($is_active: ToggleSwitch,$user_id: String,$search: String) {
@@ -4754,7 +4754,7 @@ async hedging_adapter_ids({  headers}:{  headers?:HeadersInit}={}):Promise<strin
                 `,{},headers,'hedging_adapter_ids')
                 }
 
-async hedging_adapters({ fields,  headers}:{ fields:((keyof HedgingAdapter) | Partial<Record<keyof HedgingAdapter[],any[]>>)[], headers?:HeadersInit}):Promise<HedgingAdapter[]>{ 
+async hedging_adapters({ fields,  headers}:{ fields:((keyof HedgingAdapter) | Partial<Record<keyof HedgingAdapter,any[]>>)[], headers?:HeadersInit}):Promise<HedgingAdapter[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query {
@@ -4766,7 +4766,7 @@ async hedging_adapters({ fields,  headers}:{ fields:((keyof HedgingAdapter) | Pa
                 `,{},headers,'hedging_adapters')
                 }
 
-async timeline({args, fields,  headers}:{args: TimelineArgs, fields:((keyof TimelineEvent) | Partial<Record<keyof TimelineEvent[],any[]>>)[], headers?:HeadersInit}):Promise<TimelineEvent[]>{ 
+async timeline({args, fields,  headers}:{args: TimelineArgs, fields:((keyof TimelineEvent) | Partial<Record<keyof TimelineEvent,any[]>>)[], headers?:HeadersInit}):Promise<TimelineEvent[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String,$event_data: String,$created_at: String,$search: String,$event_name: NotificationTrigger!) {
@@ -4778,7 +4778,7 @@ async timeline({args, fields,  headers}:{args: TimelineArgs, fields:((keyof Time
                 `,args || {},headers,'timeline')
                 }
 
-async trading_limits({args, fields,  headers}:{args?: TradingLimitsArgs, fields:((keyof TradingLimit) | Partial<Record<keyof TradingLimit[],any[]>>)[], headers?:HeadersInit}):Promise<TradingLimit[]>{ 
+async trading_limits({args, fields,  headers}:{args?: TradingLimitsArgs, fields:((keyof TradingLimit) | Partial<Record<keyof TradingLimit,any[]>>)[], headers?:HeadersInit}):Promise<TradingLimit[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($limit_group_id: String,$instrument_id: String) {
@@ -4790,7 +4790,7 @@ async trading_limits({args, fields,  headers}:{args?: TradingLimitsArgs, fields:
                 `,args || {},headers,'trading_limits')
                 }
 
-async trading_volumes({args, fields,  headers}:{args?: TradingVolumesArgs, fields:((keyof UsersTradingVolume) | Partial<Record<keyof UsersTradingVolume[],any[]>>)[], headers?:HeadersInit}):Promise<UsersTradingVolume[]>{ 
+async trading_volumes({args, fields,  headers}:{args?: TradingVolumesArgs, fields:((keyof UsersTradingVolume) | Partial<Record<keyof UsersTradingVolume,any[]>>)[], headers?:HeadersInit}):Promise<UsersTradingVolume[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String,$instrument_id: String,$volume: TradingVolumeType) {
@@ -4802,7 +4802,7 @@ async trading_volumes({args, fields,  headers}:{args?: TradingVolumesArgs, field
                 `,args || {},headers,'trading_volumes')
                 }
 
-async countries({args, fields,  headers}:{args?: CountriesArgs, fields:((keyof Country) | Partial<Record<keyof Country[],any[]>>)[], headers?:HeadersInit}):Promise<Country[]>{ 
+async countries({args, fields,  headers}:{args?: CountriesArgs, fields:((keyof Country) | Partial<Record<keyof Country,any[]>>)[], headers?:HeadersInit}):Promise<Country[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($search: String) {
@@ -4814,7 +4814,7 @@ async countries({args, fields,  headers}:{args?: CountriesArgs, fields:((keyof C
                 `,args || {},headers,'countries')
                 }
 
-async provinces({args, fields,  headers}:{args: ProvincesArgs, fields:((keyof Province) | Partial<Record<keyof Province[],any[]>>)[], headers?:HeadersInit}):Promise<Province[]>{ 
+async provinces({args, fields,  headers}:{args: ProvincesArgs, fields:((keyof Province) | Partial<Record<keyof Province,any[]>>)[], headers?:HeadersInit}):Promise<Province[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($country_code: String!,$search: String) {
@@ -4826,7 +4826,7 @@ async provinces({args, fields,  headers}:{args: ProvincesArgs, fields:((keyof Pr
                 `,args || {},headers,'provinces')
                 }
 
-async delayed_requests({args, fields,  headers}:{args?: DelayedRequestsArgs, fields:((keyof DelayedRequest) | Partial<Record<keyof DelayedRequest[],any[]>>)[], headers?:HeadersInit}):Promise<DelayedRequest[]>{ 
+async delayed_requests({args, fields,  headers}:{args?: DelayedRequestsArgs, fields:((keyof DelayedRequest) | Partial<Record<keyof DelayedRequest,any[]>>)[], headers?:HeadersInit}):Promise<DelayedRequest[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($delayed_request_id: String,$request_name: String,$approval_status: DelayedRequestStatus,$admin_id: String,$admin_email: String,$approved_by: String,$search: String) {
@@ -4860,7 +4860,7 @@ async verify_mfa_secret_token({args, fields,  headers}:{args: VerifyMfaSecretTok
                 `,args || {},headers,'verify_mfa_secret_token')
                 }
 
-async kyc_user_data({args, fields,  headers}:{args: KycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData[],any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
+async kyc_user_data({args, fields,  headers}:{args: KycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($user_id: String!,$kyc_properties: String!) {
@@ -4872,7 +4872,7 @@ async kyc_user_data({args, fields,  headers}:{args: KycUserDataArgs, fields:((ke
                 `,args || {},headers,'kyc_user_data')
                 }
 
-async permission_presets({ fields,  headers}:{ fields:((keyof PermissionPreset) | Partial<Record<keyof PermissionPreset[],any[]>>)[], headers?:HeadersInit}):Promise<PermissionPreset[]>{ 
+async permission_presets({ fields,  headers}:{ fields:((keyof PermissionPreset) | Partial<Record<keyof PermissionPreset,any[]>>)[], headers?:HeadersInit}):Promise<PermissionPreset[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query {
@@ -4884,7 +4884,7 @@ async permission_presets({ fields,  headers}:{ fields:((keyof PermissionPreset) 
                 `,{},headers,'permission_presets')
                 }
 
-async find_config_changes({args, fields,  headers}:{args?: FindConfigChangesArgs, fields:((keyof ConfigChange) | Partial<Record<keyof ConfigChange[],any[]>>)[], headers?:HeadersInit}):Promise<ConfigChange[]>{ 
+async find_config_changes({args, fields,  headers}:{args?: FindConfigChangesArgs, fields:((keyof ConfigChange) | Partial<Record<keyof ConfigChange,any[]>>)[], headers?:HeadersInit}):Promise<ConfigChange[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($config_change_id: String,$config_change_group_id: String,$admin_user_id: String,$admin_email: String,$admin_ip: String,$table_name: String,$operation_name: String,$operation_type: ConfigChangeOperationType,$details: String,$search: String) {
@@ -4906,7 +4906,7 @@ async config_changes_events({  headers}:{  headers?:HeadersInit}={}):Promise<str
                 `,{},headers,'config_changes_events')
                 }
 
-async get_user_ip_geo_history({args, fields,  headers}:{args?: GetUserIpGeoHistoryArgs, fields:((keyof UserIpGeoHistory) | Partial<Record<keyof UserIpGeoHistory[],any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistory[]>{ 
+async get_user_ip_geo_history({args, fields,  headers}:{args?: GetUserIpGeoHistoryArgs, fields:((keyof UserIpGeoHistory) | Partial<Record<keyof UserIpGeoHistory,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistory[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($date_ts: String,$user_id: String,$ip_address: String,$country: String) {
@@ -4918,7 +4918,7 @@ async get_user_ip_geo_history({args, fields,  headers}:{args?: GetUserIpGeoHisto
                 `,args || {},headers,'get_user_ip_geo_history')
                 }
 
-async get_user_ip_geo_history_dashboard({args, fields,  headers}:{args?: GetUserIpGeoHistoryDashboardArgs, fields:((keyof UserIpGeoHistoryDashboard) | Partial<Record<keyof UserIpGeoHistoryDashboard[],any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistoryDashboard[]>{ 
+async get_user_ip_geo_history_dashboard({args, fields,  headers}:{args?: GetUserIpGeoHistoryDashboardArgs, fields:((keyof UserIpGeoHistoryDashboard) | Partial<Record<keyof UserIpGeoHistoryDashboard,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistoryDashboard[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($ip_address: String,$from_date: DateTime,$to_date: DateTime) {
@@ -4940,7 +4940,7 @@ async portfolio_history({args,  headers}:{args: PortfolioHistoryArgs,  headers?:
                 `,args || {},headers,'portfolio_history')
                 }
 
-async find_blacklist_items({args, fields,  headers}:{args?: FindBlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem[],any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
+async find_blacklist_items({args, fields,  headers}:{args?: FindBlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($ip_address: String,$reason: String,$search: String) {
