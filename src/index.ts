@@ -48,6 +48,11 @@ instruments = 'instruments',
 create_instrument = 'create_instrument',
 update_instrument = 'update_instrument',
 delete_instrument = 'delete_instrument',
+instruments_strategies_schedule = 'instruments_strategies_schedule',
+create_instruments_strategies_schedule = 'create_instruments_strategies_schedule',
+update_instruments_strategies_schedule = 'update_instruments_strategies_schedule',
+find_instruments_strategies_schedule = 'find_instruments_strategies_schedule',
+delete_instruments_strategies_schedule = 'delete_instruments_strategies_schedule',
 limits_groups = 'limits_groups',
 create_limit_group = 'create_limit_group',
 update_limit_group = 'update_limit_group',
@@ -182,6 +187,11 @@ crypto = 'crypto',
 fiat = 'fiat'
 }
 
+export enum FeeCalculationType {
+sum = 'sum',
+max = 'max'
+}
+
 export enum AccountTransactionClass {
 trade = 'trade',
 fee = 'fee',
@@ -226,6 +236,16 @@ gtd = 'gtd'
 export enum InstrumentStrategyHedgingOrderPrice {
 tob = 'tob',
 vwap = 'vwap'
+}
+
+export enum DayOfWeek {
+sun = 'sun',
+mon = 'mon',
+tue = 'tue',
+wed = 'wed',
+thu = 'thu',
+fri = 'fri',
+sat = 'sat'
 }
 
 export enum OrderSide {
@@ -307,6 +327,7 @@ ios = 'ios'
 export enum KycProvider {
 PRIMETRUST = 'PRIMETRUST',
 SUM_AND_SUBSTANCE = 'SUM_AND_SUBSTANCE',
+BANK_ID = 'BANK_ID',
 MANUAL = 'MANUAL'
 }
 
@@ -352,6 +373,7 @@ instruments_strategies = 'instruments_strategies',
 hedging_orders = 'hedging_orders',
 system_settings = 'system_settings',
 notification_settings = 'notification_settings',
+delayed_mutations = 'delayed_mutations',
 geo_restrictions = 'geo_restrictions',
 accounts_portfolio_report = 'accounts_portfolio_report',
 orders_summary_report = 'orders_summary_report',
@@ -375,6 +397,7 @@ mfa_secret_code = 'mfa_secret_code',
 verify_mfa_secret_token = 'verify_mfa_secret_token',
 kyc_user_data = 'kyc_user_data',
 permission_presets = 'permission_presets',
+find_instruments_strategies_schedule = 'find_instruments_strategies_schedule',
 find_config_changes = 'find_config_changes',
 config_changes_events = 'config_changes_events',
 get_user_ip_geo_history = 'get_user_ip_geo_history',
@@ -517,6 +540,9 @@ delete_kyc_user_data = 'delete_kyc_user_data',
 create_permission_preset = 'create_permission_preset',
 update_permission_preset = 'update_permission_preset',
 delete_permission_preset = 'delete_permission_preset',
+create_instruments_strategies_schedule = 'create_instruments_strategies_schedule',
+update_instruments_strategies_schedule = 'update_instruments_strategies_schedule',
+delete_instruments_strategies_schedule = 'delete_instruments_strategies_schedule',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 create_ip_blacklist_items = 'create_ip_blacklist_items',
 update_ip_blacklist_item = 'update_ip_blacklist_item',
@@ -813,6 +839,7 @@ withdrawal_progressive_fee?: number;
 withdrawal_flat_fee?: number;
 deposit_progressive_fee?: number;
 deposit_flat_fee?: number;
+calculation_type?: FeeCalculationType;
 fee_group: FeeGroup;
 }
 
@@ -962,6 +989,21 @@ version?: number;
 updated_at_iso: string;
 }
 
+export interface InstrumentsStrategiesSchedule{
+instruments_strategies_schedule_id: string;
+serial_id?: number;
+instrument_strategy_id: string;
+markup_ask: number;
+markup_bid: number;
+is_active: ToggleSwitch;
+time_from_day_of_week: DayOfWeek;
+time_from_hours: number;
+time_from_minutes: number;
+time_to_day_of_week: DayOfWeek;
+time_to_hours: number;
+time_to_minutes: number;
+}
+
 export interface SignInResult{
 jwt: string;
 expires_at: number;
@@ -1068,6 +1110,7 @@ parent_order_id?: string;
 stop_price?: number;
 notes?: string;
 user?: User;
+trades: Trade[];
 created_at_iso: string;
 updated_at_iso: string;
 expires_at_iso?: string;
@@ -1528,11 +1571,18 @@ error?: string;
 is_active: ToggleSwitch;
 }
 
+export interface FireblocksRollingLimits{
+threshold: number;
+tally: number;
+timespan_ms: number;
+}
+
 export interface LiquidityReportResult{
 broker: LiquidityReportBrokerAccountBalanceReportItem[];
 payments: LiquidityReportPaymentRouteReportItem[];
 hedging: LiquidityReportStrategyHedgingBalanceReportItem[];
 accounts: AccountsPortfolioReportItem[];
+fireblocks_rolling_limits?: FireblocksRollingLimits;
 }
 
 export interface OrdersSummaryReportItem{
@@ -1602,7 +1652,7 @@ name?: string;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'find_blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'find_instruments_strategies_schedule'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'find_blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -1618,7 +1668,7 @@ DateTime?: DateTime;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'create_user_mfa_secret'|'update_user_mfa_status'|'delete_user'|'verify_user_mfa_token'|'add_push_token'|'clear_push_tokens'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preference'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'enable_mfa'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'create_user_mfa_secret'|'update_user_mfa_status'|'delete_user'|'verify_user_mfa_token'|'add_push_token'|'clear_push_tokens'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preference'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'enable_mfa'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -1897,6 +1947,7 @@ reference?: string;
 mfa_token?: string;
 fees_included?: ToggleSwitch;
 skip_address_validation?: boolean;
+bank_id_session?: string;
 }
 
 export interface CreateWithdrawalFiatArgs{
@@ -1926,8 +1977,8 @@ fiat_beneficiary_country?: string;
 fiat_beneficiary_region?: string;
 fiat_beneficiary_city?: string;
 fiat_beneficiary_postal_code?: string;
-fiat_bank_swift?: string;
 manual_transaction_date?: string;
+bank_id_session?: string;
 }
 
 export interface CreatePaymentManualArgs{
@@ -2156,6 +2207,7 @@ withdrawal_progressive_fee?: number;
 withdrawal_flat_fee?: number;
 deposit_progressive_fee?: number;
 deposit_flat_fee?: number;
+calculation_type?: FeeCalculationType;
 }
 
 export interface DeletePaymentFeeArgs{
@@ -2170,6 +2222,7 @@ withdrawal_progressive_fee?: number;
 withdrawal_flat_fee?: number;
 deposit_progressive_fee?: number;
 deposit_flat_fee?: number;
+calculation_type?: FeeCalculationType;
 }
 
 export interface CreateTradingFeeArgs{
@@ -2336,6 +2389,7 @@ order_ttl_ms: number;
 hedge_quantity_trigger_buy: number;
 hedge_quantity_trigger_sell: number;
 hedge_quantity_increment: number;
+hedge_balance?: number;
 conversions_balance?: number;
 hedging_enabled?: ToggleSwitch;
 hedging_order_type?: OrderType;
@@ -2366,8 +2420,10 @@ order_ttl_ms?: number;
 hedge_quantity_trigger_buy?: number;
 hedge_quantity_trigger_sell?: number;
 hedge_quantity_increment?: number;
+hedge_balance?: number;
 hedging_enabled?: ToggleSwitch;
 hedging_order_type?: OrderType;
+hedging_order_time_in_force?: OrderTimeInForce;
 hedging_order_price?: InstrumentStrategyHedgingOrderPrice;
 hedging_order_ttl_ms?: number;
 hedging_error_attempts_threshold?: number;
@@ -2591,6 +2647,37 @@ subjects: string[];
 
 export interface DeletePermissionPresetArgs{
 name: string;
+}
+
+export interface CreateInstrumentsStrategiesScheduleArgs{
+instrument_strategy_id: string;
+markup_ask: number;
+markup_bid: number;
+is_active: ToggleSwitch;
+time_from_day_of_week: DayOfWeek;
+time_from_hours: number;
+time_from_minutes: number;
+time_to_day_of_week: DayOfWeek;
+time_to_hours: number;
+time_to_minutes: number;
+}
+
+export interface UpdateInstrumentsStrategiesScheduleArgs{
+instrument_strategy_id?: string;
+markup_ask?: number;
+markup_bid?: number;
+is_active?: ToggleSwitch;
+time_from_day_of_week?: DayOfWeek;
+time_from_hours?: number;
+time_from_minutes?: number;
+time_to_day_of_week?: DayOfWeek;
+time_to_hours?: number;
+time_to_minutes?: number;
+instruments_strategies_schedule_id: string;
+}
+
+export interface DeleteInstrumentsStrategiesScheduleArgs{
+instruments_strategies_schedule_id: string;
 }
 
 export interface CreateIpBlacklistItemArgs{
@@ -2864,6 +2951,9 @@ search?: string;
 export interface NotificationSettingsArgs{
 }
 
+export interface DelayedMutationsArgs{
+}
+
 export interface GeoRestrictionsArgs{
 }
 
@@ -2969,6 +3059,20 @@ kyc_properties: string[];
 }
 
 export interface PermissionPresetsArgs{
+}
+
+export interface FindInstrumentsStrategiesScheduleArgs{
+instruments_strategies_schedule_id?: string;
+serial_id?: number;
+instrument_strategy_id?: string;
+is_active?: ToggleSwitch;
+time_from_day_of_week?: DayOfWeek;
+time_from_hours?: number;
+time_from_minutes?: number;
+time_to_day_of_week?: DayOfWeek;
+time_to_hours?: number;
+time_to_minutes?: number;
+is_working?: ToggleSwitch;
 }
 
 export interface FindConfigChangesArgs{
@@ -3239,8 +3343,8 @@ async update_payment_approval_status({args,  headers}:{args: UpdatePaymentApprov
 async create_withdrawal_crypto({args, fields,  headers}:{args: CreateWithdrawalCryptoArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$crypto_address: String!,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_network: String,$crypto_network_fee_preference: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$skip_address_validation: Boolean) {
-                    create_withdrawal_crypto(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_network:$crypto_network,crypto_network_fee_preference:$crypto_network_fee_preference,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,skip_address_validation:$skip_address_validation)
+                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$crypto_address: String!,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_network: String,$crypto_network_fee_preference: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$skip_address_validation: Boolean,$bank_id_session: String) {
+                    create_withdrawal_crypto(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_network:$crypto_network,crypto_network_fee_preference:$crypto_network_fee_preference,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,skip_address_validation:$skip_address_validation,bank_id_session:$bank_id_session)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3251,8 +3355,8 @@ async create_withdrawal_crypto({args, fields,  headers}:{args: CreateWithdrawalC
 async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFiatArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String) {
-                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date)
+                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$manual_transaction_date: String,$bank_id_session: String) {
+                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3503,8 +3607,8 @@ async estimate_network_fee({args, fields,  headers}:{args: EstimateNetworkFeeArg
 async create_payment_fee({args, fields,  headers}:{args: CreatePaymentFeeArgs, fields:((keyof PaymentFee) | Partial<Record<keyof PaymentFee,any[]>>)[], headers?:HeadersInit}):Promise<PaymentFee>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String!,$fee_group_id: String!,$withdrawal_progressive_fee: Float,$withdrawal_flat_fee: Float,$deposit_progressive_fee: Float,$deposit_flat_fee: Float) {
-                    create_payment_fee(currency_id:$currency_id,fee_group_id:$fee_group_id,withdrawal_progressive_fee:$withdrawal_progressive_fee,withdrawal_flat_fee:$withdrawal_flat_fee,deposit_progressive_fee:$deposit_progressive_fee,deposit_flat_fee:$deposit_flat_fee)
+                mutation($currency_id: String!,$fee_group_id: String!,$withdrawal_progressive_fee: Float,$withdrawal_flat_fee: Float,$deposit_progressive_fee: Float,$deposit_flat_fee: Float,$calculation_type: FeeCalculationType) {
+                    create_payment_fee(currency_id:$currency_id,fee_group_id:$fee_group_id,withdrawal_progressive_fee:$withdrawal_progressive_fee,withdrawal_flat_fee:$withdrawal_flat_fee,deposit_progressive_fee:$deposit_progressive_fee,deposit_flat_fee:$deposit_flat_fee,calculation_type:$calculation_type)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3525,8 +3629,8 @@ async delete_payment_fee({args,  headers}:{args: DeletePaymentFeeArgs,  headers?
 async update_payment_fee({args,  headers}:{args: UpdatePaymentFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String!,$fee_group_id: String!,$withdrawal_progressive_fee: Float,$withdrawal_flat_fee: Float,$deposit_progressive_fee: Float,$deposit_flat_fee: Float) {
-                    update_payment_fee(currency_id:$currency_id,fee_group_id:$fee_group_id,withdrawal_progressive_fee:$withdrawal_progressive_fee,withdrawal_flat_fee:$withdrawal_flat_fee,deposit_progressive_fee:$deposit_progressive_fee,deposit_flat_fee:$deposit_flat_fee)
+                mutation($currency_id: String!,$fee_group_id: String!,$withdrawal_progressive_fee: Float,$withdrawal_flat_fee: Float,$deposit_progressive_fee: Float,$deposit_flat_fee: Float,$calculation_type: FeeCalculationType) {
+                    update_payment_fee(currency_id:$currency_id,fee_group_id:$fee_group_id,withdrawal_progressive_fee:$withdrawal_progressive_fee,withdrawal_flat_fee:$withdrawal_flat_fee,deposit_progressive_fee:$deposit_progressive_fee,deposit_flat_fee:$deposit_flat_fee,calculation_type:$calculation_type)
                         
                 }
                 `,args || {},headers,'update_payment_fee')
@@ -3705,8 +3809,8 @@ async delete_cognito_pool({args,  headers}:{args: DeleteCognitoPoolArgs,  header
 async create_instrument_strategy({args, fields,  headers}:{args: CreateInstrumentStrategyArgs, fields:((keyof InstrumentStrategy) | Partial<Record<keyof InstrumentStrategy,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentStrategy>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String!,$instrument_id: String!,$remote_instrument_id: String,$loop_interval: Int!,$active_layers_count: Int!,$layer_discount_factor: Float!,$markup_ask: Float!,$markup_bid: Float!,$order_min_quantity: Float!,$order_max_quantity: Float!,$order_ttl_ms: Int!,$hedge_quantity_trigger_buy: Float!,$hedge_quantity_trigger_sell: Float!,$hedge_quantity_increment: Float!,$conversions_balance: Int,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$is_active: ToggleSwitch!,$version: Int) {
-                    create_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,conversions_balance:$conversions_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,is_active:$is_active,version:$version)
+                mutation($hedging_adapter_id: String!,$instrument_id: String!,$remote_instrument_id: String,$loop_interval: Int!,$active_layers_count: Int!,$layer_discount_factor: Float!,$markup_ask: Float!,$markup_bid: Float!,$order_min_quantity: Float!,$order_max_quantity: Float!,$order_ttl_ms: Int!,$hedge_quantity_trigger_buy: Float!,$hedge_quantity_trigger_sell: Float!,$hedge_quantity_increment: Float!,$hedge_balance: Float,$conversions_balance: Int,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$is_active: ToggleSwitch!,$version: Int) {
+                    create_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedge_balance:$hedge_balance,conversions_balance:$conversions_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,is_active:$is_active,version:$version)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3717,8 +3821,8 @@ async create_instrument_strategy({args, fields,  headers}:{args: CreateInstrumen
 async update_instrument_strategy({args,  headers}:{args: UpdateInstrumentStrategyArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String,$instrument_id: String,$remote_instrument_id: String,$loop_interval: Int,$active_layers_count: Int,$layer_discount_factor: Float,$markup_ask: Float,$markup_bid: Float,$order_min_quantity: Float,$order_max_quantity: Float,$order_ttl_ms: Int,$hedge_quantity_trigger_buy: Float,$hedge_quantity_trigger_sell: Float,$hedge_quantity_increment: Float,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch,$instrument_strategy_id: String!) {
-                    update_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,meta:$meta,is_active:$is_active,instrument_strategy_id:$instrument_strategy_id)
+                mutation($hedging_adapter_id: String,$instrument_id: String,$remote_instrument_id: String,$loop_interval: Int,$active_layers_count: Int,$layer_discount_factor: Float,$markup_ask: Float,$markup_bid: Float,$order_min_quantity: Float,$order_max_quantity: Float,$order_ttl_ms: Int,$hedge_quantity_trigger_buy: Float,$hedge_quantity_trigger_sell: Float,$hedge_quantity_increment: Float,$hedge_balance: Float,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch,$instrument_strategy_id: String!) {
+                    update_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedge_balance:$hedge_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,meta:$meta,is_active:$is_active,instrument_strategy_id:$instrument_strategy_id)
                         
                 }
                 `,args || {},headers,'update_instrument_strategy')
@@ -4138,6 +4242,38 @@ async delete_permission_preset({args,  headers}:{args: DeletePermissionPresetArg
                         
                 }
                 `,args || {},headers,'delete_permission_preset')
+                }
+
+async create_instruments_strategies_schedule({args, fields,  headers}:{args: CreateInstrumentsStrategiesScheduleArgs, fields:((keyof InstrumentsStrategiesSchedule) | Partial<Record<keyof InstrumentsStrategiesSchedule,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentsStrategiesSchedule>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($instrument_strategy_id: String!,$markup_ask: Float!,$markup_bid: Float!,$is_active: ToggleSwitch!,$time_from_day_of_week: DayOfWeek!,$time_from_hours: Int!,$time_from_minutes: Int!,$time_to_day_of_week: DayOfWeek!,$time_to_hours: Int!,$time_to_minutes: Int!) {
+                    create_instruments_strategies_schedule(instrument_strategy_id:$instrument_strategy_id,markup_ask:$markup_ask,markup_bid:$markup_bid,is_active:$is_active,time_from_day_of_week:$time_from_day_of_week,time_from_hours:$time_from_hours,time_from_minutes:$time_from_minutes,time_to_day_of_week:$time_to_day_of_week,time_to_hours:$time_to_hours,time_to_minutes:$time_to_minutes)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_instruments_strategies_schedule')
+                }
+
+async update_instruments_strategies_schedule({args,  headers}:{args: UpdateInstrumentsStrategiesScheduleArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($instrument_strategy_id: String,$markup_ask: Float,$markup_bid: Float,$is_active: ToggleSwitch,$time_from_day_of_week: DayOfWeek,$time_from_hours: Int,$time_from_minutes: Int,$time_to_day_of_week: DayOfWeek,$time_to_hours: Int,$time_to_minutes: Int,$instruments_strategies_schedule_id: String!) {
+                    update_instruments_strategies_schedule(instrument_strategy_id:$instrument_strategy_id,markup_ask:$markup_ask,markup_bid:$markup_bid,is_active:$is_active,time_from_day_of_week:$time_from_day_of_week,time_from_hours:$time_from_hours,time_from_minutes:$time_from_minutes,time_to_day_of_week:$time_to_day_of_week,time_to_hours:$time_to_hours,time_to_minutes:$time_to_minutes,instruments_strategies_schedule_id:$instruments_strategies_schedule_id)
+                        
+                }
+                `,args || {},headers,'update_instruments_strategies_schedule')
+                }
+
+async delete_instruments_strategies_schedule({args,  headers}:{args: DeleteInstrumentsStrategiesScheduleArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($instruments_strategies_schedule_id: String!) {
+                    delete_instruments_strategies_schedule(instruments_strategies_schedule_id:$instruments_strategies_schedule_id)
+                        
+                }
+                `,args || {},headers,'delete_instruments_strategies_schedule')
                 }
 
 async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklistItemArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem>{ 
@@ -4614,6 +4750,16 @@ async notification_settings({ fields,  headers}:{ fields:((keyof NotificationOpt
                 `,{},headers,'notification_settings')
                 }
 
+async delayed_mutations({  headers}:{  headers?:HeadersInit}={}):Promise<string[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    delayed_mutations
+                        
+                }
+                `,{},headers,'delayed_mutations')
+                }
+
 async geo_restrictions({ fields,  headers}:{ fields:((keyof GeoRestrictions) | Partial<Record<keyof GeoRestrictions,any[]>>)[], headers?:HeadersInit}):Promise<GeoRestrictions>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -4882,6 +5028,18 @@ async permission_presets({ fields,  headers}:{ fields:((keyof PermissionPreset) 
                         }
                 }
                 `,{},headers,'permission_presets')
+                }
+
+async find_instruments_strategies_schedule({args, fields,  headers}:{args?: FindInstrumentsStrategiesScheduleArgs, fields:((keyof InstrumentsStrategiesSchedule) | Partial<Record<keyof InstrumentsStrategiesSchedule,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentsStrategiesSchedule[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($instruments_strategies_schedule_id: String,$serial_id: Float,$instrument_strategy_id: String,$is_active: ToggleSwitch,$time_from_day_of_week: DayOfWeek,$time_from_hours: Int,$time_from_minutes: Int,$time_to_day_of_week: DayOfWeek,$time_to_hours: Int,$time_to_minutes: Int,$is_working: ToggleSwitch) {
+                    find_instruments_strategies_schedule(instruments_strategies_schedule_id:$instruments_strategies_schedule_id,serial_id:$serial_id,instrument_strategy_id:$instrument_strategy_id,is_active:$is_active,time_from_day_of_week:$time_from_day_of_week,time_from_hours:$time_from_hours,time_from_minutes:$time_from_minutes,time_to_day_of_week:$time_to_day_of_week,time_to_hours:$time_to_hours,time_to_minutes:$time_to_minutes,is_working:$is_working)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'find_instruments_strategies_schedule')
                 }
 
 async find_config_changes({args, fields,  headers}:{args?: FindConfigChangesArgs, fields:((keyof ConfigChange) | Partial<Record<keyof ConfigChange,any[]>>)[], headers?:HeadersInit}):Promise<ConfigChange[]>{ 
