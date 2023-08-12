@@ -28,6 +28,11 @@ currencies = 'currencies',
 create_currency = 'create_currency',
 update_currency = 'update_currency',
 delete_currency = 'delete_currency',
+currencies_prices = 'currencies_prices',
+create_currency_price = 'create_currency_price',
+update_currency_price = 'update_currency_price',
+delete_currency_price = 'delete_currency_price',
+set_currency_price = 'set_currency_price',
 fees_groups = 'fees_groups',
 create_fee_group = 'create_fee_group',
 update_fee_group = 'update_fee_group',
@@ -51,7 +56,6 @@ delete_instrument = 'delete_instrument',
 instruments_strategies_schedule = 'instruments_strategies_schedule',
 create_instruments_strategies_schedule = 'create_instruments_strategies_schedule',
 update_instruments_strategies_schedule = 'update_instruments_strategies_schedule',
-find_instruments_strategies_schedule = 'find_instruments_strategies_schedule',
 delete_instruments_strategies_schedule = 'delete_instruments_strategies_schedule',
 limits_groups = 'limits_groups',
 create_limit_group = 'create_limit_group',
@@ -122,7 +126,10 @@ update_kyc_user_data = 'update_kyc_user_data',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 update_ip_blacklist_item = 'update_ip_blacklist_item',
 remove_ip_blacklist_item = 'remove_ip_blacklist_item',
-find_blacklist_items = 'find_blacklist_items'
+blacklist_items = 'blacklist_items',
+ip_whitelist = 'ip_whitelist',
+update_ip_whitelist_item = 'update_ip_whitelist_item',
+delete_ip_whitelist_item = 'delete_ip_whitelist_item'
 }
 
 export enum NotificationTrigger {
@@ -275,6 +282,12 @@ base = 'base',
 quote = 'quote'
 }
 
+export enum IPStatus {
+pending = 'pending',
+approved = 'approved',
+rejected = 'rejected'
+}
+
 export enum PaymentType {
 withdrawal = 'withdrawal',
 deposit = 'deposit'
@@ -397,13 +410,15 @@ mfa_secret_code = 'mfa_secret_code',
 verify_mfa_secret_token = 'verify_mfa_secret_token',
 kyc_user_data = 'kyc_user_data',
 permission_presets = 'permission_presets',
-find_instruments_strategies_schedule = 'find_instruments_strategies_schedule',
+instruments_strategies_schedule = 'instruments_strategies_schedule',
+find_currencies_prices = 'find_currencies_prices',
+ip_whitelist = 'ip_whitelist',
 find_config_changes = 'find_config_changes',
 config_changes_events = 'config_changes_events',
 get_user_ip_geo_history = 'get_user_ip_geo_history',
 get_user_ip_geo_history_dashboard = 'get_user_ip_geo_history_dashboard',
 portfolio_history = 'portfolio_history',
-find_blacklist_items = 'find_blacklist_items'
+blacklist_items = 'blacklist_items'
 }
 
 export enum SortDirection {
@@ -506,6 +521,7 @@ update_system_setting = 'update_system_setting',
 update_system_settings = 'update_system_settings',
 update_maintenance_mode = 'update_maintenance_mode',
 update_notifications_settings = 'update_notifications_settings',
+update_default_notifications = 'update_default_notifications',
 update_delayed_mutations = 'update_delayed_mutations',
 update_geo_restrictions = 'update_geo_restrictions',
 create_super_admins = 'create_super_admins',
@@ -543,6 +559,12 @@ delete_permission_preset = 'delete_permission_preset',
 create_instruments_strategies_schedule = 'create_instruments_strategies_schedule',
 update_instruments_strategies_schedule = 'update_instruments_strategies_schedule',
 delete_instruments_strategies_schedule = 'delete_instruments_strategies_schedule',
+create_currency_price = 'create_currency_price',
+update_currency_price = 'update_currency_price',
+delete_currency_price = 'delete_currency_price',
+set_currency_price = 'set_currency_price',
+update_ip_whitelist_item = 'update_ip_whitelist_item',
+delete_ip_whitelist_item = 'delete_ip_whitelist_item',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 create_ip_blacklist_items = 'create_ip_blacklist_items',
 update_ip_blacklist_item = 'update_ip_blacklist_item',
@@ -822,6 +844,15 @@ is_active: ToggleSwitch;
 payment_routes: PaymentRoute[];
 }
 
+export interface CurrencyPrice{
+base_currency_id: string;
+quote_currency_id: string;
+ask: number;
+bid: number;
+source: string;
+updated_at: string;
+}
+
 export interface FeeGroup{
 fee_group_id: string;
 name?: string;
@@ -912,7 +943,7 @@ price_bars: InstrumentPriceHistory[];
 recent_price_bar?: InstrumentPriceHistory;
 base_currency: Currency;
 quote_currency: Currency;
-trading_fees: TradingFee;
+trading_fees?: TradingFee;
 price?: InstrumentPrice;
 }
 
@@ -1014,6 +1045,7 @@ user_id: string;
 event_name: NotificationTrigger;
 event_data: string;
 created_at: string;
+instrument?: Instrument;
 }
 
 export interface UserIpGeoHistory{
@@ -1197,6 +1229,16 @@ export interface SsoSettingsResult{
 admin: SsoSettingsItem;
 trader: SsoSettingsItem;
 trader_mobile: SsoSettingsItem;
+}
+
+export interface IpWhitelistItem{
+serial_id: number;
+ip_address: string;
+ip_whitelist_id: string;
+email: string;
+updated_at?: string;
+created_at: string;
+status: IPStatus;
 }
 
 export interface Country{
@@ -1652,7 +1694,7 @@ name?: string;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'find_instruments_strategies_schedule'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'find_blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'find_currencies_prices'|'ip_whitelist'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -1668,7 +1710,7 @@ DateTime?: DateTime;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'create_user_mfa_secret'|'update_user_mfa_status'|'delete_user'|'verify_user_mfa_token'|'add_push_token'|'clear_push_tokens'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preference'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'enable_mfa'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'create_user_mfa_secret'|'update_user_mfa_status'|'delete_user'|'verify_user_mfa_token'|'add_push_token'|'clear_push_tokens'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preference'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'enable_mfa'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -1977,6 +2019,7 @@ fiat_beneficiary_country?: string;
 fiat_beneficiary_region?: string;
 fiat_beneficiary_city?: string;
 fiat_beneficiary_postal_code?: string;
+fiat_bank_swift?: string;
 manual_transaction_date?: string;
 bank_id_session?: string;
 }
@@ -2461,6 +2504,10 @@ email: NotificationTrigger[];
 sms: NotificationTrigger[];
 }
 
+export interface UpdateDefaultNotificationsArgs{
+enable_email_notifications_by_default: ToggleSwitch;
+}
+
 export interface UpdateDelayedMutationsArgs{
 mutations: string[];
 }
@@ -2678,6 +2725,45 @@ instruments_strategies_schedule_id: string;
 
 export interface DeleteInstrumentsStrategiesScheduleArgs{
 instruments_strategies_schedule_id: string;
+}
+
+export interface CreateCurrencyPriceArgs{
+base_currency_id: string;
+quote_currency_id: string;
+ask: number;
+bid: number;
+source: string;
+}
+
+export interface UpdateCurrencyPriceArgs{
+base_currency_id: string;
+quote_currency_id: string;
+ask: number;
+bid: number;
+source: string;
+}
+
+export interface DeleteCurrencyPriceArgs{
+base_currency_id: string;
+quote_currency_id: string;
+source: string;
+}
+
+export interface SetCurrencyPriceArgs{
+base_currency_id: string;
+quote_currency_id: string;
+ask: number;
+bid: number;
+source: string;
+}
+
+export interface UpdateIpWhitelistItemArgs{
+ip_whitelist_id: string;
+status: IPStatus;
+}
+
+export interface DeleteIpWhitelistItemArgs{
+ip_whitelist_id: string;
 }
 
 export interface CreateIpBlacklistItemArgs{
@@ -3055,13 +3141,14 @@ access_token?: string;
 
 export interface KycUserDataArgs{
 user_id: string;
+search?: string;
 kyc_properties: string[];
 }
 
 export interface PermissionPresetsArgs{
 }
 
-export interface FindInstrumentsStrategiesScheduleArgs{
+export interface InstrumentsStrategiesScheduleArgs{
 instruments_strategies_schedule_id?: string;
 serial_id?: number;
 instrument_strategy_id?: string;
@@ -3073,6 +3160,19 @@ time_to_day_of_week?: DayOfWeek;
 time_to_hours?: number;
 time_to_minutes?: number;
 is_working?: ToggleSwitch;
+}
+
+export interface FindCurrenciesPricesArgs{
+base_currency_id?: string;
+quote_currency_id?: string;
+source?: string;
+search?: string;
+}
+
+export interface IpWhitelistArgs{
+ip_address?: string;
+ip_whitelist_id?: string;
+search?: string;
 }
 
 export interface FindConfigChangesArgs{
@@ -3111,7 +3211,7 @@ timestamp: string;
 interval: PortfolioHistoryInterval;
 }
 
-export interface FindBlacklistItemsArgs{
+export interface BlacklistItemsArgs{
 ip_address?: string;
 reason?: string;
 search?: string;
@@ -3355,8 +3455,8 @@ async create_withdrawal_crypto({args, fields,  headers}:{args: CreateWithdrawalC
 async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFiatArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$manual_transaction_date: String,$bank_id_session: String) {
-                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session)
+                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String,$bank_id_session: String) {
+                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3880,6 +3980,16 @@ async update_notifications_settings({args, fields,  headers}:{args: UpdateNotifi
                 `,args || {},headers,'update_notifications_settings')
                 }
 
+async update_default_notifications({args,  headers}:{args: UpdateDefaultNotificationsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($enable_email_notifications_by_default: ToggleSwitch!) {
+                    update_default_notifications(enable_email_notifications_by_default:$enable_email_notifications_by_default)
+                        
+                }
+                `,args || {},headers,'update_default_notifications')
+                }
+
 async update_delayed_mutations({args,  headers}:{args: UpdateDelayedMutationsArgs,  headers?:HeadersInit}):Promise<string[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -4274,6 +4384,70 @@ async delete_instruments_strategies_schedule({args,  headers}:{args: DeleteInstr
                         
                 }
                 `,args || {},headers,'delete_instruments_strategies_schedule')
+                }
+
+async create_currency_price({args, fields,  headers}:{args: CreateCurrencyPriceArgs, fields:((keyof CurrencyPrice) | Partial<Record<keyof CurrencyPrice,any[]>>)[], headers?:HeadersInit}):Promise<CurrencyPrice>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($base_currency_id: String!,$quote_currency_id: String!,$ask: Float!,$bid: Float!,$source: String!) {
+                    create_currency_price(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,ask:$ask,bid:$bid,source:$source)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_currency_price')
+                }
+
+async update_currency_price({args,  headers}:{args: UpdateCurrencyPriceArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($base_currency_id: String!,$quote_currency_id: String!,$ask: Float!,$bid: Float!,$source: String!) {
+                    update_currency_price(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,ask:$ask,bid:$bid,source:$source)
+                        
+                }
+                `,args || {},headers,'update_currency_price')
+                }
+
+async delete_currency_price({args,  headers}:{args: DeleteCurrencyPriceArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($base_currency_id: String!,$quote_currency_id: String!,$source: String!) {
+                    delete_currency_price(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,source:$source)
+                        
+                }
+                `,args || {},headers,'delete_currency_price')
+                }
+
+async set_currency_price({args, fields,  headers}:{args: SetCurrencyPriceArgs, fields:((keyof CurrencyPrice) | Partial<Record<keyof CurrencyPrice,any[]>>)[], headers?:HeadersInit}):Promise<CurrencyPrice>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($base_currency_id: String!,$quote_currency_id: String!,$ask: Float!,$bid: Float!,$source: String!) {
+                    set_currency_price(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,ask:$ask,bid:$bid,source:$source)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'set_currency_price')
+                }
+
+async update_ip_whitelist_item({args,  headers}:{args: UpdateIpWhitelistItemArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($ip_whitelist_id: String!,$status: IPStatus!) {
+                    update_ip_whitelist_item(ip_whitelist_id:$ip_whitelist_id,status:$status)
+                        
+                }
+                `,args || {},headers,'update_ip_whitelist_item')
+                }
+
+async delete_ip_whitelist_item({args,  headers}:{args: DeleteIpWhitelistItemArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($ip_whitelist_id: String!) {
+                    delete_ip_whitelist_item(ip_whitelist_id:$ip_whitelist_id)
+                        
+                }
+                `,args || {},headers,'delete_ip_whitelist_item')
                 }
 
 async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklistItemArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem>{ 
@@ -5009,8 +5183,8 @@ async verify_mfa_secret_token({args, fields,  headers}:{args: VerifyMfaSecretTok
 async kyc_user_data({args, fields,  headers}:{args: KycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String!,$kyc_properties: String!) {
-                    kyc_user_data(user_id:$user_id,kyc_properties:$kyc_properties)
+                query($user_id: String!,$search: String,$kyc_properties: String!) {
+                    kyc_user_data(user_id:$user_id,search:$search,kyc_properties:$kyc_properties)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5030,16 +5204,40 @@ async permission_presets({ fields,  headers}:{ fields:((keyof PermissionPreset) 
                 `,{},headers,'permission_presets')
                 }
 
-async find_instruments_strategies_schedule({args, fields,  headers}:{args?: FindInstrumentsStrategiesScheduleArgs, fields:((keyof InstrumentsStrategiesSchedule) | Partial<Record<keyof InstrumentsStrategiesSchedule,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentsStrategiesSchedule[]>{ 
+async instruments_strategies_schedule({args, fields,  headers}:{args?: InstrumentsStrategiesScheduleArgs, fields:((keyof InstrumentsStrategiesSchedule) | Partial<Record<keyof InstrumentsStrategiesSchedule,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentsStrategiesSchedule[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($instruments_strategies_schedule_id: String,$serial_id: Float,$instrument_strategy_id: String,$is_active: ToggleSwitch,$time_from_day_of_week: DayOfWeek,$time_from_hours: Int,$time_from_minutes: Int,$time_to_day_of_week: DayOfWeek,$time_to_hours: Int,$time_to_minutes: Int,$is_working: ToggleSwitch) {
-                    find_instruments_strategies_schedule(instruments_strategies_schedule_id:$instruments_strategies_schedule_id,serial_id:$serial_id,instrument_strategy_id:$instrument_strategy_id,is_active:$is_active,time_from_day_of_week:$time_from_day_of_week,time_from_hours:$time_from_hours,time_from_minutes:$time_from_minutes,time_to_day_of_week:$time_to_day_of_week,time_to_hours:$time_to_hours,time_to_minutes:$time_to_minutes,is_working:$is_working)
+                    instruments_strategies_schedule(instruments_strategies_schedule_id:$instruments_strategies_schedule_id,serial_id:$serial_id,instrument_strategy_id:$instrument_strategy_id,is_active:$is_active,time_from_day_of_week:$time_from_day_of_week,time_from_hours:$time_from_hours,time_from_minutes:$time_from_minutes,time_to_day_of_week:$time_to_day_of_week,time_to_hours:$time_to_hours,time_to_minutes:$time_to_minutes,is_working:$is_working)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,args || {},headers,'find_instruments_strategies_schedule')
+                `,args || {},headers,'instruments_strategies_schedule')
+                }
+
+async find_currencies_prices({args, fields,  headers}:{args?: FindCurrenciesPricesArgs, fields:((keyof CurrencyPrice) | Partial<Record<keyof CurrencyPrice,any[]>>)[], headers?:HeadersInit}):Promise<CurrencyPrice[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($base_currency_id: String,$quote_currency_id: String,$source: String,$search: String) {
+                    find_currencies_prices(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,source:$source,search:$search)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'find_currencies_prices')
+                }
+
+async ip_whitelist({args, fields,  headers}:{args?: IpWhitelistArgs, fields:((keyof IpWhitelistItem) | Partial<Record<keyof IpWhitelistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpWhitelistItem[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($ip_address: String,$ip_whitelist_id: String,$search: String) {
+                    ip_whitelist(ip_address:$ip_address,ip_whitelist_id:$ip_whitelist_id,search:$search)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'ip_whitelist')
                 }
 
 async find_config_changes({args, fields,  headers}:{args?: FindConfigChangesArgs, fields:((keyof ConfigChange) | Partial<Record<keyof ConfigChange,any[]>>)[], headers?:HeadersInit}):Promise<ConfigChange[]>{ 
@@ -5098,16 +5296,16 @@ async portfolio_history({args,  headers}:{args: PortfolioHistoryArgs,  headers?:
                 `,args || {},headers,'portfolio_history')
                 }
 
-async find_blacklist_items({args, fields,  headers}:{args?: FindBlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
+async blacklist_items({args, fields,  headers}:{args?: BlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($ip_address: String,$reason: String,$search: String) {
-                    find_blacklist_items(ip_address:$ip_address,reason:$reason,search:$search)
+                    blacklist_items(ip_address:$ip_address,reason:$reason,search:$search)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,args || {},headers,'find_blacklist_items')
+                `,args || {},headers,'blacklist_items')
                 }
 
 
