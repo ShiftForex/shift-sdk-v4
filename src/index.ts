@@ -129,7 +129,8 @@ remove_ip_blacklist_item = 'remove_ip_blacklist_item',
 blacklist_items = 'blacklist_items',
 ip_whitelist = 'ip_whitelist',
 update_ip_whitelist_item = 'update_ip_whitelist_item',
-delete_ip_whitelist_item = 'delete_ip_whitelist_item'
+delete_ip_whitelist_item = 'delete_ip_whitelist_item',
+bulk_update_settings = 'bulk_update_settings'
 }
 
 export enum NotificationTrigger {
@@ -386,6 +387,7 @@ instruments_strategies = 'instruments_strategies',
 hedging_orders = 'hedging_orders',
 system_settings = 'system_settings',
 notification_settings = 'notification_settings',
+default_notifications = 'default_notifications',
 delayed_mutations = 'delayed_mutations',
 geo_restrictions = 'geo_restrictions',
 accounts_portfolio_report = 'accounts_portfolio_report',
@@ -670,6 +672,7 @@ mfa_for_withdraw?: ToggleSwitch;
 updated_at: string;
 crypto_pay: ToggleSwitch;
 version?: number;
+kyc_data: KycUserData[];
 fee_group: FeeGroup;
 limit_group: LimitGroup;
 favorite_instruments: string[];
@@ -689,6 +692,7 @@ utility_bill_url?: string;
 proof_of_residence_url?: string;
 proof_of_id_front_url?: string;
 proof_of_id_back_url?: string;
+register_of_shareholders_url?: string;
 mfa_status?: ToggleSwitch;
 push_tokens: PushToken[];
 parent_user?: User;
@@ -705,10 +709,6 @@ address_city?: string;
 address_zip?: string;
 address_line_1?: string;
 address_line_2?: string;
-kyc_status?: UserKycStatus;
-kyc_level?: string;
-kyc_type?: KycType;
-kyc_message?: string;
 date_of_birth?: string;
 tax_id?: string;
 account_opening_purpose?: string;
@@ -1033,6 +1033,7 @@ time_from_minutes: number;
 time_to_day_of_week: DayOfWeek;
 time_to_hours: number;
 time_to_minutes: number;
+instrument_strategy?: InstrumentStrategy;
 }
 
 export interface SignInResult{
@@ -1321,6 +1322,7 @@ approved_at_iso?: string;
 estimated_crypto_network_fee?: string;
 aml_screening_result?: AmlScreeningResult;
 manual_transaction_date?: string;
+manual_transaction_date_iso?: string;
 account_transactions: AccountTransaction[];
 }
 
@@ -1694,7 +1696,7 @@ name?: string;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'find_currencies_prices'|'ip_whitelist'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'find_currencies_prices'|'ip_whitelist'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -2982,6 +2984,7 @@ beneficiary_user_id?: string;
 export interface PaymentsFeesArgs{
 currency_id?: string;
 fee_group_id?: string;
+calculation_type?: FeeCalculationType;
 }
 
 export interface TradingFeesArgs{
@@ -3035,6 +3038,9 @@ search?: string;
 }
 
 export interface NotificationSettingsArgs{
+}
+
+export interface DefaultNotificationsArgs{
 }
 
 export interface DelayedMutationsArgs{
@@ -4785,8 +4791,8 @@ async fees_groups({args, fields,  headers}:{args?: FeesGroupsArgs, fields:((keyo
 async payments_fees({args, fields,  headers}:{args?: PaymentsFeesArgs, fields:((keyof PaymentFee) | Partial<Record<keyof PaymentFee,any[]>>)[], headers?:HeadersInit}):Promise<PaymentFee[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($currency_id: String,$fee_group_id: String) {
-                    payments_fees(currency_id:$currency_id,fee_group_id:$fee_group_id)
+                query($currency_id: String,$fee_group_id: String,$calculation_type: FeeCalculationType) {
+                    payments_fees(currency_id:$currency_id,fee_group_id:$fee_group_id,calculation_type:$calculation_type)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4922,6 +4928,18 @@ async notification_settings({ fields,  headers}:{ fields:((keyof NotificationOpt
                         }
                 }
                 `,{},headers,'notification_settings')
+                }
+
+async default_notifications({ fields,  headers}:{ fields:((keyof Setting) | Partial<Record<keyof Setting,any[]>>)[], headers?:HeadersInit}):Promise<Setting[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    default_notifications
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,{},headers,'default_notifications')
                 }
 
 async delayed_mutations({  headers}:{  headers?:HeadersInit}={}):Promise<string[]>{ 
