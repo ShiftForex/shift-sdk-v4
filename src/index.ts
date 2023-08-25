@@ -130,7 +130,8 @@ blacklist_items = 'blacklist_items',
 ip_whitelist = 'ip_whitelist',
 update_ip_whitelist_item = 'update_ip_whitelist_item',
 delete_ip_whitelist_item = 'delete_ip_whitelist_item',
-bulk_update_settings = 'bulk_update_settings'
+bulk_export_settings = 'bulk_export_settings',
+bulk_import_settings = 'bulk_import_settings'
 }
 
 export enum NotificationTrigger {
@@ -692,7 +693,6 @@ utility_bill_url?: string;
 proof_of_residence_url?: string;
 proof_of_id_front_url?: string;
 proof_of_id_back_url?: string;
-register_of_shareholders_url?: string;
 mfa_status?: ToggleSwitch;
 push_tokens: PushToken[];
 parent_user?: User;
