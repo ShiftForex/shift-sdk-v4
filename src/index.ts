@@ -369,6 +369,7 @@ conversions = 'conversions',
 conversion_quotes = 'conversion_quotes',
 conversion_quotes_risks = 'conversion_quotes_risks',
 users = 'users',
+users_by_kyc_property = 'users_by_kyc_property',
 total_users = 'total_users',
 user = 'user',
 account_transactions = 'account_transactions',
@@ -1144,6 +1145,7 @@ stop_price?: number;
 notes?: string;
 user?: User;
 trades: Trade[];
+fees: AccountTransaction[];
 created_at_iso: string;
 updated_at_iso: string;
 expires_at_iso?: string;
@@ -1696,7 +1698,7 @@ name?: string;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'find_currencies_prices'|'ip_whitelist'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'users_by_kyc_property'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preference'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'mfa_secret_code'|'verify_mfa_secret_token'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'find_currencies_prices'|'ip_whitelist'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -2901,6 +2903,7 @@ search?: string;
 export interface ConversionsArgs{
 user_id?: string;
 search?: string;
+reference?: string;
 conversion_quote_id?: string;
 source_currency_id?: string;
 target_currency_id?: string;
@@ -2910,6 +2913,7 @@ export interface ConversionQuotesArgs{
 user_id?: string;
 search?: string;
 conversion_quote_id?: string;
+reference?: string;
 source_currency_id?: string;
 target_currency_id?: string;
 }
@@ -2931,6 +2935,12 @@ search?: string;
 kyc_status?: UserKycStatus;
 kyc_level?: string;
 kyc_type?: KycType;
+}
+
+export interface UsersByKycPropertyArgs{
+user_id?: string;
+kyc_property: string;
+kyc_value: string;
 }
 
 export interface TotalUsersArgs{
@@ -4661,8 +4671,8 @@ async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddresses
 async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String) {
-                    conversions(user_id:$user_id,search:$search,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id)
+                query($user_id: String,$search: String,$reference: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String) {
+                    conversions(user_id:$user_id,search:$search,reference:$reference,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4673,8 +4683,8 @@ async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((key
 async conversion_quotes({args, fields,  headers}:{args?: ConversionQuotesArgs, fields:((keyof ConversionQuote) | Partial<Record<keyof ConversionQuote,any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuote[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String) {
-                    conversion_quotes(user_id:$user_id,search:$search,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id)
+                query($user_id: String,$search: String,$conversion_quote_id: String,$reference: String,$source_currency_id: String,$target_currency_id: String) {
+                    conversion_quotes(user_id:$user_id,search:$search,conversion_quote_id:$conversion_quote_id,reference:$reference,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4704,6 +4714,18 @@ async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | P
                         }
                 }
                 `,args || {},headers,'users')
+                }
+
+async users_by_kyc_property({args, fields,  headers}:{args: UsersByKycPropertyArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($user_id: String,$kyc_property: String!,$kyc_value: String!) {
+                    users_by_kyc_property(user_id:$user_id,kyc_property:$kyc_property,kyc_value:$kyc_value)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'users_by_kyc_property')
                 }
 
 async total_users({  headers}:{  headers?:HeadersInit}={}):Promise<number>{ 
