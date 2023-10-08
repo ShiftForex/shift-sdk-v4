@@ -496,8 +496,11 @@ create_conversion_quote = 'create_conversion_quote',
 update_user_fee_group = 'update_user_fee_group',
 update_user_limit_group = 'update_user_limit_group',
 delete_user = 'delete_user',
+delete_user_request = 'delete_user_request',
+confirm_delete_user_request = 'confirm_delete_user_request',
 add_push_token = 'add_push_token',
 clear_push_tokens = 'clear_push_tokens',
+change_user_password = 'change_user_password',
 update_user = 'update_user',
 create_user = 'create_user',
 create_account_transaction = 'create_account_transaction',
@@ -783,15 +786,6 @@ country_blacklist: BlacklistItem[];
 current_geo?: GeoInformation;
 }
 
-export interface CognitoPool{
-serial_id?: number;
-name: string;
-cognito_pool_id: string;
-role: Role;
-jwks: string;
-is_active: ToggleSwitch;
-}
-
 export interface KycUserData{
 user_id: string;
 kyc_property: string;
@@ -829,6 +823,15 @@ created_at: string;
 export interface PermissionPreset{
 name: string;
 subjects: string[];
+}
+
+export interface CognitoPool{
+serial_id?: number;
+name: string;
+cognito_pool_id: string;
+role: Role;
+jwks: string;
+is_active: ToggleSwitch;
 }
 
 export interface LimitGroup{
@@ -935,6 +938,7 @@ amount: number;
 post_balance: number;
 comment?: string;
 created_at: string;
+created_by?: string;
 created_at_iso: string;
 currency?: Currency;
 order?: Order;
@@ -1681,6 +1685,18 @@ accounts: AccountsPortfolioReportItem[];
 fireblocks_rolling_limits?: FireblocksRollingLimits;
 }
 
+export interface TotalHedgeBalanceItem{
+instrument_id: string;
+hedge_balance: number;
+}
+
+export interface OpenExposureReportResult{
+base_currency_id: string;
+quote_currency_id: string;
+total_hedge_balance: number;
+total_hedge_balance_items: TotalHedgeBalanceItem[];
+}
+
 export interface OrdersSummaryReportItem{
 instrument_id: string;
 side: OrderSide;
@@ -1706,12 +1722,6 @@ date_ts_iso: string;
 export interface DailyBalancesReportItem{
 timestamp: number;
 balanceInBaseCurrency: number;
-}
-
-export interface OpenExposureReportResult{
-base_currency_id: string;
-quote_currency_id: string;
-total_hedge_balance: number;
 }
 
 export interface KycPreference{
@@ -1784,7 +1794,7 @@ DateTime?: DateTime;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'delete_user_request'|'confirm_delete_user_request'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -2196,12 +2206,24 @@ reason?: string;
 export interface DeleteUserArgs{
 }
 
+export interface DeleteUserRequestArgs{
+}
+
+export interface ConfirmDeleteUserRequestArgs{
+token: string;
+}
+
 export interface AddPushTokenArgs{
 platform?: Platform;
 token?: string;
 }
 
 export interface ClearPushTokensArgs{
+}
+
+export interface ChangeUserPasswordArgs{
+previous_password: string;
+proposed_password: string;
 }
 
 export interface UpdateUserArgs{
@@ -3638,6 +3660,26 @@ async delete_user({  headers}:{  headers?:HeadersInit}={}):Promise<string>{
                 `,{},headers,'delete_user')
                 }
 
+async delete_user_request({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation {
+                    delete_user_request
+                        
+                }
+                `,{},headers,'delete_user_request')
+                }
+
+async confirm_delete_user_request({args,  headers}:{args: ConfirmDeleteUserRequestArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($token: String!) {
+                    confirm_delete_user_request(token:$token)
+                        
+                }
+                `,args || {},headers,'confirm_delete_user_request')
+                }
+
 async add_push_token({args,  headers}:{args?: AddPushTokenArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -3656,6 +3698,16 @@ async clear_push_tokens({  headers}:{  headers?:HeadersInit}={}):Promise<boolean
                         
                 }
                 `,{},headers,'clear_push_tokens')
+                }
+
+async change_user_password({args,  headers}:{args: ChangeUserPasswordArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($previous_password: String!,$proposed_password: String!) {
+                    change_user_password(previous_password:$previous_password,proposed_password:$proposed_password)
+                        
+                }
+                `,args || {},headers,'change_user_password')
                 }
 
 async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
