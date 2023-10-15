@@ -167,8 +167,7 @@ payment_completed = 'payment_completed',
 payment_unconfirmed = 'payment_unconfirmed',
 crypto_address_added = 'crypto_address_added',
 manual_balance_update = 'manual_balance_update',
-mfa_enabled = 'mfa_enabled',
-mfa_disabled = 'mfa_disabled'
+mfa_enabled = 'mfa_enabled'
 }
 
 export enum UserKycStatus {
@@ -982,6 +981,7 @@ base_currency: Currency;
 quote_currency: Currency;
 trading_fees?: TradingFee;
 price?: InstrumentPrice;
+volatility: number;
 }
 
 export interface DateRangeInput{
@@ -1373,6 +1373,13 @@ created_at: string;
 fees_included: ToggleSwitch;
 updated_at: string;
 version: number;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 user: User;
 created_at_iso: string;
 updated_at_iso: string;
@@ -1418,6 +1425,13 @@ fiat_beneficiary_name?: string;
 fiat_beneficiary_account_number?: string;
 fiat_beneficiary_address_line_1?: string;
 fiat_beneficiary_address_line_2?: string;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 }
 
 export interface DepositAddressCrypto{
@@ -1687,6 +1701,7 @@ fireblocks_rolling_limits?: FireblocksRollingLimits;
 
 export interface TotalHedgeBalanceItem{
 instrument_id: string;
+hedging_adapter_id: string;
 hedge_balance: number;
 }
 
@@ -1804,6 +1819,7 @@ address_tag_value?: string;
 network?: string;
 psp_service_id?: string;
 name?: string;
+network_name?: string;
 }
 
 export interface FavoriteFiatDestinationItem{
@@ -1861,6 +1877,13 @@ fiat_beneficiary_name?: string;
 fiat_beneficiary_account_number?: string;
 fiat_beneficiary_address_line_1?: string;
 fiat_beneficiary_address_line_2?: string;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 }
 
 export interface SettingItem{
@@ -2107,6 +2130,13 @@ fiat_beneficiary_postal_code?: string;
 fiat_bank_swift?: string;
 manual_transaction_date?: string;
 bank_id_session?: string;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 }
 
 export interface CreatePaymentManualArgs{
@@ -2161,6 +2191,13 @@ reference?: string;
 native_asset?: string;
 created_by?: string;
 fees_included: ToggleSwitch;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 create_account_operations: boolean;
 manual_transaction_date?: string;
 crypto_confirmations_received: number;
@@ -3585,8 +3622,8 @@ async create_withdrawal_crypto({args, fields,  headers}:{args: CreateWithdrawalC
 async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFiatArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String,$bank_id_session: String) {
-                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session)
+                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String!,$fiat_bank_bic: String,$fiat_beneficiary_name: String!,$fiat_beneficiary_account_number: String!,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String,$bank_id_session: String,$intermediary_bank_name: String,$intermediary_iban: String,$intermediary_country: String,$intermediary_street_address: String,$intermediary_city: String,$intermediary_region: String,$intermediary_bic: String) {
+                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session,intermediary_bank_name:$intermediary_bank_name,intermediary_iban:$intermediary_iban,intermediary_country:$intermediary_country,intermediary_street_address:$intermediary_street_address,intermediary_city:$intermediary_city,intermediary_region:$intermediary_region,intermediary_bic:$intermediary_bic)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3597,8 +3634,8 @@ async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFia
 async create_payment_manual({args, fields,  headers}:{args: CreatePaymentManualArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($remote_txid: String,$user_id: String!,$currency_id: String!,$amount: Float!,$type: PaymentType!,$psp_service_id: String,$psp_event_bridge_event_id: String,$crypto_transaction_id: String,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_address_reference: String,$crypto_network: String,$crypto_source_address: String,$crypto_network_fee_preference: String,$crypto_network_fee_amount: Float,$crypto_network_fee_currency: String,$fiat_transfer_type: String,$fiat_bank_name: String,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_address: String,$fiat_bank_postal_code: String,$fiat_bank_bic: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_beneficiary_name: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_beneficiary_postal_code: String,$status: PaymentStatus!,$approval_status: PaymentApprovalStatus!,$approval_reason: String,$approved_by: String,$body_amount: Float,$fee_amount: Float,$record_account_transaction_id: String,$revert_account_transaction_id: String,$ip_address: String,$message: String,$error_message: String,$reference: String,$native_asset: String,$created_by: String,$fees_included: ToggleSwitch!,$create_account_operations: Boolean!,$manual_transaction_date: String,$crypto_confirmations_received: Int!,$version: Float!,$approved_at: String!,$created_at: String!,$updated_at: String!) {
-                    create_payment_manual(remote_txid:$remote_txid,user_id:$user_id,currency_id:$currency_id,amount:$amount,type:$type,psp_service_id:$psp_service_id,psp_event_bridge_event_id:$psp_event_bridge_event_id,crypto_transaction_id:$crypto_transaction_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_address_reference:$crypto_address_reference,crypto_network:$crypto_network,crypto_source_address:$crypto_source_address,crypto_network_fee_preference:$crypto_network_fee_preference,crypto_network_fee_amount:$crypto_network_fee_amount,crypto_network_fee_currency:$crypto_network_fee_currency,fiat_transfer_type:$fiat_transfer_type,fiat_bank_name:$fiat_bank_name,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_address:$fiat_bank_address,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_bank_bic:$fiat_bank_bic,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,status:$status,approval_status:$approval_status,approval_reason:$approval_reason,approved_by:$approved_by,body_amount:$body_amount,fee_amount:$fee_amount,record_account_transaction_id:$record_account_transaction_id,revert_account_transaction_id:$revert_account_transaction_id,ip_address:$ip_address,message:$message,error_message:$error_message,reference:$reference,native_asset:$native_asset,created_by:$created_by,fees_included:$fees_included,create_account_operations:$create_account_operations,manual_transaction_date:$manual_transaction_date,crypto_confirmations_received:$crypto_confirmations_received,version:$version,approved_at:$approved_at,created_at:$created_at,updated_at:$updated_at)
+                mutation($remote_txid: String,$user_id: String!,$currency_id: String!,$amount: Float!,$type: PaymentType!,$psp_service_id: String,$psp_event_bridge_event_id: String,$crypto_transaction_id: String,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_address_reference: String,$crypto_network: String,$crypto_source_address: String,$crypto_network_fee_preference: String,$crypto_network_fee_amount: Float,$crypto_network_fee_currency: String,$fiat_transfer_type: String,$fiat_bank_name: String,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_address: String,$fiat_bank_postal_code: String,$fiat_bank_bic: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_beneficiary_name: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_beneficiary_postal_code: String,$status: PaymentStatus!,$approval_status: PaymentApprovalStatus!,$approval_reason: String,$approved_by: String,$body_amount: Float,$fee_amount: Float,$record_account_transaction_id: String,$revert_account_transaction_id: String,$ip_address: String,$message: String,$error_message: String,$reference: String,$native_asset: String,$created_by: String,$fees_included: ToggleSwitch!,$intermediary_bank_name: String,$intermediary_iban: String,$intermediary_country: String,$intermediary_street_address: String,$intermediary_city: String,$intermediary_region: String,$intermediary_bic: String,$create_account_operations: Boolean!,$manual_transaction_date: String,$crypto_confirmations_received: Int!,$version: Float!,$approved_at: String!,$created_at: String!,$updated_at: String!) {
+                    create_payment_manual(remote_txid:$remote_txid,user_id:$user_id,currency_id:$currency_id,amount:$amount,type:$type,psp_service_id:$psp_service_id,psp_event_bridge_event_id:$psp_event_bridge_event_id,crypto_transaction_id:$crypto_transaction_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_address_reference:$crypto_address_reference,crypto_network:$crypto_network,crypto_source_address:$crypto_source_address,crypto_network_fee_preference:$crypto_network_fee_preference,crypto_network_fee_amount:$crypto_network_fee_amount,crypto_network_fee_currency:$crypto_network_fee_currency,fiat_transfer_type:$fiat_transfer_type,fiat_bank_name:$fiat_bank_name,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_address:$fiat_bank_address,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_bank_bic:$fiat_bank_bic,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,status:$status,approval_status:$approval_status,approval_reason:$approval_reason,approved_by:$approved_by,body_amount:$body_amount,fee_amount:$fee_amount,record_account_transaction_id:$record_account_transaction_id,revert_account_transaction_id:$revert_account_transaction_id,ip_address:$ip_address,message:$message,error_message:$error_message,reference:$reference,native_asset:$native_asset,created_by:$created_by,fees_included:$fees_included,intermediary_bank_name:$intermediary_bank_name,intermediary_iban:$intermediary_iban,intermediary_country:$intermediary_country,intermediary_street_address:$intermediary_street_address,intermediary_city:$intermediary_city,intermediary_region:$intermediary_region,intermediary_bic:$intermediary_bic,create_account_operations:$create_account_operations,manual_transaction_date:$manual_transaction_date,crypto_confirmations_received:$crypto_confirmations_received,version:$version,approved_at:$approved_at,created_at:$created_at,updated_at:$updated_at)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
