@@ -2,9 +2,75 @@
     import { gql, GraphQLClient, RequestDocument, Variables } from 'graphql-request';
     import {RequestConfig} from 'graphql-request/build/esm/types'
 
+export enum UserUpdateNotificationClass {
+success = 'success',
+error = 'error',
+info = 'info'
+}
+
+export enum NotificationTrigger {
+signin = 'signin',
+user_created = 'user_created',
+user_updated = 'user_updated',
+account_created = 'account_created',
+crypto_address_created = 'crypto_address_created',
+kyc_approved = 'kyc_approved',
+kyc_rejected = 'kyc_rejected',
+kyc_incomplete = 'kyc_incomplete',
+trade_completed = 'trade_completed',
+order_new = 'order_new',
+order_completed = 'order_completed',
+order_rejected = 'order_rejected',
+order_cancelled = 'order_cancelled',
+conversion_new = 'conversion_new',
+conversion_completed = 'conversion_completed',
+conversion_rejected = 'conversion_rejected',
+payment_new = 'payment_new',
+payment_rejected = 'payment_rejected',
+payment_completed = 'payment_completed',
+payment_unconfirmed = 'payment_unconfirmed',
+crypto_address_added = 'crypto_address_added',
+manual_balance_update = 'manual_balance_update',
+mfa_enabled = 'mfa_enabled'
+}
+
 export enum ToggleSwitch {
 on = 'on',
 off = 'off'
+}
+
+export enum UserKycStatus {
+incomplete = 'incomplete',
+rejected = 'rejected',
+approved = 'approved',
+submitted = 'submitted',
+not_started = 'not_started'
+}
+
+export enum KycType {
+individual = 'individual',
+corporate = 'corporate'
+}
+
+export enum CurrencyType {
+crypto = 'crypto',
+fiat = 'fiat'
+}
+
+export enum Role {
+admin = 'admin',
+trader = 'trader'
+}
+
+export enum FeeCalculationType {
+sum = 'sum',
+max = 'max'
+}
+
+export enum ConfigChangeOperationType {
+insert = 'insert',
+update = 'update',
+delete = 'delete'
 }
 
 export enum Permission {
@@ -144,72 +210,6 @@ crypto_pay_core = 'crypto_pay_core',
 crypto_pay_submerchants = 'crypto_pay_submerchants'
 }
 
-export enum NotificationTrigger {
-signin = 'signin',
-user_created = 'user_created',
-user_updated = 'user_updated',
-account_created = 'account_created',
-crypto_address_created = 'crypto_address_created',
-kyc_approved = 'kyc_approved',
-kyc_rejected = 'kyc_rejected',
-kyc_incomplete = 'kyc_incomplete',
-trade_completed = 'trade_completed',
-order_new = 'order_new',
-order_completed = 'order_completed',
-order_rejected = 'order_rejected',
-order_cancelled = 'order_cancelled',
-conversion_new = 'conversion_new',
-conversion_completed = 'conversion_completed',
-conversion_rejected = 'conversion_rejected',
-payment_new = 'payment_new',
-payment_rejected = 'payment_rejected',
-payment_completed = 'payment_completed',
-payment_unconfirmed = 'payment_unconfirmed',
-crypto_address_added = 'crypto_address_added',
-manual_balance_update = 'manual_balance_update',
-mfa_enabled = 'mfa_enabled'
-}
-
-export enum UserKycStatus {
-incomplete = 'incomplete',
-rejected = 'rejected',
-approved = 'approved',
-submitted = 'submitted',
-not_started = 'not_started'
-}
-
-export enum KycType {
-individual = 'individual',
-corporate = 'corporate'
-}
-
-export enum Role {
-admin = 'admin',
-trader = 'trader'
-}
-
-export enum ConfigChangeOperationType {
-insert = 'insert',
-update = 'update',
-delete = 'delete'
-}
-
-export enum DelayedRequestStatus {
-pending = 'pending',
-approved = 'approved',
-rejected = 'rejected'
-}
-
-export enum CurrencyType {
-crypto = 'crypto',
-fiat = 'fiat'
-}
-
-export enum FeeCalculationType {
-sum = 'sum',
-max = 'max'
-}
-
 export enum AccountTransactionClass {
 trade = 'trade',
 fee = 'fee',
@@ -227,6 +227,7 @@ credit = 'credit'
 export enum InstrumentHistoryPeriodicity {
 minute = 'minute',
 minute5 = 'minute5',
+minute10 = 'minute10',
 minute15 = 'minute15',
 minute30 = 'minute30',
 hour = 'hour',
@@ -300,12 +301,6 @@ base = 'base',
 quote = 'quote'
 }
 
-export enum IPStatus {
-pending = 'pending',
-approved = 'approved',
-rejected = 'rejected'
-}
-
 export enum PaymentType {
 withdrawal = 'withdrawal',
 deposit = 'deposit'
@@ -346,21 +341,22 @@ bank_id = 'bank_id',
 sms = 'sms'
 }
 
-export enum UserUpdateNotificationClass {
-success = 'success',
-error = 'error',
-info = 'info'
-}
-
 export enum ConversionStatus {
 new = 'new',
 completed = 'completed',
 rejected = 'rejected'
 }
 
-export enum Platform {
-android = 'android',
-ios = 'ios'
+export enum DelayedRequestStatus {
+pending = 'pending',
+approved = 'approved',
+rejected = 'rejected'
+}
+
+export enum IPStatus {
+pending = 'pending',
+approved = 'approved',
+rejected = 'rejected'
 }
 
 export enum KycProvider {
@@ -368,6 +364,11 @@ PRIMETRUST = 'PRIMETRUST',
 SUM_AND_SUBSTANCE = 'SUM_AND_SUBSTANCE',
 BANK_ID = 'BANK_ID',
 MANUAL = 'MANUAL'
+}
+
+export enum Platform {
+android = 'android',
+ios = 'ios'
 }
 
 export enum QueryEnum {
@@ -432,7 +433,7 @@ delayed_requests = 'delayed_requests',
 kyc_user_data = 'kyc_user_data',
 permission_presets = 'permission_presets',
 instruments_strategies_schedule = 'instruments_strategies_schedule',
-find_currencies_prices = 'find_currencies_prices',
+currencies_prices = 'currencies_prices',
 ip_whitelist = 'ip_whitelist',
 hedging_accounts = 'hedging_accounts',
 find_config_changes = 'find_config_changes',
@@ -625,51 +626,64 @@ INPUT_FIELD_DEFINITION = 'INPUT_FIELD_DEFINITION'
 }
 
 
-export interface PaymentLimit{
-limit_group_id: string;
-currency_id: string;
-deposit_enabled: ToggleSwitch;
-deposit_min_amount: number;
-deposit_daily_limit: number;
-deposit_weekly_limit: number;
-deposit_monthly_limit: number;
-deposit_auto_approval_amount: number;
-withdrawal_enabled: ToggleSwitch;
-withdrawal_min_amount: number;
-withdrawal_daily_limit: number;
-withdrawal_weekly_limit: number;
-withdrawal_monthly_limit: number;
-withdrawal_auto_approval_amount: number;
-limit_group: LimitGroup;
+export interface UserUpdateNotification{
+title?: string;
+body: string;
+class: UserUpdateNotificationClass;
+reference_nr?: string;
 }
 
 export interface String{
 String?: string;
 }
 
+export interface Setting{
+name: string;
+value?: string;
+}
+
+export interface NotificationOptions{
+client: NotificationTrigger[];
+push: NotificationTrigger[];
+email: NotificationTrigger[];
+sms: NotificationTrigger[];
+}
+
+export interface RegionBlacklistItem{
+code: string;
+list: BlacklistItem[];
+}
+
+export interface BlacklistItem{
+code: string;
+name?: string;
+}
+
+export interface GeoInformation{
+area: number;
+city: string;
+country: string;
+eu: string;
+ll: number[];
+metro: number;
+range: number[];
+region: string;
+timezone: string;
+}
+
 export interface Float{
 Float?: number;
 }
 
-export interface ApiKey{
-serial_id: number;
-api_key_id: string;
-name?: string;
-secret_hash: string;
-expires_at: string;
-created_at: string;
-is_active: ToggleSwitch;
-trader_id?: string;
-created_at_iso: string;
-expires_at_iso?: string;
-permissions: Permission[];
-ip_address: string[];
+export interface GeoRestrictions{
+region_blacklist: RegionBlacklistItem[];
+country_blacklist: BlacklistItem[];
 }
 
-export interface CreateApiKeyResult{
-api_key_id: string;
-expires_at: string;
-api_key_secret: string;
+export interface GeoRestrictionWithCurrentGeo{
+region_blacklist: RegionBlacklistItem[];
+country_blacklist: BlacklistItem[];
+current_geo?: GeoInformation;
 }
 
 export interface User{
@@ -740,134 +754,11 @@ export interface Int{
 Int?: number;
 }
 
-export interface Setting{
-name: string;
-value?: string;
-}
-
-export interface NotificationOptions{
-client: NotificationTrigger[];
-push: NotificationTrigger[];
-email: NotificationTrigger[];
-sms: NotificationTrigger[];
-}
-
-export interface RegionBlacklistItem{
-code: string;
-list: BlacklistItem[];
-}
-
-export interface BlacklistItem{
-code: string;
-name?: string;
-}
-
-export interface GeoInformation{
-area: number;
-city: string;
-country: string;
-eu: string;
-ll: number[];
-metro: number;
-range: number[];
-region: string;
-timezone: string;
-}
-
-export interface GeoRestrictions{
-region_blacklist: RegionBlacklistItem[];
-country_blacklist: BlacklistItem[];
-}
-
-export interface GeoRestrictionWithCurrentGeo{
-region_blacklist: RegionBlacklistItem[];
-country_blacklist: BlacklistItem[];
-current_geo?: GeoInformation;
-}
-
 export interface KycUserData{
 user_id: string;
 kyc_property: string;
 kyc_value: string;
 updated_at: string;
-}
-
-export interface PermissionShare{
-user_id: string;
-role_id: Role;
-subject: string;
-shared_by: string;
-shared_at: string;
-shared_at_iso: string;
-}
-
-export interface ConfigChange{
-config_change_id: string;
-config_change_group_id: string;
-serial_id: number;
-admin_user_id: string;
-admin_email?: string;
-admin_ip: string;
-args: string;
-table_name: string;
-operation_name: string;
-operation_type: ConfigChangeOperationType;
-items_before?: string;
-items_after?: string;
-diff?: string;
-details: string;
-created_at: string;
-}
-
-export interface PermissionPreset{
-name: string;
-subjects: string[];
-}
-
-export interface CognitoPool{
-serial_id?: number;
-name: string;
-cognito_pool_id: string;
-role: Role;
-jwks: string;
-is_active: ToggleSwitch;
-}
-
-export interface LimitGroup{
-limit_group_id: string;
-name?: string;
-description?: string;
-kyc_status?: UserKycStatus;
-payment_limits: PaymentLimit[];
-trading_limits: TradingLimit[];
-disabled_instruments: string[];
-disabled_currencies: string[];
-}
-
-export interface TradingLimit{
-limit_group_id: string;
-instrument_id: string;
-daily_limit: number;
-weekly_limit: number;
-monthly_limit: number;
-notion_currency?: string;
-limit_group: LimitGroup;
-}
-
-export interface DelayedRequest{
-serial_id: number;
-delayed_request_id?: string;
-request_name?: string;
-mutation?: string;
-variables?: string;
-approval_status?: DelayedRequestStatus;
-admin_id?: string;
-admin_email?: string;
-admin_ip?: string;
-approved_by?: string;
-approved_by_ip?: string;
-created_at: string;
-approved_at: string;
 }
 
 export interface Currency{
@@ -886,6 +777,15 @@ ask: number;
 bid: number;
 source: string;
 updated_at: string;
+}
+
+export interface CognitoPool{
+serial_id?: number;
+name: string;
+cognito_pool_id: string;
+role: Role;
+jwks: string;
+is_active: ToggleSwitch;
 }
 
 export interface FeeGroup{
@@ -917,6 +817,98 @@ taker_progressive: number;
 maker_flat: number;
 taker_flat: number;
 fee_group: FeeGroup;
+}
+
+export interface LimitGroup{
+limit_group_id: string;
+name?: string;
+description?: string;
+kyc_status?: UserKycStatus;
+payment_limits: PaymentLimit[];
+trading_limits: TradingLimit[];
+disabled_instruments: string[];
+disabled_currencies: string[];
+}
+
+export interface PaymentLimit{
+limit_group_id: string;
+currency_id: string;
+deposit_enabled: ToggleSwitch;
+deposit_min_amount: number;
+deposit_daily_limit: number;
+deposit_weekly_limit: number;
+deposit_monthly_limit: number;
+deposit_auto_approval_amount: number;
+withdrawal_enabled: ToggleSwitch;
+withdrawal_min_amount: number;
+withdrawal_daily_limit: number;
+withdrawal_weekly_limit: number;
+withdrawal_monthly_limit: number;
+withdrawal_auto_approval_amount: number;
+limit_group: LimitGroup;
+}
+
+export interface TradingLimit{
+limit_group_id: string;
+instrument_id: string;
+daily_limit: number;
+weekly_limit: number;
+monthly_limit: number;
+notion_currency?: string;
+limit_group: LimitGroup;
+}
+
+export interface ConfigChange{
+config_change_id: string;
+config_change_group_id: string;
+serial_id: number;
+admin_user_id: string;
+admin_email?: string;
+admin_ip: string;
+args: string;
+table_name: string;
+operation_name: string;
+operation_type: ConfigChangeOperationType;
+items_before?: string;
+items_after?: string;
+diff?: string;
+details: string;
+created_at: string;
+}
+
+export interface PermissionShare{
+user_id: string;
+role_id: Role;
+subject: string;
+shared_by: string;
+shared_at: string;
+shared_at_iso: string;
+}
+
+export interface PermissionPreset{
+name: string;
+subjects: string[];
+}
+
+export interface ApiKey{
+serial_id: number;
+api_key_id: string;
+name?: string;
+secret_hash: string;
+expires_at: string;
+created_at: string;
+is_active: ToggleSwitch;
+trader_id?: string;
+created_at_iso: string;
+expires_at_iso?: string;
+permissions: Permission[];
+ip_address: string[];
+}
+
+export interface CreateApiKeyResult{
+api_key_id: string;
+expires_at: string;
+api_key_secret: string;
 }
 
 export interface AccountTransaction{
@@ -1268,38 +1260,6 @@ instrument: Instrument;
 order?: Order;
 }
 
-export interface HealthcheckResult{
-maintenance_message?: string;
-maintenance_mode?: boolean;
-}
-
-export interface Boolean{
-Boolean?: boolean;
-}
-
-export interface SsoSettingsItem{
-domain: string;
-client_id: string;
-type: string;
-pool_id?: string;
-}
-
-export interface SsoSettingsResult{
-admin: SsoSettingsItem;
-trader: SsoSettingsItem;
-trader_mobile: SsoSettingsItem;
-}
-
-export interface IpWhitelistItem{
-serial_id: number;
-ip_address: string;
-ip_whitelist_id: string;
-email: string;
-updated_at?: string;
-created_at: string;
-status: IPStatus;
-}
-
 export interface Country{
 name: string;
 code: string;
@@ -1385,7 +1345,7 @@ created_at_iso: string;
 updated_at_iso: string;
 approved_at_iso?: string;
 estimated_crypto_network_fee?: string;
-aml_screening_result?: AmlScreeningResult;
+aml_screening_results?: string;
 manual_transaction_date?: string;
 manual_transaction_date_iso?: string;
 account_transactions: AccountTransaction[];
@@ -1450,13 +1410,6 @@ updated_at: string;
 created_at_iso: string;
 updated_at_iso: string;
 user: User;
-}
-
-export interface UserUpdateNotification{
-title?: string;
-body: string;
-class: UserUpdateNotificationClass;
-reference_nr?: string;
 }
 
 export interface DepositBankDetailsFiatResult{
@@ -1566,91 +1519,6 @@ created_at_iso: string;
 updated_at_iso: string;
 }
 
-export interface AmlScreeningCluster{
-name: string;
-category: string;
-}
-
-export interface AmlScreeningChainAnalysisPayload{
-asset: string;
-rating: string;
-address: string;
-cluster?: AmlScreeningCluster;
-customAddress?: string;
-chainalysisIdentification?: string;
-}
-
-export interface AmlScreeningChainAnalysis{
-provider: string;
-payload?: AmlScreeningChainAnalysisPayload;
-screeningStatus: string;
-timestamp: number;
-}
-
-export interface AmlScreeningResult{
-chainanalysis?: AmlScreeningChainAnalysis;
-}
-
-export interface UserUpdateResult{
-account_transaction?: AccountTransaction;
-account?: Account;
-order?: Order;
-payment?: Payment;
-conversion?: Conversion;
-notification?: UserUpdateNotification;
-healthcheck?: HealthcheckResult;
-}
-
-export interface FavoriteAddressCrypto{
-currency_id: string;
-address?: string;
-address_tag_type?: CryptoAddressTagType;
-address_tag_value?: string;
-network?: string;
-psp_service_id?: string;
-name?: string;
-network_name?: string;
-created_at?: string;
-}
-
-export interface FavoriteFiatDestination{
-name: string;
-bank_name?: string;
-bank_country?: string;
-bank_region?: string;
-bank_city?: string;
-bank_address?: string;
-bank_postal_code?: string;
-bank_bic?: string;
-bank_swift?: string;
-routing_number?: string;
-reference?: string;
-notes?: string;
-beneficiary_name?: string;
-beneficiary_account_number?: string;
-beneficiary_country?: string;
-beneficiary_region?: string;
-beneficiary_city?: string;
-beneficiary_address_line_1?: string;
-beneficiary_address_line_2?: string;
-beneficiary_postal_code?: string;
-}
-
-export interface PushToken{
-platform: Platform;
-token: string;
-}
-
-export interface CreateAccountTransactionResult{
-parent_transaction_id: string;
-account_transactions: AccountTransaction[];
-}
-
-export interface CryptoNetwork{
-crypto_network: string;
-crypto_network_name: string;
-}
-
 export interface AccountsPortfolioReportItem{
 currency_id: string;
 balance: number;
@@ -1734,22 +1602,6 @@ date_ts: string;
 date_ts_iso: string;
 }
 
-export interface DailyBalancesReportItem{
-timestamp: number;
-balanceInBaseCurrency: number;
-}
-
-export interface KycPreference{
-provider?: KycProvider;
-provider_url?: string;
-enabled: boolean;
-}
-
-export interface KycPreferences{
-individual: KycPreference;
-corporate: KycPreference;
-}
-
 export interface Webhook{
 webhook_id: string;
 url: string;
@@ -1763,10 +1615,30 @@ created_at_iso: string;
 updated_at_iso: string;
 }
 
-export interface CreateUserMfaSecretResult{
-secret: string;
-uri: string;
-qr: string;
+export interface DelayedRequest{
+serial_id: number;
+delayed_request_id?: string;
+request_name?: string;
+mutation?: string;
+variables?: string;
+approval_status?: DelayedRequestStatus;
+admin_id?: string;
+admin_email?: string;
+admin_ip?: string;
+approved_by?: string;
+approved_by_ip?: string;
+created_at: string;
+approved_at: string;
+}
+
+export interface IpWhitelistItem{
+serial_id: number;
+ip_address: string;
+ip_whitelist_id: string;
+email: string;
+updated_at?: string;
+created_at: string;
+status: IPStatus;
 }
 
 export interface IpBlacklistItem{
@@ -1774,6 +1646,135 @@ ip_address: string;
 updated_at: string;
 reason?: string;
 updated_at_iso: string;
+}
+
+export interface CreateUserMfaSecretResult{
+secret: string;
+uri: string;
+qr: string;
+}
+
+export interface HealthcheckResult{
+maintenance_message?: string;
+maintenance_mode?: boolean;
+}
+
+export interface Boolean{
+Boolean?: boolean;
+}
+
+export interface SsoSettingsItem{
+domain: string;
+client_id: string;
+type: string;
+pool_id?: string;
+}
+
+export interface SsoSettingsResult{
+admin: SsoSettingsItem;
+trader: SsoSettingsItem;
+trader_mobile: SsoSettingsItem;
+}
+
+export interface DailyBalancesReportItem{
+timestamp: number;
+balanceInBaseCurrency: number;
+}
+
+export interface CryptoNetwork{
+crypto_network: string;
+crypto_network_name: string;
+}
+
+export interface KycPreference{
+provider?: KycProvider;
+provider_url?: string;
+enabled: boolean;
+}
+
+export interface KycPreferences{
+individual: KycPreference;
+corporate: KycPreference;
+}
+
+export interface CreateAccountTransactionResult{
+parent_transaction_id: string;
+account_transactions: AccountTransaction[];
+}
+
+export interface UserUpdateResult{
+account_transaction?: AccountTransaction;
+account?: Account;
+order?: Order;
+payment?: Payment;
+conversion?: Conversion;
+notification?: UserUpdateNotification;
+healthcheck?: HealthcheckResult;
+}
+
+export interface FavoriteAddressCrypto{
+currency_id: string;
+address?: string;
+address_tag_type?: CryptoAddressTagType;
+address_tag_value?: string;
+network?: string;
+psp_service_id?: string;
+name?: string;
+network_name?: string;
+created_at?: string;
+}
+
+export interface FavoriteFiatDestination{
+name: string;
+bank_name?: string;
+bank_country?: string;
+bank_region?: string;
+bank_city?: string;
+bank_address?: string;
+bank_postal_code?: string;
+bank_bic?: string;
+bank_swift?: string;
+routing_number?: string;
+reference?: string;
+notes?: string;
+beneficiary_name?: string;
+beneficiary_account_number?: string;
+beneficiary_country?: string;
+beneficiary_region?: string;
+beneficiary_city?: string;
+beneficiary_address_line_1?: string;
+beneficiary_address_line_2?: string;
+beneficiary_postal_code?: string;
+}
+
+export interface PushToken{
+platform: Platform;
+token: string;
+}
+
+export interface AmlScreeningCluster{
+name: string;
+category: string;
+}
+
+export interface AmlScreeningChainAnalysisPayload{
+asset?: string;
+rating?: string;
+address?: string;
+cluster?: AmlScreeningCluster;
+customAddress?: string;
+chainalysisIdentification?: string;
+}
+
+export interface AmlScreeningChainAnalysis{
+provider: string;
+payload?: AmlScreeningChainAnalysisPayload;
+screeningStatus: string;
+timestamp: number;
+}
+
+export interface AmlScreeningResult{
+chainanalysis?: AmlScreeningChainAnalysis;
 }
 
 export interface RegionBlacklistItemInput{
@@ -1793,7 +1794,7 @@ enabled: boolean;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'find_currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -3322,7 +3323,7 @@ time_to_minutes?: number;
 is_working?: ToggleSwitch;
 }
 
-export interface FindCurrenciesPricesArgs{
+export interface CurrenciesPricesArgs{
 base_currency_id?: string;
 quote_currency_id?: string;
 source?: string;
@@ -5425,16 +5426,16 @@ async instruments_strategies_schedule({args, fields,  headers}:{args?: Instrumen
                 `,args || {},headers,'instruments_strategies_schedule')
                 }
 
-async find_currencies_prices({args, fields,  headers}:{args?: FindCurrenciesPricesArgs, fields:((keyof CurrencyPrice) | Partial<Record<keyof CurrencyPrice,any[]>>)[], headers?:HeadersInit}):Promise<CurrencyPrice[]>{ 
+async currencies_prices({args, fields,  headers}:{args?: CurrenciesPricesArgs, fields:((keyof CurrencyPrice) | Partial<Record<keyof CurrencyPrice,any[]>>)[], headers?:HeadersInit}):Promise<CurrencyPrice[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 query($base_currency_id: String,$quote_currency_id: String,$source: String,$search: String) {
-                    find_currencies_prices(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,source:$source,search:$search)
+                    currencies_prices(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,source:$source,search:$search)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,args || {},headers,'find_currencies_prices')
+                `,args || {},headers,'currencies_prices')
                 }
 
 async ip_whitelist({args, fields,  headers}:{args?: IpWhitelistArgs, fields:((keyof IpWhitelistItem) | Partial<Record<keyof IpWhitelistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpWhitelistItem[]>{ 
