@@ -1784,6 +1784,7 @@ chainanalysis?: AmlScreeningChainAnalysis;
 
 export interface RegionBlacklistItemInput{
 code: string;
+list: BlacklistItemInput[];
 }
 
 export interface BlacklistItemInput{
@@ -2189,8 +2190,8 @@ fiat_beneficiary_city?: string;
 fiat_beneficiary_address_line_1?: string;
 fiat_beneficiary_address_line_2?: string;
 fiat_beneficiary_postal_code?: string;
-status: PaymentStatus;
-approval_status: PaymentApprovalStatus;
+status?: PaymentStatus;
+approval_status?: PaymentApprovalStatus;
 approval_reason?: string;
 approved_by?: string;
 body_amount?: number;
@@ -2203,7 +2204,7 @@ error_message?: string;
 reference?: string;
 native_asset?: string;
 created_by?: string;
-fees_included: ToggleSwitch;
+fees_included?: ToggleSwitch;
 intermediary_bank_name?: string;
 intermediary_iban?: string;
 intermediary_country?: string;
@@ -2213,11 +2214,11 @@ intermediary_region?: string;
 intermediary_bic?: string;
 create_account_operations: boolean;
 manual_transaction_date?: string;
-crypto_confirmations_received: number;
-version: number;
-approved_at: string;
-created_at: string;
-updated_at: string;
+crypto_confirmations_received?: number;
+version?: number;
+approved_at?: string;
+created_at?: string;
+updated_at?: string;
 }
 
 export interface CreateConversionOrderArgs{
@@ -2282,7 +2283,10 @@ updated_at?: string;
 crypto_pay?: ToggleSwitch;
 user_id?: string;
 favorite_instruments: string[];
+favorite_addresses_crypto: FavoriteAddressCryptoItem[];
+favorite_fiat_destinations: FavoriteFiatDestinationItem[];
 notifications_settings: NotificationTrigger[];
+notifications_options?: NotificationOptionsArgs;
 mfa_token?: string;
 mfa_status?: ToggleSwitch;
 permissions: Permission[];
@@ -2305,6 +2309,7 @@ permissions: Permission[];
 }
 
 export interface CreateAccountTransactionArgs{
+items: RecordTransactionItem[];
 }
 
 export interface CreateLimitGroupArgs{
@@ -2355,7 +2360,7 @@ type: PaymentType;
 amount: number;
 crypto_network?: string;
 psp_service_id?: string;
-crypto_network_fee_preference: CryptoNetworkFeePreference;
+crypto_network_fee_preference?: CryptoNetworkFeePreference;
 crypto_address?: string;
 crypto_address_tag_type?: CryptoAddressTagType;
 crypto_address_tag_value?: string;
@@ -2434,6 +2439,7 @@ crypto_address_tag_type?: string;
 is_active: ToggleSwitch;
 fiat_transfer_type?: string;
 fiat_transfer_type_name?: string;
+fiat_deposit_details?: FiatDepositDetailsInput;
 fiat_iframe_deposit_url?: string;
 fiat_iframe_withdrawal_url?: string;
 is_development?: ToggleSwitch;
@@ -2462,6 +2468,7 @@ network_fee_currency_id?: string;
 is_development?: ToggleSwitch;
 verification_type?: VerificationType;
 payment_route_id: string;
+fiat_deposit_details?: FiatDepositDetailsInput;
 }
 
 export interface CreatePaymentLimitArgs{
@@ -2469,15 +2476,15 @@ limit_group_id: string;
 currency_id: string;
 deposit_enabled: ToggleSwitch;
 deposit_min_amount: number;
-deposit_daily_limit: number;
-deposit_weekly_limit: number;
-deposit_monthly_limit: number;
+deposit_daily_limit?: number;
+deposit_weekly_limit?: number;
+deposit_monthly_limit?: number;
 deposit_auto_approval_amount: number;
 withdrawal_enabled: ToggleSwitch;
 withdrawal_min_amount: number;
-withdrawal_daily_limit: number;
-withdrawal_weekly_limit: number;
-withdrawal_monthly_limit: number;
+withdrawal_daily_limit?: number;
+withdrawal_weekly_limit?: number;
+withdrawal_monthly_limit?: number;
 withdrawal_auto_approval_amount: number;
 }
 
@@ -2558,7 +2565,7 @@ markup_ask: number;
 markup_bid: number;
 order_min_quantity: number;
 order_max_quantity: number;
-order_ttl_ms: number;
+order_ttl_ms?: number;
 hedge_quantity_trigger_buy: number;
 hedge_quantity_trigger_sell: number;
 hedge_quantity_increment: number;
@@ -2579,7 +2586,7 @@ is_active: ToggleSwitch;
 version?: number;
 min_spread?: number;
 on_min_spread_violation?: OnMinSpreadViolation;
-maximum_publish_quantity: number;
+maximum_publish_quantity?: number;
 }
 
 export interface UpdateInstrumentStrategyArgs{
@@ -2627,6 +2634,7 @@ value?: string;
 }
 
 export interface UpdateSystemSettingsArgs{
+items: SettingItem[];
 }
 
 export interface UpdateMaintenanceModeArgs{
@@ -2650,6 +2658,8 @@ mutations: string[];
 }
 
 export interface UpdateGeoRestrictionsArgs{
+region_blacklist?: RegionBlacklistItemInput[];
+country_blacklist?: BlacklistItemInput[];
 }
 
 export interface CreateSuperAdminsArgs{
@@ -2687,6 +2697,7 @@ emails: string[];
 
 export interface CreateKycManualRequestArgs{
 user_id: string;
+kyc_data: KycUserDataEntryInput[];
 }
 
 export interface CreateKycSumAndSubstanceTokenArgs{
@@ -2705,6 +2716,8 @@ user_id?: string;
 }
 
 export interface UpdateKycPreferencesArgs{
+individual?: KycPreferenceInput;
+corporate?: KycPreferenceInput;
 }
 
 export interface CreateWebhookArgs{
@@ -2736,7 +2749,7 @@ hedging_enabled: ToggleSwitch;
 account_balances_sync_enabled: ToggleSwitch;
 maker_fee?: number;
 taker_fee?: number;
-fees_sync_enabled: ToggleSwitch;
+fees_sync_enabled?: ToggleSwitch;
 create_broker_user_id?: boolean;
 disable_strategy_hedging_on_error?: ToggleSwitch;
 disable_instrument_on_hedging_error?: ToggleSwitch;
@@ -2764,9 +2777,9 @@ hedging_adapter_id: string;
 export interface CreateTradingLimitArgs{
 limit_group_id: string;
 instrument_id: string;
-daily_limit: number;
-weekly_limit: number;
-monthly_limit: number;
+daily_limit?: number;
+weekly_limit?: number;
+monthly_limit?: number;
 notion_currency?: string;
 }
 
@@ -2820,10 +2833,12 @@ to: string;
 
 export interface CreateKycUserDataArgs{
 user_id: string;
+kyc_data: KycUserDataEntryInput[];
 }
 
 export interface UpdateKycUserDataArgs{
 user_id: string;
+kyc_data: KycUserDataEntryInput[];
 }
 
 export interface DeleteKycUserDataArgs{
@@ -2958,6 +2973,9 @@ message?: string;
 user_id?: string;
 search?: string;
 status: OrderStatus[];
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface ClosedOrdersArgs{
@@ -2970,6 +2988,9 @@ message?: string;
 user_id?: string;
 search?: string;
 status: OrderStatus[];
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface EstimateOrderArgs{
@@ -2990,6 +3011,9 @@ side?: string;
 counter_order_id?: string;
 user_id?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface SsoSettingsArgs{
@@ -3003,12 +3027,13 @@ instrument_id?: string;
 is_active?: ToggleSwitch;
 search?: string;
 page?: number;
-limit: number;
+limit?: number;
 }
 
 export interface InstrumentPriceBarsArgs{
 periodicity?: InstrumentHistoryPeriodicity;
 limit?: number;
+date_range?: DateRangeInput;
 instrument_id: string;
 }
 
@@ -3017,7 +3042,7 @@ search?: string;
 type?: CurrencyType;
 is_active?: ToggleSwitch;
 page?: number;
-limit: number;
+limit?: number;
 }
 
 export interface DepositBankDetailsFiatArgs{
@@ -3040,6 +3065,9 @@ user_id_not_in: string[];
 search?: string;
 status: PaymentStatus[];
 approval_status: PaymentApprovalStatus[];
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface DepositAddressCryptoArgs{
@@ -3062,6 +3090,9 @@ psp_service_id?: string;
 reference?: string;
 user_id?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface ConversionsArgs{
@@ -3071,6 +3102,9 @@ reference?: string;
 conversion_quote_id?: string;
 source_currency_id?: string;
 target_currency_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface ConversionQuotesArgs{
@@ -3080,6 +3114,9 @@ conversion_quote_id?: string;
 reference?: string;
 source_currency_id?: string;
 target_currency_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface ConversionQuotesRisksArgs{
@@ -3088,6 +3125,8 @@ target_currency_id?: string;
 instrument_id?: string;
 include_all_quotes?: boolean;
 user_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface UsersArgs{
@@ -3100,6 +3139,9 @@ kyc_property?: string;
 kyc_value?: string;
 kyc_status?: UserKycStatus;
 kyc_level?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface TotalUsersArgs{
@@ -3125,6 +3167,9 @@ comment?: string;
 user_id?: string;
 search?: string;
 instrument_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface AccountsBalancesArgs{
@@ -3135,12 +3180,17 @@ export interface AccountsArgs{
 account_id?: string;
 currency_id?: string;
 user_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface LimitsGroupsArgs{
 limit_group_id?: string;
 name?: string;
 description?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface FeesGroupsArgs{
@@ -3148,17 +3198,23 @@ fee_group_id?: string;
 name?: string;
 description?: string;
 beneficiary_user_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface PaymentsFeesArgs{
 currency_id?: string;
 fee_group_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 calculation_type?: FeeCalculationType;
 }
 
 export interface TradingFeesArgs{
 instrument_id?: string;
 fee_group_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface PaymentsRoutesArgs{
@@ -3167,6 +3223,8 @@ currency_id?: string;
 psp_service_id?: string;
 crypto_network?: string;
 verification_type?: VerificationType;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface CryptoNetworksArgs{
@@ -3178,21 +3236,29 @@ export interface PspServicesArgs{
 export interface PaymentsLimitsArgs{
 limit_group_id?: string;
 currency_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface ApiKeysArgs{
 user_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 search?: string;
 }
 
 export interface CognitoPoolsArgs{
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface InstrumentsStrategiesArgs{
 hedging_adapter_id?: string;
 instrument_id?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface HedgingOrdersArgs{
@@ -3200,11 +3266,16 @@ hedging_adapter_id?: string;
 side?: OrderSide;
 status?: HedgingOrderStatus;
 error_message?: string;
+pager?: PagerInput;
 search?: string;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface SystemSettingsArgs{
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface NotificationSettingsArgs{
@@ -3225,10 +3296,12 @@ currencies: string[];
 
 export interface OrdersSummaryReportArgs{
 user_id?: string;
+dateRange?: DateRangeInput;
 }
 
 export interface ConversionsSummaryReportArgs{
 user_id?: string;
+dateRange?: DateRangeInput;
 }
 
 export interface LiquidityReportArgs{
@@ -3236,11 +3309,13 @@ export interface LiquidityReportArgs{
 
 export interface DailyBalancesReportArgs{
 user_id?: string;
+dateRange?: DateRangeInput;
 }
 
 export interface OpenExposureReportArgs{
 base_currency_id?: string;
 quote_currency_id?: string;
+pager?: PagerInput;
 }
 
 export interface PermissionsArgs{
@@ -3253,6 +3328,8 @@ export interface PermissionsShareArgs{
 search?: string;
 user_id?: string;
 subject?: string;
+pager?: PagerInput;
+sort?: SortInput;
 group_by?: FindPermissionsShareGroupBy;
 }
 
@@ -3263,6 +3340,9 @@ export interface WebhooksArgs{
 is_active?: ToggleSwitch;
 user_id?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface HedgingAdapterIdsArgs{
@@ -3277,16 +3357,23 @@ event_data?: string;
 created_at?: string;
 search?: string;
 event_name: NotificationTrigger[];
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface TradingLimitsArgs{
 limit_group_id?: string;
 instrument_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface TradingVolumesArgs{
 user_id?: string;
 instrument_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
 volume?: TradingVolumeType;
 }
 
@@ -3306,6 +3393,8 @@ approval_status?: DelayedRequestStatus;
 admin_id?: string;
 admin_email?: string;
 approved_by?: string;
+pager?: PagerInput;
+sort?: SortInput;
 search?: string;
 }
 
@@ -3337,18 +3426,26 @@ base_currency_id?: string;
 quote_currency_id?: string;
 source?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface IpWhitelistArgs{
 ip_address?: string;
 ip_whitelist_id?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface HedgingAccountsArgs{
 hedging_adapter_id?: string;
 currency_id?: string;
 is_active?: ToggleSwitch;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
 export interface FindConfigChangesArgs{
@@ -3361,6 +3458,9 @@ table_name?: string;
 operation_name?: string;
 operation_type?: ConfigChangeOperationType;
 details?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 search?: string;
 }
 
@@ -3392,6 +3492,9 @@ export interface BlacklistItemsArgs{
 ip_address?: string;
 reason?: string;
 search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 
@@ -3448,7 +3551,7 @@ search?: string;
 async cancel_multiple_orders({args,  headers}:{args: CancelMultipleOrdersArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($order_ids: String!,$message: String) {
+                mutation($order_ids: [string!]!,$message: String) {
                     cancel_multiple_orders(order_ids:$order_ids,message:$message)
                         
                 }
@@ -3644,7 +3747,7 @@ async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFia
 async create_payment_manual({args, fields,  headers}:{args: CreatePaymentManualArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($remote_txid: String,$user_id: String!,$currency_id: String!,$amount: Float!,$type: PaymentType!,$psp_service_id: String,$psp_event_bridge_event_id: String,$crypto_transaction_id: String,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_address_reference: String,$crypto_network: String,$crypto_source_address: String,$crypto_network_fee_preference: String,$crypto_network_fee_amount: Float,$crypto_network_fee_currency: String,$fiat_transfer_type: String,$fiat_bank_name: String,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_address: String,$fiat_bank_postal_code: String,$fiat_bank_bic: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_beneficiary_name: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_beneficiary_postal_code: String,$status: PaymentStatus!,$approval_status: PaymentApprovalStatus!,$approval_reason: String,$approved_by: String,$body_amount: Float,$fee_amount: Float,$record_account_transaction_id: String,$revert_account_transaction_id: String,$ip_address: String,$message: String,$error_message: String,$reference: String,$native_asset: String,$created_by: String,$fees_included: ToggleSwitch!,$intermediary_bank_name: String,$intermediary_iban: String,$intermediary_country: String,$intermediary_street_address: String,$intermediary_city: String,$intermediary_region: String,$intermediary_bic: String,$create_account_operations: Boolean!,$manual_transaction_date: String,$crypto_confirmations_received: Int!,$version: Float!,$approved_at: String!,$created_at: String!,$updated_at: String!) {
+                mutation($remote_txid: String,$user_id: String!,$currency_id: String!,$amount: Float!,$type: PaymentType!,$psp_service_id: String,$psp_event_bridge_event_id: String,$crypto_transaction_id: String,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String,$crypto_address_reference: String,$crypto_network: String,$crypto_source_address: String,$crypto_network_fee_preference: String,$crypto_network_fee_amount: Float,$crypto_network_fee_currency: String,$fiat_transfer_type: String,$fiat_bank_name: String,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_address: String,$fiat_bank_postal_code: String,$fiat_bank_bic: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_beneficiary_name: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_beneficiary_postal_code: String,$status: PaymentStatus,$approval_status: PaymentApprovalStatus,$approval_reason: String,$approved_by: String,$body_amount: Float,$fee_amount: Float,$record_account_transaction_id: String,$revert_account_transaction_id: String,$ip_address: String,$message: String,$error_message: String,$reference: String,$native_asset: String,$created_by: String,$fees_included: ToggleSwitch,$intermediary_bank_name: String,$intermediary_iban: String,$intermediary_country: String,$intermediary_street_address: String,$intermediary_city: String,$intermediary_region: String,$intermediary_bic: String,$create_account_operations: Boolean!,$manual_transaction_date: String,$crypto_confirmations_received: Int,$version: Float,$approved_at: String,$created_at: String,$updated_at: String) {
                     create_payment_manual(remote_txid:$remote_txid,user_id:$user_id,currency_id:$currency_id,amount:$amount,type:$type,psp_service_id:$psp_service_id,psp_event_bridge_event_id:$psp_event_bridge_event_id,crypto_transaction_id:$crypto_transaction_id,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value,crypto_address_reference:$crypto_address_reference,crypto_network:$crypto_network,crypto_source_address:$crypto_source_address,crypto_network_fee_preference:$crypto_network_fee_preference,crypto_network_fee_amount:$crypto_network_fee_amount,crypto_network_fee_currency:$crypto_network_fee_currency,fiat_transfer_type:$fiat_transfer_type,fiat_bank_name:$fiat_bank_name,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_address:$fiat_bank_address,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_bank_bic:$fiat_bank_bic,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,status:$status,approval_status:$approval_status,approval_reason:$approval_reason,approved_by:$approved_by,body_amount:$body_amount,fee_amount:$fee_amount,record_account_transaction_id:$record_account_transaction_id,revert_account_transaction_id:$revert_account_transaction_id,ip_address:$ip_address,message:$message,error_message:$error_message,reference:$reference,native_asset:$native_asset,created_by:$created_by,fees_included:$fees_included,intermediary_bank_name:$intermediary_bank_name,intermediary_iban:$intermediary_iban,intermediary_country:$intermediary_country,intermediary_street_address:$intermediary_street_address,intermediary_city:$intermediary_city,intermediary_region:$intermediary_region,intermediary_bic:$intermediary_bic,create_account_operations:$create_account_operations,manual_transaction_date:$manual_transaction_date,crypto_confirmations_received:$crypto_confirmations_received,version:$version,approved_at:$approved_at,created_at:$created_at,updated_at:$updated_at)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -3740,8 +3843,8 @@ async change_user_password({args,  headers}:{args: ChangeUserPasswordArgs,  head
 async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($parent_user_id: String,$username: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$is_active: ToggleSwitch,$mfa_for_withdraw: ToggleSwitch,$updated_at: String,$crypto_pay: ToggleSwitch,$user_id: String,$favorite_instruments: String!,$notifications_settings: NotificationTrigger!,$mfa_token: String,$mfa_status: ToggleSwitch,$permissions: Permission!) {
-                    update_user(parent_user_id:$parent_user_id,username:$username,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,is_active:$is_active,mfa_for_withdraw:$mfa_for_withdraw,updated_at:$updated_at,crypto_pay:$crypto_pay,user_id:$user_id,favorite_instruments:$favorite_instruments,notifications_settings:$notifications_settings,mfa_token:$mfa_token,mfa_status:$mfa_status,permissions:$permissions)
+                mutation($parent_user_id: String,$username: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$is_active: ToggleSwitch,$mfa_for_withdraw: ToggleSwitch,$updated_at: String,$crypto_pay: ToggleSwitch,$user_id: String,$favorite_instruments: [string!]!,$favorite_addresses_crypto: [FavoriteAddressCryptoItem!]!,$favorite_fiat_destinations: [FavoriteFiatDestinationItem!]!,$notifications_settings: [NotificationTrigger!]!,$notifications_options: NotificationOptionsArgs,$mfa_token: String,$mfa_status: ToggleSwitch,$permissions: [Permission!]!) {
+                    update_user(parent_user_id:$parent_user_id,username:$username,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,is_active:$is_active,mfa_for_withdraw:$mfa_for_withdraw,updated_at:$updated_at,crypto_pay:$crypto_pay,user_id:$user_id,favorite_instruments:$favorite_instruments,favorite_addresses_crypto:$favorite_addresses_crypto,favorite_fiat_destinations:$favorite_fiat_destinations,notifications_settings:$notifications_settings,notifications_options:$notifications_options,mfa_token:$mfa_token,mfa_status:$mfa_status,permissions:$permissions)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3752,7 +3855,7 @@ async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof
 async create_user({args, fields,  headers}:{args: CreateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$parent_user_id: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$fee_group_id: String,$limit_group_id: String,$crypto_pay: ToggleSwitch,$username: String!,$cognito_registration: ToggleSwitch,$cognito_email: ToggleSwitch,$permissions: Permission!) {
+                mutation($user_id: String,$parent_user_id: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$fee_group_id: String,$limit_group_id: String,$crypto_pay: ToggleSwitch,$username: String!,$cognito_registration: ToggleSwitch,$cognito_email: ToggleSwitch,$permissions: [Permission!]!) {
                     create_user(user_id:$user_id,parent_user_id:$parent_user_id,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,crypto_pay:$crypto_pay,username:$username,cognito_registration:$cognito_registration,cognito_email:$cognito_email,permissions:$permissions)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -3761,22 +3864,22 @@ async create_user({args, fields,  headers}:{args: CreateUserArgs, fields:((keyof
                 `,args || {},headers,'create_user')
                 }
 
-async create_account_transaction({ fields,  headers}:{ fields:((keyof CreateAccountTransactionResult) | Partial<Record<keyof CreateAccountTransactionResult,any[]>>)[], headers?:HeadersInit}):Promise<CreateAccountTransactionResult>{ 
+async create_account_transaction({args, fields,  headers}:{args: CreateAccountTransactionArgs, fields:((keyof CreateAccountTransactionResult) | Partial<Record<keyof CreateAccountTransactionResult,any[]>>)[], headers?:HeadersInit}):Promise<CreateAccountTransactionResult>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation {
-                    create_account_transaction
+                mutation($items: [RecordTransactionItem!]!) {
+                    create_account_transaction(items:$items)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,{},headers,'create_account_transaction')
+                `,args || {},headers,'create_account_transaction')
                 }
 
 async create_limit_group({args, fields,  headers}:{args: CreateLimitGroupArgs, fields:((keyof LimitGroup) | Partial<Record<keyof LimitGroup,any[]>>)[], headers?:HeadersInit}):Promise<LimitGroup>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$limit_group_id: String,$disabled_currencies: String!,$disabled_instruments: String!) {
+                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$limit_group_id: String,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!) {
                     create_limit_group(name:$name,description:$description,kyc_status:$kyc_status,limit_group_id:$limit_group_id,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -3788,7 +3891,7 @@ async create_limit_group({args, fields,  headers}:{args: CreateLimitGroupArgs, f
 async update_limit_group({args,  headers}:{args: UpdateLimitGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$limit_group_id: String!,$disabled_currencies: String!,$disabled_instruments: String!) {
+                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$limit_group_id: String!,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!) {
                     update_limit_group(name:$name,description:$description,kyc_status:$kyc_status,limit_group_id:$limit_group_id,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments)
                         
                 }
@@ -3840,7 +3943,7 @@ async delete_fee_group({args,  headers}:{args: DeleteFeeGroupArgs,  headers?:Hea
 async estimate_payment_fee({args,  headers}:{args: EstimatePaymentFeeArgs,  headers?:HeadersInit}):Promise<number>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$currency_id: String!,$type: PaymentType!,$amount: Float!,$crypto_network: String,$psp_service_id: String,$crypto_network_fee_preference: CryptoNetworkFeePreference!,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String) {
+                mutation($user_id: String,$currency_id: String!,$type: PaymentType!,$amount: Float!,$crypto_network: String,$psp_service_id: String,$crypto_network_fee_preference: CryptoNetworkFeePreference,$crypto_address: String,$crypto_address_tag_type: CryptoAddressTagType,$crypto_address_tag_value: String) {
                     estimate_payment_fee(user_id:$user_id,currency_id:$currency_id,type:$type,amount:$amount,crypto_network:$crypto_network,psp_service_id:$psp_service_id,crypto_network_fee_preference:$crypto_network_fee_preference,crypto_address:$crypto_address,crypto_address_tag_type:$crypto_address_tag_type,crypto_address_tag_value:$crypto_address_tag_value)
                         
                 }
@@ -3936,8 +4039,8 @@ async create_payment_session({args,  headers}:{args: CreatePaymentSessionArgs,  
 async create_payment_route({args, fields,  headers}:{args: CreatePaymentRouteArgs, fields:((keyof PaymentRoute) | Partial<Record<keyof PaymentRoute,any[]>>)[], headers?:HeadersInit}):Promise<PaymentRoute>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String!,$psp_service_id: String!,$crypto_network: String,$crypto_network_name: String,$crypto_address_tag_type: String,$is_active: ToggleSwitch!,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_development: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$verification_type: VerificationType) {
-                    create_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_tag_type:$crypto_address_tag_type,is_active:$is_active,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_development:$is_development,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,verification_type:$verification_type)
+                mutation($currency_id: String!,$psp_service_id: String!,$crypto_network: String,$crypto_network_name: String,$crypto_address_tag_type: String,$is_active: ToggleSwitch!,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$fiat_deposit_details: FiatDepositDetailsInput,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_development: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$verification_type: VerificationType) {
+                    create_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_tag_type:$crypto_address_tag_type,is_active:$is_active,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,fiat_deposit_details:$fiat_deposit_details,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_development:$is_development,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,verification_type:$verification_type)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -3958,8 +4061,8 @@ async delete_payment_route({args,  headers}:{args: DeletePaymentRouteArgs,  head
 async update_payment_route({args,  headers}:{args: UpdatePaymentRouteArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String,$psp_service_id: String,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$crypto_network: String,$crypto_network_name: String,$crypto_address_tag_type: String,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_active: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$payment_route_id: String!) {
-                    update_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,payment_route_id:$payment_route_id)
+                mutation($currency_id: String,$psp_service_id: String,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$crypto_network: String,$crypto_network_name: String,$crypto_address_tag_type: String,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_active: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$payment_route_id: String!,$fiat_deposit_details: FiatDepositDetailsInput) {
+                    update_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,payment_route_id:$payment_route_id,fiat_deposit_details:$fiat_deposit_details)
                         
                 }
                 `,args || {},headers,'update_payment_route')
@@ -3968,7 +4071,7 @@ async update_payment_route({args,  headers}:{args: UpdatePaymentRouteArgs,  head
 async create_payment_limit({args, fields,  headers}:{args: CreatePaymentLimitArgs, fields:((keyof PaymentLimit) | Partial<Record<keyof PaymentLimit,any[]>>)[], headers?:HeadersInit}):Promise<PaymentLimit>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String!,$currency_id: String!,$deposit_enabled: ToggleSwitch!,$deposit_min_amount: Float!,$deposit_daily_limit: Float!,$deposit_weekly_limit: Float!,$deposit_monthly_limit: Float!,$deposit_auto_approval_amount: Float!,$withdrawal_enabled: ToggleSwitch!,$withdrawal_min_amount: Float!,$withdrawal_daily_limit: Float!,$withdrawal_weekly_limit: Float!,$withdrawal_monthly_limit: Float!,$withdrawal_auto_approval_amount: Float!) {
+                mutation($limit_group_id: String!,$currency_id: String!,$deposit_enabled: ToggleSwitch!,$deposit_min_amount: Float!,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$deposit_auto_approval_amount: Float!,$withdrawal_enabled: ToggleSwitch!,$withdrawal_min_amount: Float!,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$withdrawal_auto_approval_amount: Float!) {
                     create_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4000,7 +4103,7 @@ async delete_payment_limit({args,  headers}:{args: DeletePaymentLimitArgs,  head
 async create_api_key({args, fields,  headers}:{args: CreateApiKeyArgs, fields:((keyof CreateApiKeyResult) | Partial<Record<keyof CreateApiKeyResult,any[]>>)[], headers?:HeadersInit}):Promise<CreateApiKeyResult>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$expires_at: String!,$is_active: ToggleSwitch!,$user_id: String,$ip_address: String!,$permissions: Permission!) {
+                mutation($name: String,$expires_at: String!,$is_active: ToggleSwitch!,$user_id: String,$ip_address: [string!]!,$permissions: [Permission!]!) {
                     create_api_key(name:$name,expires_at:$expires_at,is_active:$is_active,user_id:$user_id,ip_address:$ip_address,permissions:$permissions)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4012,7 +4115,7 @@ async create_api_key({args, fields,  headers}:{args: CreateApiKeyArgs, fields:((
 async update_api_key({args,  headers}:{args: UpdateApiKeyArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$expires_at: String,$is_active: ToggleSwitch,$user_id: String,$api_key_id: String!,$ip_address: String!,$permissions: Permission!) {
+                mutation($name: String,$expires_at: String,$is_active: ToggleSwitch,$user_id: String,$api_key_id: String!,$ip_address: [string!]!,$permissions: [Permission!]!) {
                     update_api_key(name:$name,expires_at:$expires_at,is_active:$is_active,user_id:$user_id,api_key_id:$api_key_id,ip_address:$ip_address,permissions:$permissions)
                         
                 }
@@ -4054,7 +4157,7 @@ async update_cognito_pool({args,  headers}:{args: UpdateCognitoPoolArgs,  header
 async delete_cognito_pool({args,  headers}:{args: DeleteCognitoPoolArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($cognito_pool_id: String,$multiple_pool_ids: String!) {
+                mutation($cognito_pool_id: String,$multiple_pool_ids: [string!]!) {
                     delete_cognito_pool(cognito_pool_id:$cognito_pool_id,multiple_pool_ids:$multiple_pool_ids)
                         
                 }
@@ -4064,7 +4167,7 @@ async delete_cognito_pool({args,  headers}:{args: DeleteCognitoPoolArgs,  header
 async create_instrument_strategy({args, fields,  headers}:{args: CreateInstrumentStrategyArgs, fields:((keyof InstrumentStrategy) | Partial<Record<keyof InstrumentStrategy,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentStrategy>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String!,$instrument_id: String!,$remote_instrument_id: String,$loop_interval: Int!,$active_layers_count: Int!,$layer_discount_factor: Float!,$markup_ask: Float!,$markup_bid: Float!,$order_min_quantity: Float!,$order_max_quantity: Float!,$order_ttl_ms: Int!,$hedge_quantity_trigger_buy: Float!,$hedge_quantity_trigger_sell: Float!,$hedge_quantity_increment: Float!,$hedge_balance: Float,$conversions_balance: Int,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch!,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$maximum_publish_quantity: Float!) {
+                mutation($hedging_adapter_id: String!,$instrument_id: String!,$remote_instrument_id: String,$loop_interval: Int!,$active_layers_count: Int!,$layer_discount_factor: Float!,$markup_ask: Float!,$markup_bid: Float!,$order_min_quantity: Float!,$order_max_quantity: Float!,$order_ttl_ms: Int,$hedge_quantity_trigger_buy: Float!,$hedge_quantity_trigger_sell: Float!,$hedge_quantity_increment: Float!,$hedge_balance: Float,$conversions_balance: Int,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch!,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$maximum_publish_quantity: Float) {
                     create_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedge_balance:$hedge_balance,conversions_balance:$conversions_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,meta:$meta,is_active:$is_active,version:$version,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,maximum_publish_quantity:$maximum_publish_quantity)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4103,14 +4206,14 @@ async update_system_setting({args,  headers}:{args: UpdateSystemSettingArgs,  he
                 `,args || {},headers,'update_system_setting')
                 }
 
-async update_system_settings({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
+async update_system_settings({args,  headers}:{args: UpdateSystemSettingsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation {
-                    update_system_settings
+                mutation($items: [SettingItem!]!) {
+                    update_system_settings(items:$items)
                         
                 }
-                `,{},headers,'update_system_settings')
+                `,args || {},headers,'update_system_settings')
                 }
 
 async update_maintenance_mode({args,  headers}:{args: UpdateMaintenanceModeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
@@ -4126,7 +4229,7 @@ async update_maintenance_mode({args,  headers}:{args: UpdateMaintenanceModeArgs,
 async update_notifications_settings({args, fields,  headers}:{args: UpdateNotificationsSettingsArgs, fields:((keyof NotificationOptions) | Partial<Record<keyof NotificationOptions,any[]>>)[], headers?:HeadersInit}):Promise<NotificationOptions>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($client: NotificationTrigger!,$push: NotificationTrigger!,$email: NotificationTrigger!,$sms: NotificationTrigger!) {
+                mutation($client: [NotificationTrigger!]!,$push: [NotificationTrigger!]!,$email: [NotificationTrigger!]!,$sms: [NotificationTrigger!]!) {
                     update_notifications_settings(client:$client,push:$push,email:$email,sms:$sms)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4148,29 +4251,29 @@ async update_default_notifications({args,  headers}:{args: UpdateDefaultNotifica
 async update_delayed_mutations({args,  headers}:{args: UpdateDelayedMutationsArgs,  headers?:HeadersInit}):Promise<string[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($mutations: String!) {
+                mutation($mutations: [string!]!) {
                     update_delayed_mutations(mutations:$mutations)
                         
                 }
                 `,args || {},headers,'update_delayed_mutations')
                 }
 
-async update_geo_restrictions({ fields,  headers}:{ fields:((keyof GeoRestrictions) | Partial<Record<keyof GeoRestrictions,any[]>>)[], headers?:HeadersInit}):Promise<GeoRestrictions>{ 
+async update_geo_restrictions({args, fields,  headers}:{args?: UpdateGeoRestrictionsArgs, fields:((keyof GeoRestrictions) | Partial<Record<keyof GeoRestrictions,any[]>>)[], headers?:HeadersInit}):Promise<GeoRestrictions>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation {
-                    update_geo_restrictions
+                mutation($region_blacklist: [RegionBlacklistItemInput!],$country_blacklist: [BlacklistItemInput!]) {
+                    update_geo_restrictions(region_blacklist:$region_blacklist,country_blacklist:$country_blacklist)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,{},headers,'update_geo_restrictions')
+                `,args || {},headers,'update_geo_restrictions')
                 }
 
 async create_super_admins({args,  headers}:{args: CreateSuperAdminsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($emails: String!) {
+                mutation($emails: [string!]!) {
                     create_super_admins(emails:$emails)
                         
                 }
@@ -4180,7 +4283,7 @@ async create_super_admins({args,  headers}:{args: CreateSuperAdminsArgs,  header
 async delete_super_admins({args,  headers}:{args: DeleteSuperAdminsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($emails: String!) {
+                mutation($emails: [string!]!) {
                     delete_super_admins(emails:$emails)
                         
                 }
@@ -4190,7 +4293,7 @@ async delete_super_admins({args,  headers}:{args: DeleteSuperAdminsArgs,  header
 async create_readonly_admins({args,  headers}:{args: CreateReadonlyAdminsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($emails: String!) {
+                mutation($emails: [string!]!) {
                     create_readonly_admins(emails:$emails)
                         
                 }
@@ -4200,7 +4303,7 @@ async create_readonly_admins({args,  headers}:{args: CreateReadonlyAdminsArgs,  
 async delete_readonly_admins({args,  headers}:{args: DeleteReadonlyAdminsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($emails: String!) {
+                mutation($emails: [string!]!) {
                     delete_readonly_admins(emails:$emails)
                         
                 }
@@ -4232,7 +4335,7 @@ async delete_permission_share({args,  headers}:{args: DeletePermissionShareArgs,
 async admin_from_preset({args, fields,  headers}:{args: AdminFromPresetArgs, fields:((keyof PermissionShare) | Partial<Record<keyof PermissionShare,any[]>>)[], headers?:HeadersInit}):Promise<PermissionShare[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($preset_name: String!,$emails: String!) {
+                mutation($preset_name: String!,$emails: [string!]!) {
                     admin_from_preset(preset_name:$preset_name,emails:$emails)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4244,8 +4347,8 @@ async admin_from_preset({args, fields,  headers}:{args: AdminFromPresetArgs, fie
 async create_kyc_manual_request({args,  headers}:{args: CreateKycManualRequestArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!) {
-                    create_kyc_manual_request(user_id:$user_id)
+                mutation($user_id: String!,$kyc_data: [KycUserDataEntryInput!]!) {
+                    create_kyc_manual_request(user_id:$user_id,kyc_data:$kyc_data)
                         
                 }
                 `,args || {},headers,'create_kyc_manual_request')
@@ -4281,22 +4384,22 @@ async create_kyc_prime_trust_token({args,  headers}:{args: CreateKycPrimeTrustTo
                 `,args || {},headers,'create_kyc_prime_trust_token')
                 }
 
-async update_kyc_preferences({ fields,  headers}:{ fields:((keyof KycPreferences) | Partial<Record<keyof KycPreferences,any[]>>)[], headers?:HeadersInit}):Promise<KycPreferences>{ 
+async update_kyc_preferences({args, fields,  headers}:{args?: UpdateKycPreferencesArgs, fields:((keyof KycPreferences) | Partial<Record<keyof KycPreferences,any[]>>)[], headers?:HeadersInit}):Promise<KycPreferences>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation {
-                    update_kyc_preferences
+                mutation($individual: KycPreferenceInput,$corporate: KycPreferenceInput) {
+                    update_kyc_preferences(individual:$individual,corporate:$corporate)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,{},headers,'update_kyc_preferences')
+                `,args || {},headers,'update_kyc_preferences')
                 }
 
 async create_webhook({args, fields,  headers}:{args: CreateWebhookArgs, fields:((keyof Webhook) | Partial<Record<keyof Webhook,any[]>>)[], headers?:HeadersInit}):Promise<Webhook>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String!,$is_active: ToggleSwitch!,$user_id: String,$url: String!,$triggers: NotificationTrigger!) {
+                mutation($name: String!,$is_active: ToggleSwitch!,$user_id: String,$url: String!,$triggers: [NotificationTrigger!]!) {
                     create_webhook(name:$name,is_active:$is_active,user_id:$user_id,url:$url,triggers:$triggers)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4308,7 +4411,7 @@ async create_webhook({args, fields,  headers}:{args: CreateWebhookArgs, fields:(
 async update_webhook({args,  headers}:{args: UpdateWebhookArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$is_active: ToggleSwitch,$webhook_id: String!,$url: String,$triggers: NotificationTrigger!) {
+                mutation($name: String,$is_active: ToggleSwitch,$webhook_id: String!,$url: String,$triggers: [NotificationTrigger!]!) {
                     update_webhook(name:$name,is_active:$is_active,webhook_id:$webhook_id,url:$url,triggers:$triggers)
                         
                 }
@@ -4328,7 +4431,7 @@ async delete_webhook({args,  headers}:{args: DeleteWebhookArgs,  headers?:Header
 async create_hedging_adapter({args, fields,  headers}:{args: CreateHedgingAdapterArgs, fields:((keyof HedgingAdapter) | Partial<Record<keyof HedgingAdapter,any[]>>)[], headers?:HeadersInit}):Promise<HedgingAdapter>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String!,$service_url: String!,$service_api_key: String!,$broker_user_id: String!,$hedging_enabled: ToggleSwitch!,$account_balances_sync_enabled: ToggleSwitch!,$maker_fee: Float,$taker_fee: Float,$fees_sync_enabled: ToggleSwitch!,$create_broker_user_id: Boolean,$disable_strategy_hedging_on_error: ToggleSwitch,$disable_instrument_on_hedging_error: ToggleSwitch) {
+                mutation($hedging_adapter_id: String!,$service_url: String!,$service_api_key: String!,$broker_user_id: String!,$hedging_enabled: ToggleSwitch!,$account_balances_sync_enabled: ToggleSwitch!,$maker_fee: Float,$taker_fee: Float,$fees_sync_enabled: ToggleSwitch,$create_broker_user_id: Boolean,$disable_strategy_hedging_on_error: ToggleSwitch,$disable_instrument_on_hedging_error: ToggleSwitch) {
                     create_hedging_adapter(hedging_adapter_id:$hedging_adapter_id,service_url:$service_url,service_api_key:$service_api_key,broker_user_id:$broker_user_id,hedging_enabled:$hedging_enabled,account_balances_sync_enabled:$account_balances_sync_enabled,maker_fee:$maker_fee,taker_fee:$taker_fee,fees_sync_enabled:$fees_sync_enabled,create_broker_user_id:$create_broker_user_id,disable_strategy_hedging_on_error:$disable_strategy_hedging_on_error,disable_instrument_on_hedging_error:$disable_instrument_on_hedging_error)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4360,7 +4463,7 @@ async delete_hedging_adapter({args,  headers}:{args: DeleteHedgingAdapterArgs,  
 async create_trading_limit({args, fields,  headers}:{args: CreateTradingLimitArgs, fields:((keyof TradingLimit) | Partial<Record<keyof TradingLimit,any[]>>)[], headers?:HeadersInit}):Promise<TradingLimit>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String!,$instrument_id: String!,$daily_limit: Float!,$weekly_limit: Float!,$monthly_limit: Float!,$notion_currency: String) {
+                mutation($limit_group_id: String!,$instrument_id: String!,$daily_limit: Float,$weekly_limit: Float,$monthly_limit: Float,$notion_currency: String) {
                     create_trading_limit(limit_group_id:$limit_group_id,instrument_id:$instrument_id,daily_limit:$daily_limit,weekly_limit:$weekly_limit,monthly_limit:$monthly_limit,notion_currency:$notion_currency)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4466,8 +4569,8 @@ async send_test_email({args,  headers}:{args: SendTestEmailArgs,  headers?:Heade
 async create_kyc_user_data({args, fields,  headers}:{args: CreateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!) {
-                    create_kyc_user_data(user_id:$user_id)
+                mutation($user_id: String!,$kyc_data: [KycUserDataEntryInput!]!) {
+                    create_kyc_user_data(user_id:$user_id,kyc_data:$kyc_data)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4478,8 +4581,8 @@ async create_kyc_user_data({args, fields,  headers}:{args: CreateKycUserDataArgs
 async update_kyc_user_data({args, fields,  headers}:{args: UpdateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!) {
-                    update_kyc_user_data(user_id:$user_id)
+                mutation($user_id: String!,$kyc_data: [KycUserDataEntryInput!]!) {
+                    update_kyc_user_data(user_id:$user_id,kyc_data:$kyc_data)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4500,7 +4603,7 @@ async delete_kyc_user_data({args,  headers}:{args: DeleteKycUserDataArgs,  heade
 async create_permission_preset({args, fields,  headers}:{args: CreatePermissionPresetArgs, fields:((keyof PermissionPreset) | Partial<Record<keyof PermissionPreset,any[]>>)[], headers?:HeadersInit}):Promise<PermissionPreset>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String!,$subjects: String!) {
+                mutation($name: String!,$subjects: [string!]!) {
                     create_permission_preset(name:$name,subjects:$subjects)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4512,7 +4615,7 @@ async create_permission_preset({args, fields,  headers}:{args: CreatePermissionP
 async update_permission_preset({args, fields,  headers}:{args: UpdatePermissionPresetArgs, fields:((keyof PermissionPreset) | Partial<Record<keyof PermissionPreset,any[]>>)[], headers?:HeadersInit}):Promise<PermissionPreset>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String!,$subjects: String!) {
+                mutation($name: String!,$subjects: [string!]!) {
                     update_permission_preset(name:$name,subjects:$subjects)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4640,7 +4743,7 @@ async update_hedging_account({args,  headers}:{args: UpdateHedgingAccountArgs,  
 async import_balances_from_v3({args,  headers}:{args: ImportBalancesFromV3Args,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($exchange_id: String!,$api_key: String!,$user_ids: String!) {
+                mutation($exchange_id: String!,$api_key: String!,$user_ids: [string!]!) {
                     import_balances_from_v3(exchange_id:$exchange_id,api_key:$api_key,user_ids:$user_ids)
                         
                 }
@@ -4662,7 +4765,7 @@ async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklist
 async create_ip_blacklist_items({args, fields,  headers}:{args: CreateIpBlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($ip_addresses: String!,$reason: String) {
+                mutation($ip_addresses: [string!]!,$reason: String) {
                     create_ip_blacklist_items(ip_addresses:$ip_addresses,reason:$reason)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4696,8 +4799,8 @@ async remove_ip_blacklist_item({args,  headers}:{args: RemoveIpBlacklistItemArgs
         async open_orders({args, fields,  headers}:{args: OpenOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$side: OrderSide,$instrument_id: String,$message: String,$user_id: String,$search: String,$status: OrderStatus!) {
-                    open_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,side:$side,instrument_id:$instrument_id,message:$message,user_id:$user_id,search:$search,status:$status)
+                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$side: OrderSide,$instrument_id: String,$message: String,$user_id: String,$search: String,$status: [OrderStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    open_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,side:$side,instrument_id:$instrument_id,message:$message,user_id:$user_id,search:$search,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4708,8 +4811,8 @@ async remove_ip_blacklist_item({args,  headers}:{args: RemoveIpBlacklistItemArgs
 async closed_orders({args, fields,  headers}:{args: ClosedOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$side: OrderSide,$instrument_id: String,$message: String,$user_id: String,$search: String,$status: OrderStatus!) {
-                    closed_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,side:$side,instrument_id:$instrument_id,message:$message,user_id:$user_id,search:$search,status:$status)
+                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$side: OrderSide,$instrument_id: String,$message: String,$user_id: String,$search: String,$status: [OrderStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    closed_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,side:$side,instrument_id:$instrument_id,message:$message,user_id:$user_id,search:$search,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4732,8 +4835,8 @@ async estimate_order({args, fields,  headers}:{args: EstimateOrderArgs, fields:(
 async trades({args, fields,  headers}:{args?: TradesArgs, fields:((keyof Trade) | Partial<Record<keyof Trade,any[]>>)[], headers?:HeadersInit}):Promise<Trade[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($trade_id: String,$instrument_id: String,$order_id: String,$side: String,$counter_order_id: String,$user_id: String,$search: String) {
-                    trades(trade_id:$trade_id,instrument_id:$instrument_id,order_id:$order_id,side:$side,counter_order_id:$counter_order_id,user_id:$user_id,search:$search)
+                query($trade_id: String,$instrument_id: String,$order_id: String,$side: String,$counter_order_id: String,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    trades(trade_id:$trade_id,instrument_id:$instrument_id,order_id:$order_id,side:$side,counter_order_id:$counter_order_id,user_id:$user_id,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4765,10 +4868,10 @@ async healthcheck({ fields,  headers}:{ fields:((keyof HealthcheckResult) | Part
                 `,{},headers,'healthcheck')
                 }
 
-async instruments({args, fields,  headers}:{args: InstrumentsArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument[]>{ 
+async instruments({args, fields,  headers}:{args?: InstrumentsArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($instrument_id: String,$is_active: ToggleSwitch,$search: String,$page: Int,$limit: Int!) {
+                query($instrument_id: String,$is_active: ToggleSwitch,$search: String,$page: Int,$limit: Int) {
                     instruments(instrument_id:$instrument_id,is_active:$is_active,search:$search,page:$page,limit:$limit)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4780,8 +4883,8 @@ async instruments({args, fields,  headers}:{args: InstrumentsArgs, fields:((keyo
 async instrument_price_bars({args, fields,  headers}:{args: InstrumentPriceBarsArgs, fields:((keyof InstrumentPriceHistory) | Partial<Record<keyof InstrumentPriceHistory,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentPriceHistory[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($periodicity: InstrumentHistoryPeriodicity,$limit: Int,$instrument_id: String!) {
-                    instrument_price_bars(periodicity:$periodicity,limit:$limit,instrument_id:$instrument_id)
+                query($periodicity: InstrumentHistoryPeriodicity,$limit: Int,$date_range: DateRangeInput,$instrument_id: String!) {
+                    instrument_price_bars(periodicity:$periodicity,limit:$limit,date_range:$date_range,instrument_id:$instrument_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4789,10 +4892,10 @@ async instrument_price_bars({args, fields,  headers}:{args: InstrumentPriceBarsA
                 `,args || {},headers,'instrument_price_bars')
                 }
 
-async currencies({args, fields,  headers}:{args: CurrenciesArgs, fields:((keyof Currency) | Partial<Record<keyof Currency,any[]>>)[], headers?:HeadersInit}):Promise<Currency[]>{ 
+async currencies({args, fields,  headers}:{args?: CurrenciesArgs, fields:((keyof Currency) | Partial<Record<keyof Currency,any[]>>)[], headers?:HeadersInit}):Promise<Currency[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($search: String,$type: CurrencyType,$is_active: ToggleSwitch,$page: Int,$limit: Int!) {
+                query($search: String,$type: CurrencyType,$is_active: ToggleSwitch,$page: Int,$limit: Int) {
                     currencies(search:$search,type:$type,is_active:$is_active,page:$page,limit:$limit)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4816,8 +4919,8 @@ async deposit_bank_details_fiat({args, fields,  headers}:{args: DepositBankDetai
 async payments({args, fields,  headers}:{args: PaymentsArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($payment_id: String,$currency_id: String,$type: PaymentType,$reference: String,$created_by: String,$payment_id_in: String!,$payment_id_not_in: String!,$user_id: String,$user_id_in: String!,$user_id_not_in: String!,$search: String,$status: PaymentStatus!,$approval_status: PaymentApprovalStatus!) {
-                    payments(payment_id:$payment_id,currency_id:$currency_id,type:$type,reference:$reference,created_by:$created_by,payment_id_in:$payment_id_in,payment_id_not_in:$payment_id_not_in,user_id:$user_id,user_id_in:$user_id_in,user_id_not_in:$user_id_not_in,search:$search,status:$status,approval_status:$approval_status)
+                query($payment_id: String,$currency_id: String,$type: PaymentType,$reference: String,$created_by: String,$payment_id_in: [string!]!,$payment_id_not_in: [string!]!,$user_id: String,$user_id_in: [string!]!,$user_id_not_in: [string!]!,$search: String,$status: [PaymentStatus!]!,$approval_status: [PaymentApprovalStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    payments(payment_id:$payment_id,currency_id:$currency_id,type:$type,reference:$reference,created_by:$created_by,payment_id_in:$payment_id_in,payment_id_not_in:$payment_id_not_in,user_id:$user_id,user_id_in:$user_id_in,user_id_not_in:$user_id_not_in,search:$search,status:$status,approval_status:$approval_status,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4840,8 +4943,8 @@ async deposit_address_crypto({args, fields,  headers}:{args: DepositAddressCrypt
 async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddressesCryptoArgs, fields:((keyof DepositAddressCrypto) | Partial<Record<keyof DepositAddressCrypto,any[]>>)[], headers?:HeadersInit}):Promise<DepositAddressCrypto[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($deposit_address_crypto_id: String,$currency_id: String,$address: String,$address_tag_type: CryptoAddressTagType,$address_tag_value: String,$network: String,$psp_service_id: String,$reference: String,$user_id: String,$search: String) {
-                    deposit_addresses_crypto(deposit_address_crypto_id:$deposit_address_crypto_id,currency_id:$currency_id,address:$address,address_tag_type:$address_tag_type,address_tag_value:$address_tag_value,network:$network,psp_service_id:$psp_service_id,reference:$reference,user_id:$user_id,search:$search)
+                query($deposit_address_crypto_id: String,$currency_id: String,$address: String,$address_tag_type: CryptoAddressTagType,$address_tag_value: String,$network: String,$psp_service_id: String,$reference: String,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    deposit_addresses_crypto(deposit_address_crypto_id:$deposit_address_crypto_id,currency_id:$currency_id,address:$address,address_tag_type:$address_tag_type,address_tag_value:$address_tag_value,network:$network,psp_service_id:$psp_service_id,reference:$reference,user_id:$user_id,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4852,8 +4955,8 @@ async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddresses
 async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String,$reference: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String) {
-                    conversions(user_id:$user_id,search:$search,reference:$reference,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id)
+                query($user_id: String,$search: String,$reference: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    conversions(user_id:$user_id,search:$search,reference:$reference,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4864,8 +4967,8 @@ async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((key
 async conversion_quotes({args, fields,  headers}:{args?: ConversionQuotesArgs, fields:((keyof ConversionQuote) | Partial<Record<keyof ConversionQuote,any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuote[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String,$conversion_quote_id: String,$reference: String,$source_currency_id: String,$target_currency_id: String) {
-                    conversion_quotes(user_id:$user_id,search:$search,conversion_quote_id:$conversion_quote_id,reference:$reference,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id)
+                query($user_id: String,$search: String,$conversion_quote_id: String,$reference: String,$source_currency_id: String,$target_currency_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    conversion_quotes(user_id:$user_id,search:$search,conversion_quote_id:$conversion_quote_id,reference:$reference,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4876,8 +4979,8 @@ async conversion_quotes({args, fields,  headers}:{args?: ConversionQuotesArgs, f
 async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesRisksArgs, fields:((keyof ConversionQuotesRisks) | Partial<Record<keyof ConversionQuotesRisks,any[]>>)[], headers?:HeadersInit}):Promise<ConversionQuotesRisks[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($source_currency_id: String,$target_currency_id: String,$instrument_id: String,$include_all_quotes: Boolean,$user_id: String) {
-                    conversion_quotes_risks(source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,instrument_id:$instrument_id,include_all_quotes:$include_all_quotes,user_id:$user_id)
+                query($source_currency_id: String,$target_currency_id: String,$instrument_id: String,$include_all_quotes: Boolean,$user_id: String,$pager: PagerInput,$sort: SortInput) {
+                    conversion_quotes_risks(source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,instrument_id:$instrument_id,include_all_quotes:$include_all_quotes,user_id:$user_id,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4888,8 +4991,8 @@ async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesR
 async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($parent_user_id: String,$username: String,$email: String,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserKycStatus,$kyc_level: String) {
-                    users(parent_user_id:$parent_user_id,username:$username,email:$email,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level)
+                query($parent_user_id: String,$username: String,$email: String,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserKycStatus,$kyc_level: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    users(parent_user_id:$parent_user_id,username:$username,email:$email,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4922,8 +5025,8 @@ async user({args, fields,  headers}:{args?: UserArgs, fields:((keyof User) | Par
 async account_transactions({args, fields,  headers}:{args?: AccountTransactionsArgs, fields:((keyof AccountTransaction) | Partial<Record<keyof AccountTransaction,any[]>>)[], headers?:HeadersInit}):Promise<AccountTransaction[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($account_transaction_id: String,$parent_transaction_id: String,$client_transaction_id: String,$account_id: String,$payment_id: String,$currency_id: String,$transaction_class: AccountTransactionClass,$type: AccountTransactionType,$order_id: String,$trade_id: String,$conversion_id: String,$comment: String,$user_id: String,$search: String,$instrument_id: String) {
-                    account_transactions(account_transaction_id:$account_transaction_id,parent_transaction_id:$parent_transaction_id,client_transaction_id:$client_transaction_id,account_id:$account_id,payment_id:$payment_id,currency_id:$currency_id,transaction_class:$transaction_class,type:$type,order_id:$order_id,trade_id:$trade_id,conversion_id:$conversion_id,comment:$comment,user_id:$user_id,search:$search,instrument_id:$instrument_id)
+                query($account_transaction_id: String,$parent_transaction_id: String,$client_transaction_id: String,$account_id: String,$payment_id: String,$currency_id: String,$transaction_class: AccountTransactionClass,$type: AccountTransactionType,$order_id: String,$trade_id: String,$conversion_id: String,$comment: String,$user_id: String,$search: String,$instrument_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    account_transactions(account_transaction_id:$account_transaction_id,parent_transaction_id:$parent_transaction_id,client_transaction_id:$client_transaction_id,account_id:$account_id,payment_id:$payment_id,currency_id:$currency_id,transaction_class:$transaction_class,type:$type,order_id:$order_id,trade_id:$trade_id,conversion_id:$conversion_id,comment:$comment,user_id:$user_id,search:$search,instrument_id:$instrument_id,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4946,8 +5049,8 @@ async accounts_balances({args, fields,  headers}:{args?: AccountsBalancesArgs, f
 async accounts({args, fields,  headers}:{args?: AccountsArgs, fields:((keyof Account) | Partial<Record<keyof Account,any[]>>)[], headers?:HeadersInit}):Promise<Account[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($account_id: String,$currency_id: String,$user_id: String) {
-                    accounts(account_id:$account_id,currency_id:$currency_id,user_id:$user_id)
+                query($account_id: String,$currency_id: String,$user_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    accounts(account_id:$account_id,currency_id:$currency_id,user_id:$user_id,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4958,8 +5061,8 @@ async accounts({args, fields,  headers}:{args?: AccountsArgs, fields:((keyof Acc
 async limits_groups({args, fields,  headers}:{args?: LimitsGroupsArgs, fields:((keyof LimitGroup) | Partial<Record<keyof LimitGroup,any[]>>)[], headers?:HeadersInit}):Promise<LimitGroup[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($limit_group_id: String,$name: String,$description: String) {
-                    limits_groups(limit_group_id:$limit_group_id,name:$name,description:$description)
+                query($limit_group_id: String,$name: String,$description: String,$pager: PagerInput,$sort: SortInput) {
+                    limits_groups(limit_group_id:$limit_group_id,name:$name,description:$description,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4970,8 +5073,8 @@ async limits_groups({args, fields,  headers}:{args?: LimitsGroupsArgs, fields:((
 async fees_groups({args, fields,  headers}:{args?: FeesGroupsArgs, fields:((keyof FeeGroup) | Partial<Record<keyof FeeGroup,any[]>>)[], headers?:HeadersInit}):Promise<FeeGroup[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($fee_group_id: String,$name: String,$description: String,$beneficiary_user_id: String) {
-                    fees_groups(fee_group_id:$fee_group_id,name:$name,description:$description,beneficiary_user_id:$beneficiary_user_id)
+                query($fee_group_id: String,$name: String,$description: String,$beneficiary_user_id: String,$pager: PagerInput,$sort: SortInput) {
+                    fees_groups(fee_group_id:$fee_group_id,name:$name,description:$description,beneficiary_user_id:$beneficiary_user_id,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4982,8 +5085,8 @@ async fees_groups({args, fields,  headers}:{args?: FeesGroupsArgs, fields:((keyo
 async payments_fees({args, fields,  headers}:{args?: PaymentsFeesArgs, fields:((keyof PaymentFee) | Partial<Record<keyof PaymentFee,any[]>>)[], headers?:HeadersInit}):Promise<PaymentFee[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($currency_id: String,$fee_group_id: String,$calculation_type: FeeCalculationType) {
-                    payments_fees(currency_id:$currency_id,fee_group_id:$fee_group_id,calculation_type:$calculation_type)
+                query($currency_id: String,$fee_group_id: String,$pager: PagerInput,$sort: SortInput,$calculation_type: FeeCalculationType) {
+                    payments_fees(currency_id:$currency_id,fee_group_id:$fee_group_id,pager:$pager,sort:$sort,calculation_type:$calculation_type)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4994,8 +5097,8 @@ async payments_fees({args, fields,  headers}:{args?: PaymentsFeesArgs, fields:((
 async trading_fees({args, fields,  headers}:{args?: TradingFeesArgs, fields:((keyof TradingFee) | Partial<Record<keyof TradingFee,any[]>>)[], headers?:HeadersInit}):Promise<TradingFee[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($instrument_id: String,$fee_group_id: String) {
-                    trading_fees(instrument_id:$instrument_id,fee_group_id:$fee_group_id)
+                query($instrument_id: String,$fee_group_id: String,$pager: PagerInput,$sort: SortInput) {
+                    trading_fees(instrument_id:$instrument_id,fee_group_id:$fee_group_id,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5006,8 +5109,8 @@ async trading_fees({args, fields,  headers}:{args?: TradingFeesArgs, fields:((ke
 async payments_routes({args, fields,  headers}:{args?: PaymentsRoutesArgs, fields:((keyof PaymentRoute) | Partial<Record<keyof PaymentRoute,any[]>>)[], headers?:HeadersInit}):Promise<PaymentRoute[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($payment_route_id: String,$currency_id: String,$psp_service_id: String,$crypto_network: String,$verification_type: VerificationType) {
-                    payments_routes(payment_route_id:$payment_route_id,currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_network:$crypto_network,verification_type:$verification_type)
+                query($payment_route_id: String,$currency_id: String,$psp_service_id: String,$crypto_network: String,$verification_type: VerificationType,$pager: PagerInput,$sort: SortInput) {
+                    payments_routes(payment_route_id:$payment_route_id,currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_network:$crypto_network,verification_type:$verification_type,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5040,8 +5143,8 @@ async psp_services({  headers}:{  headers?:HeadersInit}={}):Promise<string[]>{
 async payments_limits({args, fields,  headers}:{args?: PaymentsLimitsArgs, fields:((keyof PaymentLimit) | Partial<Record<keyof PaymentLimit,any[]>>)[], headers?:HeadersInit}):Promise<PaymentLimit[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($limit_group_id: String,$currency_id: String) {
-                    payments_limits(limit_group_id:$limit_group_id,currency_id:$currency_id)
+                query($limit_group_id: String,$currency_id: String,$pager: PagerInput,$sort: SortInput) {
+                    payments_limits(limit_group_id:$limit_group_id,currency_id:$currency_id,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5052,8 +5155,8 @@ async payments_limits({args, fields,  headers}:{args?: PaymentsLimitsArgs, field
 async api_keys({args, fields,  headers}:{args?: ApiKeysArgs, fields:((keyof ApiKey) | Partial<Record<keyof ApiKey,any[]>>)[], headers?:HeadersInit}):Promise<ApiKey[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String) {
-                    api_keys(user_id:$user_id,search:$search)
+                query($user_id: String,$pager: PagerInput,$sort: SortInput,$search: String) {
+                    api_keys(user_id:$user_id,pager:$pager,sort:$sort,search:$search)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5064,8 +5167,8 @@ async api_keys({args, fields,  headers}:{args?: ApiKeysArgs, fields:((keyof ApiK
 async cognito_pools({args, fields,  headers}:{args?: CognitoPoolsArgs, fields:((keyof CognitoPool) | Partial<Record<keyof CognitoPool,any[]>>)[], headers?:HeadersInit}):Promise<CognitoPool[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($search: String) {
-                    cognito_pools(search:$search)
+                query($search: String,$pager: PagerInput,$sort: SortInput) {
+                    cognito_pools(search:$search,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5076,8 +5179,8 @@ async cognito_pools({args, fields,  headers}:{args?: CognitoPoolsArgs, fields:((
 async instruments_strategies({args, fields,  headers}:{args?: InstrumentsStrategiesArgs, fields:((keyof InstrumentStrategy) | Partial<Record<keyof InstrumentStrategy,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentStrategy[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($hedging_adapter_id: String,$instrument_id: String,$search: String) {
-                    instruments_strategies(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,search:$search)
+                query($hedging_adapter_id: String,$instrument_id: String,$search: String,$pager: PagerInput,$sort: SortInput) {
+                    instruments_strategies(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,search:$search,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5088,8 +5191,8 @@ async instruments_strategies({args, fields,  headers}:{args?: InstrumentsStrateg
 async hedging_orders({args, fields,  headers}:{args?: HedgingOrdersArgs, fields:((keyof HedgingOrder) | Partial<Record<keyof HedgingOrder,any[]>>)[], headers?:HeadersInit}):Promise<HedgingOrder[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($hedging_adapter_id: String,$side: OrderSide,$status: HedgingOrderStatus,$error_message: String,$search: String) {
-                    hedging_orders(hedging_adapter_id:$hedging_adapter_id,side:$side,status:$status,error_message:$error_message,search:$search)
+                query($hedging_adapter_id: String,$side: OrderSide,$status: HedgingOrderStatus,$error_message: String,$pager: PagerInput,$search: String,$sort: SortInput,$dateRange: DateRangeInput) {
+                    hedging_orders(hedging_adapter_id:$hedging_adapter_id,side:$side,status:$status,error_message:$error_message,pager:$pager,search:$search,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5100,8 +5203,8 @@ async hedging_orders({args, fields,  headers}:{args?: HedgingOrdersArgs, fields:
 async system_settings({args, fields,  headers}:{args?: SystemSettingsArgs, fields:((keyof Setting) | Partial<Record<keyof Setting,any[]>>)[], headers?:HeadersInit}):Promise<Setting[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($search: String) {
-                    system_settings(search:$search)
+                query($search: String,$pager: PagerInput,$sort: SortInput) {
+                    system_settings(search:$search,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5158,7 +5261,7 @@ async geo_restrictions({ fields,  headers}:{ fields:((keyof GeoRestrictionWithCu
 async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfolioReportArgs, fields:((keyof AccountsPortfolioReportItem) | Partial<Record<keyof AccountsPortfolioReportItem,any[]>>)[], headers?:HeadersInit}):Promise<AccountsPortfolioReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($currencies: String!) {
+                query($currencies: [string!]!) {
                     accounts_portfolio_report(currencies:$currencies)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -5170,8 +5273,8 @@ async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfoli
 async orders_summary_report({args, fields,  headers}:{args?: OrdersSummaryReportArgs, fields:((keyof OrdersSummaryReportItem) | Partial<Record<keyof OrdersSummaryReportItem,any[]>>)[], headers?:HeadersInit}):Promise<OrdersSummaryReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String) {
-                    orders_summary_report(user_id:$user_id)
+                query($user_id: String,$dateRange: DateRangeInput) {
+                    orders_summary_report(user_id:$user_id,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5182,8 +5285,8 @@ async orders_summary_report({args, fields,  headers}:{args?: OrdersSummaryReport
 async conversions_summary_report({args, fields,  headers}:{args?: ConversionsSummaryReportArgs, fields:((keyof ConversionsSummaryReportItem) | Partial<Record<keyof ConversionsSummaryReportItem,any[]>>)[], headers?:HeadersInit}):Promise<ConversionsSummaryReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String) {
-                    conversions_summary_report(user_id:$user_id)
+                query($user_id: String,$dateRange: DateRangeInput) {
+                    conversions_summary_report(user_id:$user_id,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5206,8 +5309,8 @@ async liquidity_report({ fields,  headers}:{ fields:((keyof LiquidityReportResul
 async daily_balances_report({args, fields,  headers}:{args?: DailyBalancesReportArgs, fields:((keyof DailyBalancesReportItem) | Partial<Record<keyof DailyBalancesReportItem,any[]>>)[], headers?:HeadersInit}):Promise<DailyBalancesReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String) {
-                    daily_balances_report(user_id:$user_id)
+                query($user_id: String,$dateRange: DateRangeInput) {
+                    daily_balances_report(user_id:$user_id,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5218,8 +5321,8 @@ async daily_balances_report({args, fields,  headers}:{args?: DailyBalancesReport
 async open_exposure_report({args, fields,  headers}:{args?: OpenExposureReportArgs, fields:((keyof OpenExposureReportResult) | Partial<Record<keyof OpenExposureReportResult,any[]>>)[], headers?:HeadersInit}):Promise<OpenExposureReportResult[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($base_currency_id: String,$quote_currency_id: String) {
-                    open_exposure_report(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id)
+                query($base_currency_id: String,$quote_currency_id: String,$pager: PagerInput) {
+                    open_exposure_report(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,pager:$pager)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5252,8 +5355,8 @@ async permissions_subjects({  headers}:{  headers?:HeadersInit}={}):Promise<stri
 async permissions_share({args, fields,  headers}:{args?: PermissionsShareArgs, fields:((keyof PermissionShare) | Partial<Record<keyof PermissionShare,any[]>>)[], headers?:HeadersInit}):Promise<PermissionShare[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($search: String,$user_id: String,$subject: String,$group_by: FindPermissionsShareGroupBy) {
-                    permissions_share(search:$search,user_id:$user_id,subject:$subject,group_by:$group_by)
+                query($search: String,$user_id: String,$subject: String,$pager: PagerInput,$sort: SortInput,$group_by: FindPermissionsShareGroupBy) {
+                    permissions_share(search:$search,user_id:$user_id,subject:$subject,pager:$pager,sort:$sort,group_by:$group_by)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5276,8 +5379,8 @@ async kyc_preferences({ fields,  headers}:{ fields:((keyof KycPreferences) | Par
 async webhooks({args, fields,  headers}:{args?: WebhooksArgs, fields:((keyof Webhook) | Partial<Record<keyof Webhook,any[]>>)[], headers?:HeadersInit}):Promise<Webhook[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($is_active: ToggleSwitch,$user_id: String,$search: String) {
-                    webhooks(is_active:$is_active,user_id:$user_id,search:$search)
+                query($is_active: ToggleSwitch,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    webhooks(is_active:$is_active,user_id:$user_id,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5310,8 +5413,8 @@ async hedging_adapters({ fields,  headers}:{ fields:((keyof HedgingAdapter) | Pa
 async timeline({args, fields,  headers}:{args: TimelineArgs, fields:((keyof TimelineEvent) | Partial<Record<keyof TimelineEvent,any[]>>)[], headers?:HeadersInit}):Promise<TimelineEvent[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$event_data: String,$created_at: String,$search: String,$event_name: NotificationTrigger!) {
-                    timeline(user_id:$user_id,event_data:$event_data,created_at:$created_at,search:$search,event_name:$event_name)
+                query($user_id: String,$event_data: String,$created_at: String,$search: String,$event_name: [NotificationTrigger!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    timeline(user_id:$user_id,event_data:$event_data,created_at:$created_at,search:$search,event_name:$event_name,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5322,8 +5425,8 @@ async timeline({args, fields,  headers}:{args: TimelineArgs, fields:((keyof Time
 async trading_limits({args, fields,  headers}:{args?: TradingLimitsArgs, fields:((keyof TradingLimit) | Partial<Record<keyof TradingLimit,any[]>>)[], headers?:HeadersInit}):Promise<TradingLimit[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($limit_group_id: String,$instrument_id: String) {
-                    trading_limits(limit_group_id:$limit_group_id,instrument_id:$instrument_id)
+                query($limit_group_id: String,$instrument_id: String,$pager: PagerInput,$sort: SortInput) {
+                    trading_limits(limit_group_id:$limit_group_id,instrument_id:$instrument_id,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5334,8 +5437,8 @@ async trading_limits({args, fields,  headers}:{args?: TradingLimitsArgs, fields:
 async trading_volumes({args, fields,  headers}:{args?: TradingVolumesArgs, fields:((keyof UsersTradingVolume) | Partial<Record<keyof UsersTradingVolume,any[]>>)[], headers?:HeadersInit}):Promise<UsersTradingVolume[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$instrument_id: String,$volume: TradingVolumeType) {
-                    trading_volumes(user_id:$user_id,instrument_id:$instrument_id,volume:$volume)
+                query($user_id: String,$instrument_id: String,$pager: PagerInput,$sort: SortInput,$volume: TradingVolumeType) {
+                    trading_volumes(user_id:$user_id,instrument_id:$instrument_id,pager:$pager,sort:$sort,volume:$volume)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5370,8 +5473,8 @@ async provinces({args, fields,  headers}:{args: ProvincesArgs, fields:((keyof Pr
 async delayed_requests({args, fields,  headers}:{args?: DelayedRequestsArgs, fields:((keyof DelayedRequest) | Partial<Record<keyof DelayedRequest,any[]>>)[], headers?:HeadersInit}):Promise<DelayedRequest[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($delayed_request_id: String,$request_name: String,$approval_status: DelayedRequestStatus,$admin_id: String,$admin_email: String,$approved_by: String,$search: String) {
-                    delayed_requests(delayed_request_id:$delayed_request_id,request_name:$request_name,approval_status:$approval_status,admin_id:$admin_id,admin_email:$admin_email,approved_by:$approved_by,search:$search)
+                query($delayed_request_id: String,$request_name: String,$approval_status: DelayedRequestStatus,$admin_id: String,$admin_email: String,$approved_by: String,$pager: PagerInput,$sort: SortInput,$search: String) {
+                    delayed_requests(delayed_request_id:$delayed_request_id,request_name:$request_name,approval_status:$approval_status,admin_id:$admin_id,admin_email:$admin_email,approved_by:$approved_by,pager:$pager,sort:$sort,search:$search)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5382,7 +5485,7 @@ async delayed_requests({args, fields,  headers}:{args?: DelayedRequestsArgs, fie
 async kyc_user_data({args, fields,  headers}:{args: KycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String!,$search: String,$kyc_properties: String!) {
+                query($user_id: String!,$search: String,$kyc_properties: [string!]!) {
                     kyc_user_data(user_id:$user_id,search:$search,kyc_properties:$kyc_properties)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -5418,8 +5521,8 @@ async instruments_strategies_schedule({args, fields,  headers}:{args?: Instrumen
 async currencies_prices({args, fields,  headers}:{args?: CurrenciesPricesArgs, fields:((keyof CurrencyPrice) | Partial<Record<keyof CurrencyPrice,any[]>>)[], headers?:HeadersInit}):Promise<CurrencyPrice[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($base_currency_id: String,$quote_currency_id: String,$source: String,$search: String) {
-                    currencies_prices(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,source:$source,search:$search)
+                query($base_currency_id: String,$quote_currency_id: String,$source: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    currencies_prices(base_currency_id:$base_currency_id,quote_currency_id:$quote_currency_id,source:$source,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5430,8 +5533,8 @@ async currencies_prices({args, fields,  headers}:{args?: CurrenciesPricesArgs, f
 async ip_whitelist({args, fields,  headers}:{args?: IpWhitelistArgs, fields:((keyof IpWhitelistItem) | Partial<Record<keyof IpWhitelistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpWhitelistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($ip_address: String,$ip_whitelist_id: String,$search: String) {
-                    ip_whitelist(ip_address:$ip_address,ip_whitelist_id:$ip_whitelist_id,search:$search)
+                query($ip_address: String,$ip_whitelist_id: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    ip_whitelist(ip_address:$ip_address,ip_whitelist_id:$ip_whitelist_id,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5442,8 +5545,8 @@ async ip_whitelist({args, fields,  headers}:{args?: IpWhitelistArgs, fields:((ke
 async hedging_accounts({args, fields,  headers}:{args?: HedgingAccountsArgs, fields:((keyof HedgingAccount) | Partial<Record<keyof HedgingAccount,any[]>>)[], headers?:HeadersInit}):Promise<HedgingAccount[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($hedging_adapter_id: String,$currency_id: String,$is_active: ToggleSwitch) {
-                    hedging_accounts(hedging_adapter_id:$hedging_adapter_id,currency_id:$currency_id,is_active:$is_active)
+                query($hedging_adapter_id: String,$currency_id: String,$is_active: ToggleSwitch,$pager: PagerInput,$sort: SortInput) {
+                    hedging_accounts(hedging_adapter_id:$hedging_adapter_id,currency_id:$currency_id,is_active:$is_active,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5454,8 +5557,8 @@ async hedging_accounts({args, fields,  headers}:{args?: HedgingAccountsArgs, fie
 async find_config_changes({args, fields,  headers}:{args?: FindConfigChangesArgs, fields:((keyof ConfigChange) | Partial<Record<keyof ConfigChange,any[]>>)[], headers?:HeadersInit}):Promise<ConfigChange[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($config_change_id: String,$config_change_group_id: String,$admin_user_id: String,$admin_email: String,$admin_ip: String,$table_name: String,$operation_name: String,$operation_type: ConfigChangeOperationType,$details: String,$search: String) {
-                    find_config_changes(config_change_id:$config_change_id,config_change_group_id:$config_change_group_id,admin_user_id:$admin_user_id,admin_email:$admin_email,admin_ip:$admin_ip,table_name:$table_name,operation_name:$operation_name,operation_type:$operation_type,details:$details,search:$search)
+                query($config_change_id: String,$config_change_group_id: String,$admin_user_id: String,$admin_email: String,$admin_ip: String,$table_name: String,$operation_name: String,$operation_type: ConfigChangeOperationType,$details: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$search: String) {
+                    find_config_changes(config_change_id:$config_change_id,config_change_group_id:$config_change_group_id,admin_user_id:$admin_user_id,admin_email:$admin_email,admin_ip:$admin_ip,table_name:$table_name,operation_name:$operation_name,operation_type:$operation_type,details:$details,pager:$pager,sort:$sort,dateRange:$dateRange,search:$search)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5510,8 +5613,8 @@ async portfolio_history({args,  headers}:{args: PortfolioHistoryArgs,  headers?:
 async blacklist_items({args, fields,  headers}:{args?: BlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($ip_address: String,$reason: String,$search: String) {
-                    blacklist_items(ip_address:$ip_address,reason:$reason,search:$search)
+                query($ip_address: String,$reason: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    blacklist_items(ip_address:$ip_address,reason:$reason,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }

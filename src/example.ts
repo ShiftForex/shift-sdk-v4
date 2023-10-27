@@ -6,7 +6,7 @@ async function main() {
     client.setGlobalAuthToken('jwt');
     client.setGlobalCustomHeader('custom-header', 'custom-value');
 
-    const instruments = await client.instruments({fields: ['instrument_id', 'name']});
+    const instruments = await client.instruments({fields: ['base_currency']});
 
     const user = await client.user({fields: ['user_id', {trading_volumes: ['instrument_id']}]});
 
