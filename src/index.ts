@@ -73,6 +73,70 @@ update = 'update',
 delete = 'delete'
 }
 
+export enum AccountTransactionClass {
+trade = 'trade',
+fee = 'fee',
+payment = 'payment',
+reward = 'reward',
+conversion = 'conversion',
+manual = 'manual'
+}
+
+export enum AccountTransactionType {
+debit = 'debit',
+credit = 'credit'
+}
+
+export enum InstrumentHistoryPeriodicity {
+minute = 'minute',
+minute5 = 'minute5',
+minute10 = 'minute10',
+minute15 = 'minute15',
+minute30 = 'minute30',
+hour = 'hour',
+hour4 = 'hour4',
+hour8 = 'hour8',
+day = 'day',
+week = 'week',
+month = 'month'
+}
+
+export enum OrderType {
+limit = 'limit',
+market = 'market',
+stop_market = 'stop_market',
+stop_limit = 'stop_limit'
+}
+
+export enum OrderTimeInForce {
+fok = 'fok',
+ioc = 'ioc',
+gtc = 'gtc',
+gtd = 'gtd'
+}
+
+export enum InstrumentStrategyHedgingOrderPrice {
+tob = 'tob',
+vwap = 'vwap'
+}
+
+export enum OnMinSpreadViolation {
+allow = 'allow',
+discard_crossed_layers = 'discard_crossed_layers',
+discard_entire_book = 'discard_entire_book',
+adjust_crossed_layers = 'adjust_crossed_layers'
+}
+
+export enum DayOfWeek {
+sun = 'sun',
+mon = 'mon',
+tue = 'tue',
+wed = 'wed',
+thu = 'thu',
+fri = 'fri',
+sat = 'sat'
+}
+
 export enum Permission {
 accounts = 'accounts',
 accounts_balances = 'accounts_balances',
@@ -208,70 +272,6 @@ bulk_export_settings = 'bulk_export_settings',
 bulk_import_settings = 'bulk_import_settings',
 crypto_pay_core = 'crypto_pay_core',
 crypto_pay_submerchants = 'crypto_pay_submerchants'
-}
-
-export enum AccountTransactionClass {
-trade = 'trade',
-fee = 'fee',
-payment = 'payment',
-reward = 'reward',
-conversion = 'conversion',
-manual = 'manual'
-}
-
-export enum AccountTransactionType {
-debit = 'debit',
-credit = 'credit'
-}
-
-export enum InstrumentHistoryPeriodicity {
-minute = 'minute',
-minute5 = 'minute5',
-minute10 = 'minute10',
-minute15 = 'minute15',
-minute30 = 'minute30',
-hour = 'hour',
-hour4 = 'hour4',
-hour8 = 'hour8',
-day = 'day',
-week = 'week',
-month = 'month'
-}
-
-export enum OrderType {
-limit = 'limit',
-market = 'market',
-stop_market = 'stop_market',
-stop_limit = 'stop_limit'
-}
-
-export enum OrderTimeInForce {
-fok = 'fok',
-ioc = 'ioc',
-gtc = 'gtc',
-gtd = 'gtd'
-}
-
-export enum InstrumentStrategyHedgingOrderPrice {
-tob = 'tob',
-vwap = 'vwap'
-}
-
-export enum OnMinSpreadViolation {
-allow = 'allow',
-discard_crossed_layers = 'discard_crossed_layers',
-discard_entire_book = 'discard_entire_book',
-adjust_crossed_layers = 'adjust_crossed_layers'
-}
-
-export enum DayOfWeek {
-sun = 'sun',
-mon = 'mon',
-tue = 'tue',
-wed = 'wed',
-thu = 'thu',
-fri = 'fri',
-sat = 'sat'
 }
 
 export enum OrderSide {
@@ -496,8 +496,6 @@ create_conversion_quote = 'create_conversion_quote',
 update_user_fee_group = 'update_user_fee_group',
 update_user_limit_group = 'update_user_limit_group',
 delete_user = 'delete_user',
-delete_user_request = 'delete_user_request',
-confirm_delete_user_request = 'confirm_delete_user_request',
 add_push_token = 'add_push_token',
 clear_push_tokens = 'clear_push_tokens',
 change_user_password = 'change_user_password',
@@ -876,41 +874,6 @@ details: string;
 created_at: string;
 }
 
-export interface PermissionShare{
-user_id: string;
-role_id: Role;
-subject: string;
-shared_by: string;
-shared_at: string;
-shared_at_iso: string;
-}
-
-export interface PermissionPreset{
-name: string;
-subjects: string[];
-}
-
-export interface ApiKey{
-serial_id: number;
-api_key_id: string;
-name?: string;
-secret_hash: string;
-expires_at: string;
-created_at: string;
-is_active: ToggleSwitch;
-trader_id?: string;
-created_at_iso: string;
-expires_at_iso?: string;
-permissions: Permission[];
-ip_address: string[];
-}
-
-export interface CreateApiKeyResult{
-api_key_id: string;
-expires_at: string;
-api_key_secret: string;
-}
-
 export interface AccountTransaction{
 serial_id: number;
 account_transaction_id: string;
@@ -1066,6 +1029,41 @@ time_to_day_of_week: DayOfWeek;
 time_to_hours: number;
 time_to_minutes: number;
 instrument_strategy?: InstrumentStrategy;
+}
+
+export interface PermissionShare{
+user_id: string;
+role_id: Role;
+subject: string;
+shared_by: string;
+shared_at: string;
+shared_at_iso: string;
+}
+
+export interface PermissionPreset{
+name: string;
+subjects: string[];
+}
+
+export interface ApiKey{
+serial_id: number;
+api_key_id: string;
+name?: string;
+secret_hash: string;
+expires_at: string;
+created_at: string;
+is_active: ToggleSwitch;
+trader_id?: string;
+created_at_iso: string;
+expires_at_iso?: string;
+permissions: Permission[];
+ip_address: string[];
+}
+
+export interface CreateApiKeyResult{
+api_key_id: string;
+expires_at: string;
+api_key_secret: string;
 }
 
 export interface SignInResult{
@@ -1412,6 +1410,21 @@ updated_at_iso: string;
 user: User;
 }
 
+export interface EstimateNetworkFeeResultItem{
+fee_per_byte?: number;
+gas_price?: number;
+network_fee?: number;
+base_fee?: number;
+priority_fee?: number;
+gas_limit?: number;
+}
+
+export interface EstimateNetworkFeeResult{
+low: EstimateNetworkFeeResultItem;
+medium: EstimateNetworkFeeResultItem;
+high: EstimateNetworkFeeResultItem;
+}
+
 export interface DepositBankDetailsFiatResult{
 currency_id: string;
 fiat_bank_name?: string;
@@ -1426,21 +1439,6 @@ fiat_beneficiary_address_line_2?: string;
 fiat_transfer_type?: string;
 fiat_transfer_type_name?: string;
 fiat_qr_code?: string;
-}
-
-export interface EstimateNetworkFeeResultItem{
-fee_per_byte?: number;
-gas_price?: number;
-network_fee?: number;
-base_fee?: number;
-priority_fee?: number;
-gas_limit?: number;
-}
-
-export interface EstimateNetworkFeeResult{
-low: EstimateNetworkFeeResultItem;
-medium: EstimateNetworkFeeResultItem;
-high: EstimateNetworkFeeResultItem;
 }
 
 export interface ConversionQuotesRisks{
@@ -1745,6 +1743,13 @@ beneficiary_city?: string;
 beneficiary_address_line_1?: string;
 beneficiary_address_line_2?: string;
 beneficiary_postal_code?: string;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 }
 
 export interface PushToken{
@@ -1810,7 +1815,7 @@ DateTime?: DateTime;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'delete_user_request'|'confirm_delete_user_request'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'trader_demo_signin'|'admin_demo_signin'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -1844,6 +1849,13 @@ beneficiary_city?: string;
 beneficiary_address_line_1?: string;
 beneficiary_address_line_2?: string;
 beneficiary_postal_code?: string;
+intermediary_bank_name?: string;
+intermediary_iban?: string;
+intermediary_country?: string;
+intermediary_street_address?: string;
+intermediary_city?: string;
+intermediary_region?: string;
+intermediary_bic?: string;
 }
 
 export interface NotificationOptionsArgs{
@@ -2242,13 +2254,6 @@ reason?: string;
 }
 
 export interface DeleteUserArgs{
-}
-
-export interface DeleteUserRequestArgs{
-}
-
-export interface ConfirmDeleteUserRequestArgs{
-token: string;
 }
 
 export interface AddPushTokenArgs{
@@ -2997,6 +3002,8 @@ export interface InstrumentsArgs{
 instrument_id?: string;
 is_active?: ToggleSwitch;
 search?: string;
+page?: number;
+limit: number;
 }
 
 export interface InstrumentPriceBarsArgs{
@@ -3009,6 +3016,8 @@ export interface CurrenciesArgs{
 search?: string;
 type?: CurrencyType;
 is_active?: ToggleSwitch;
+page?: number;
+limit: number;
 }
 
 export interface DepositBankDetailsFiatArgs{
@@ -3688,7 +3697,7 @@ async update_user_limit_group({args,  headers}:{args: UpdateUserLimitGroupArgs, 
                 `,args || {},headers,'update_user_limit_group')
                 }
 
-async delete_user({  headers}:{  headers?:HeadersInit}={}):Promise<string>{ 
+async delete_user({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
                 mutation {
@@ -3696,26 +3705,6 @@ async delete_user({  headers}:{  headers?:HeadersInit}={}):Promise<string>{
                         
                 }
                 `,{},headers,'delete_user')
-                }
-
-async delete_user_request({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
-            if(!headers) headers = {};
-            return this.gql_request(gql`
-                mutation {
-                    delete_user_request
-                        
-                }
-                `,{},headers,'delete_user_request')
-                }
-
-async confirm_delete_user_request({args,  headers}:{args: ConfirmDeleteUserRequestArgs,  headers?:HeadersInit}):Promise<boolean>{ 
-            if(!headers) headers = {};
-            return this.gql_request(gql`
-                mutation($token: String!) {
-                    confirm_delete_user_request(token:$token)
-                        
-                }
-                `,args || {},headers,'confirm_delete_user_request')
                 }
 
 async add_push_token({args,  headers}:{args?: AddPushTokenArgs,  headers?:HeadersInit}):Promise<boolean>{ 
@@ -4776,11 +4765,11 @@ async healthcheck({ fields,  headers}:{ fields:((keyof HealthcheckResult) | Part
                 `,{},headers,'healthcheck')
                 }
 
-async instruments({args, fields,  headers}:{args?: InstrumentsArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument[]>{ 
+async instruments({args, fields,  headers}:{args: InstrumentsArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($instrument_id: String,$is_active: ToggleSwitch,$search: String) {
-                    instruments(instrument_id:$instrument_id,is_active:$is_active,search:$search)
+                query($instrument_id: String,$is_active: ToggleSwitch,$search: String,$page: Int,$limit: Int!) {
+                    instruments(instrument_id:$instrument_id,is_active:$is_active,search:$search,page:$page,limit:$limit)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4800,11 +4789,11 @@ async instrument_price_bars({args, fields,  headers}:{args: InstrumentPriceBarsA
                 `,args || {},headers,'instrument_price_bars')
                 }
 
-async currencies({args, fields,  headers}:{args?: CurrenciesArgs, fields:((keyof Currency) | Partial<Record<keyof Currency,any[]>>)[], headers?:HeadersInit}):Promise<Currency[]>{ 
+async currencies({args, fields,  headers}:{args: CurrenciesArgs, fields:((keyof Currency) | Partial<Record<keyof Currency,any[]>>)[], headers?:HeadersInit}):Promise<Currency[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($search: String,$type: CurrencyType,$is_active: ToggleSwitch) {
-                    currencies(search:$search,type:$type,is_active:$is_active)
+                query($search: String,$type: CurrencyType,$is_active: ToggleSwitch,$page: Int,$limit: Int!) {
+                    currencies(search:$search,type:$type,is_active:$is_active,page:$page,limit:$limit)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
