@@ -30,7 +30,8 @@ payment_unconfirmed = 'payment_unconfirmed',
 crypto_address_added = 'crypto_address_added',
 manual_balance_update = 'manual_balance_update',
 mfa_enabled = 'mfa_enabled',
-margin_call = 'margin_call'
+margin_call = 'margin_call',
+margin_liquidation = 'margin_liquidation'
 }
 
 export enum ToggleSwitch {
@@ -3020,9 +3021,12 @@ user_id?: string;
 
 export interface SendMarginTradeNotifArgs{
 user_id: string;
+trigger: NotificationTrigger;
 free_balance: number;
 pnl: number;
-margin_call_level: number;
+margin_call_level?: number;
+liquidation_level?: number;
+margin_trade_id?: number;
 }
 
 export interface CreateSpreadsheetArgs{
@@ -4905,8 +4909,8 @@ async close_margin_trade({args,  headers}:{args: CloseMarginTradeArgs,  headers?
 async send_margin_trade_notif({args,  headers}:{args: SendMarginTradeNotifArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!,$free_balance: Float!,$pnl: Float!,$margin_call_level: Float!) {
-                    send_margin_trade_notif(user_id:$user_id,free_balance:$free_balance,pnl:$pnl,margin_call_level:$margin_call_level)
+                mutation($user_id: String!,$trigger: NotificationTrigger!,$free_balance: Float!,$pnl: Float!,$margin_call_level: Float,$liquidation_level: Float,$margin_trade_id: Float) {
+                    send_margin_trade_notif(user_id:$user_id,trigger:$trigger,free_balance:$free_balance,pnl:$pnl,margin_call_level:$margin_call_level,liquidation_level:$liquidation_level,margin_trade_id:$margin_trade_id)
                         
                 }
                 `,args || {},headers,'send_margin_trade_notif')
