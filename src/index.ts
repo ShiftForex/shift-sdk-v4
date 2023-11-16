@@ -3022,7 +3022,7 @@ export interface SendMarginTradeNotifArgs{
 user_id: string;
 free_balance: number;
 pnl: number;
-margin_call_level: string;
+margin_call_level: number;
 }
 
 export interface CreateSpreadsheetArgs{
@@ -4905,7 +4905,7 @@ async close_margin_trade({args,  headers}:{args: CloseMarginTradeArgs,  headers?
 async send_margin_trade_notif({args,  headers}:{args: SendMarginTradeNotifArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!,$free_balance: Float!,$pnl: Float!,$margin_call_level: String!) {
+                mutation($user_id: String!,$free_balance: Float!,$pnl: Float!,$margin_call_level: Float!) {
                     send_margin_trade_notif(user_id:$user_id,free_balance:$free_balance,pnl:$pnl,margin_call_level:$margin_call_level)
                         
                 }
