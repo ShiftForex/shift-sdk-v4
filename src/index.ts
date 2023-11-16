@@ -3026,7 +3026,7 @@ free_balance: number;
 pnl: number;
 margin_call_level?: number;
 liquidation_level?: number;
-margin_trade_id?: number;
+margin_trade_id?: string;
 }
 
 export interface CreateSpreadsheetArgs{
@@ -4909,7 +4909,7 @@ async close_margin_trade({args,  headers}:{args: CloseMarginTradeArgs,  headers?
 async send_margin_trade_notif({args,  headers}:{args: SendMarginTradeNotifArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!,$trigger: NotificationTrigger!,$free_balance: Float!,$pnl: Float!,$margin_call_level: Float,$liquidation_level: Float,$margin_trade_id: Float) {
+                mutation($user_id: String!,$trigger: NotificationTrigger!,$free_balance: Float!,$pnl: Float!,$margin_call_level: Float,$liquidation_level: Float,$margin_trade_id: String) {
                     send_margin_trade_notif(user_id:$user_id,trigger:$trigger,free_balance:$free_balance,pnl:$pnl,margin_call_level:$margin_call_level,liquidation_level:$liquidation_level,margin_trade_id:$margin_trade_id)
                         
                 }
