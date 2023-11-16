@@ -29,7 +29,8 @@ payment_completed = 'payment_completed',
 payment_unconfirmed = 'payment_unconfirmed',
 crypto_address_added = 'crypto_address_added',
 manual_balance_update = 'manual_balance_update',
-mfa_enabled = 'mfa_enabled'
+mfa_enabled = 'mfa_enabled',
+margin_call = 'margin_call'
 }
 
 export enum ToggleSwitch {
@@ -225,6 +226,7 @@ create_withdrawal_fiat = 'create_withdrawal_fiat',
 deposit_bank_details_fiat = 'deposit_bank_details_fiat',
 deposit_addresses_crypto = 'deposit_addresses_crypto',
 update_payment_approval_status = 'update_payment_approval_status',
+reprocess_payment = 'reprocess_payment',
 system_settings = 'system_settings',
 update_system_settings = 'update_system_settings',
 upload_user_document = 'upload_user_document',
@@ -246,6 +248,7 @@ create_webhook = 'create_webhook',
 update_webhook = 'update_webhook',
 delete_webhook = 'delete_webhook',
 update_maintenance_mode = 'update_maintenance_mode',
+update_geo_restrictions = 'update_geo_restrictions',
 update_mfa_provider = 'update_mfa_provider',
 liquidity_report = 'liquidity_report',
 daily_balances_report = 'daily_balances_report',
@@ -334,10 +337,11 @@ rejected = 'rejected'
 
 export enum VerificationType {
 none = 'none',
-local_mfa = 'local_mfa',
-cognito_mfa = 'cognito_mfa',
+totp = 'totp',
 bank_id = 'bank_id',
-sms = 'sms'
+sms = 'sms',
+local_mfa = 'local_mfa',
+cognito_mfa = 'cognito_mfa'
 }
 
 export enum ConversionStatus {
@@ -460,6 +464,12 @@ closed_margin_trades = 'closed_margin_trades',
 get_user_ip_geo_history = 'get_user_ip_geo_history',
 get_user_ip_geo_history_dashboard = 'get_user_ip_geo_history_dashboard',
 portfolio_history = 'portfolio_history',
+profits_dashboard = 'profits_dashboard',
+conversions_dashboard = 'conversions_dashboard',
+volume_dashboard = 'volume_dashboard',
+deposits_dashboard = 'deposits_dashboard',
+withdrawals_dashboard = 'withdrawals_dashboard',
+summary_dashboard = 'summary_dashboard',
 blacklist_items = 'blacklist_items'
 }
 
@@ -489,6 +499,11 @@ year = 'year',
 all = 'all'
 }
 
+export enum DashboardReportInterval {
+daily = 'daily',
+monthly = 'monthly'
+}
+
 export enum MutationEnum {
 create_order = 'create_order',
 cancel_multiple_orders = 'cancel_multiple_orders',
@@ -504,6 +519,7 @@ create_currency = 'create_currency',
 update_currency = 'update_currency',
 delete_currency = 'delete_currency',
 validate_address_crypto = 'validate_address_crypto',
+reprocess_payment = 'reprocess_payment',
 update_payment_approval_status = 'update_payment_approval_status',
 create_withdrawal_crypto = 'create_withdrawal_crypto',
 create_withdrawal_fiat = 'create_withdrawal_fiat',
@@ -604,6 +620,7 @@ update_hedging_account = 'update_hedging_account',
 import_balances_from_v3 = 'import_balances_from_v3',
 open_margin_trade = 'open_margin_trade',
 close_margin_trade = 'close_margin_trade',
+send_margin_trade_notif = 'send_margin_trade_notif',
 create_spreadsheet = 'create_spreadsheet',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 create_ip_blacklist_items = 'create_ip_blacklist_items',
@@ -1234,6 +1251,7 @@ total_balance: number;
 exposed_balance: number;
 free_balance: number;
 currency: Currency;
+margin_pnl: number;
 free_balance_quoted?: number;
 }
 
@@ -1376,16 +1394,33 @@ intermediary_region?: string;
 intermediary_bic?: string;
 }
 
+export interface DepositAddressCrypto{
+deposit_address_crypto_id: string;
+user_id: string;
+currency_id: string;
+address?: string;
+address_tag_type?: CryptoAddressTagType;
+address_tag_value?: string;
+network?: string;
+psp_service_id?: string;
+reference?: string;
+address_type?: string;
+created_at: string;
+updated_at: string;
+created_at_iso: string;
+updated_at_iso: string;
+user: User;
+}
+
 export interface PaymentRoute{
 payment_route_id: string;
 currency_id: string;
 psp_service_id: string;
+name?: string;
 psp_balance: number;
 psp_balance_updated_at?: string;
-fiat_transfer_type?: string;
-fiat_transfer_type_name?: string;
 crypto_network?: string;
-crypto_network_name?: string;
+crypto_address_generate_new?: ToggleSwitch;
 crypto_address_tag_type?: string;
 fiat_iframe_deposit_url?: string;
 fiat_iframe_withdrawal_url?: string;
@@ -1421,22 +1456,15 @@ intermediary_region?: string;
 intermediary_bic?: string;
 }
 
-export interface DepositAddressCrypto{
-deposit_address_crypto_id: string;
-user_id: string;
-currency_id: string;
-address?: string;
-address_tag_type?: CryptoAddressTagType;
-address_tag_value?: string;
-network?: string;
-psp_service_id?: string;
-reference?: string;
-address_type?: string;
-created_at: string;
-updated_at: string;
-created_at_iso: string;
-updated_at_iso: string;
-user: User;
+export interface Summary{
+equity: number;
+equity_change: number;
+profit: number;
+number_of_trades: number;
+trades_volume_usd: number;
+deposits_volume_in_usd: number;
+withdrawals_volume_in_usd: number;
+fees_volume_in_usd: number;
 }
 
 export interface DepositBankDetailsFiatResult{
@@ -1583,7 +1611,7 @@ fireblocks_rolling_limits?: FireblocksRollingLimits;
 export interface TotalHedgeBalanceItem{
 instrument_id: string;
 hedging_adapter_id: string;
-hedge_balance: number;
+hedge_balance?: number;
 }
 
 export interface OpenExposureReportResult{
@@ -1835,8 +1863,8 @@ end_bid_price?: number;
 pnl: number;
 max_profit: number;
 max_loss: number;
-stop_loss: number;
-take_profit: number;
+stop_loss?: number;
+take_profit?: number;
 on_limit: string;
 close_reason?: string;
 update_ts: string;
@@ -1870,7 +1898,7 @@ enabled: boolean;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'open_margin_trades'|'closed_margin_trades'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'deposit_bank_details_fiat'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'open_margin_trades'|'closed_margin_trades'|'get_user_ip_geo_history'|'get_user_ip_geo_history_dashboard'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -1886,7 +1914,7 @@ DateTime?: DateTime;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'open_margin_trade'|'close_margin_trade'|'create_spreadsheet'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'open_margin_trade'|'close_margin_trade'|'send_margin_trade_notif'|'create_spreadsheet'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -2151,6 +2179,16 @@ export interface ValidateAddressCryptoArgs{
 currency_id: string;
 crypto_address: string;
 crypto_network?: string;
+}
+
+export interface ReprocessPaymentArgs{
+status?: PaymentStatus;
+approval_status?: PaymentApprovalStatus;
+approval_reason?: string;
+message?: string;
+error_message?: string;
+payment_id: string;
+trigger_auto_approval?: ToggleSwitch;
 }
 
 export interface UpdatePaymentApprovalStatusArgs{
@@ -2442,21 +2480,23 @@ mfa_token?: string;
 export interface CreatePaymentRouteArgs{
 currency_id: string;
 psp_service_id: string;
-crypto_network?: string;
-crypto_network_name?: string;
-crypto_address_tag_type?: string;
-is_active: ToggleSwitch;
+name?: string;
 fiat_transfer_type?: string;
 fiat_transfer_type_name?: string;
-fiat_deposit_details?: FiatDepositDetailsInput;
+crypto_network?: string;
+crypto_network_name?: string;
+crypto_address_generate_new?: ToggleSwitch;
+crypto_address_tag_type?: string;
 fiat_iframe_deposit_url?: string;
 fiat_iframe_withdrawal_url?: string;
-is_development?: ToggleSwitch;
+is_active: ToggleSwitch;
 extend_network_fee?: ToggleSwitch;
 network_fee_currency_id?: string;
+is_development?: ToggleSwitch;
 verification_type?: VerificationType;
-deposit_enabled?: ToggleSwitch;
-withdrawal_enabled?: ToggleSwitch;
+deposit_enabled: ToggleSwitch;
+withdrawal_enabled: ToggleSwitch;
+fiat_deposit_details?: FiatDepositDetailsInput;
 }
 
 export interface DeletePaymentRouteArgs{
@@ -2466,10 +2506,12 @@ payment_route_id: string;
 export interface UpdatePaymentRouteArgs{
 currency_id?: string;
 psp_service_id?: string;
+name?: string;
 fiat_transfer_type?: string;
 fiat_transfer_type_name?: string;
 crypto_network?: string;
 crypto_network_name?: string;
+crypto_address_generate_new?: ToggleSwitch;
 crypto_address_tag_type?: string;
 fiat_iframe_deposit_url?: string;
 fiat_iframe_withdrawal_url?: string;
@@ -2966,14 +3008,21 @@ side: MarginTradeSide;
 leverage: number;
 amount: number;
 limit_price?: number;
-stop_loss: number;
-take_profit: number;
+stop_loss?: number;
+take_profit?: number;
 user_id?: string;
 }
 
 export interface CloseMarginTradeArgs{
 margin_trade_id: string;
 user_id?: string;
+}
+
+export interface SendMarginTradeNotifArgs{
+user_id: string;
+free_balance: number;
+pnl: number;
+margin_call_level: string;
 }
 
 export interface CreateSpreadsheetArgs{
@@ -3540,6 +3589,36 @@ timestamp: string;
 interval: PortfolioHistoryInterval;
 }
 
+export interface ProfitsDashboardArgs{
+currency_id: string;
+interval: DashboardReportInterval;
+}
+
+export interface ConversionsDashboardArgs{
+currency_id: string;
+interval: DashboardReportInterval;
+}
+
+export interface VolumeDashboardArgs{
+currency_id: string;
+interval: DashboardReportInterval;
+}
+
+export interface DepositsDashboardArgs{
+currency_id: string;
+interval: DashboardReportInterval;
+}
+
+export interface WithdrawalsDashboardArgs{
+currency_id: string;
+interval: DashboardReportInterval;
+}
+
+export interface SummaryDashboardArgs{
+currency_id: string;
+interval: DashboardReportInterval;
+}
+
 export interface BlacklistItemsArgs{
 ip_address?: string;
 reason?: string;
@@ -3737,6 +3816,16 @@ async validate_address_crypto({args,  headers}:{args: ValidateAddressCryptoArgs,
                         
                 }
                 `,args || {},headers,'validate_address_crypto')
+                }
+
+async reprocess_payment({args,  headers}:{args: ReprocessPaymentArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($status: PaymentStatus,$approval_status: PaymentApprovalStatus,$approval_reason: String,$message: String,$error_message: String,$payment_id: String!,$trigger_auto_approval: ToggleSwitch) {
+                    reprocess_payment(status:$status,approval_status:$approval_status,approval_reason:$approval_reason,message:$message,error_message:$error_message,payment_id:$payment_id,trigger_auto_approval:$trigger_auto_approval)
+                        
+                }
+                `,args || {},headers,'reprocess_payment')
                 }
 
 async update_payment_approval_status({args,  headers}:{args: UpdatePaymentApprovalStatusArgs,  headers?:HeadersInit}):Promise<boolean>{ 
@@ -4068,8 +4157,8 @@ async create_payment_session({args,  headers}:{args: CreatePaymentSessionArgs,  
 async create_payment_route({args, fields,  headers}:{args: CreatePaymentRouteArgs, fields:((keyof PaymentRoute) | Partial<Record<keyof PaymentRoute,any[]>>)[], headers?:HeadersInit}):Promise<PaymentRoute>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String!,$psp_service_id: String!,$crypto_network: String,$crypto_network_name: String,$crypto_address_tag_type: String,$is_active: ToggleSwitch!,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$fiat_deposit_details: FiatDepositDetailsInput,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_development: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$verification_type: VerificationType,$deposit_enabled: ToggleSwitch,$withdrawal_enabled: ToggleSwitch) {
-                    create_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_tag_type:$crypto_address_tag_type,is_active:$is_active,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,fiat_deposit_details:$fiat_deposit_details,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_development:$is_development,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,verification_type:$verification_type,deposit_enabled:$deposit_enabled,withdrawal_enabled:$withdrawal_enabled)
+                mutation($currency_id: String!,$psp_service_id: String!,$name: String,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$crypto_network: String,$crypto_network_name: String,$crypto_address_generate_new: ToggleSwitch,$crypto_address_tag_type: String,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_active: ToggleSwitch!,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$deposit_enabled: ToggleSwitch!,$withdrawal_enabled: ToggleSwitch!,$fiat_deposit_details: FiatDepositDetailsInput) {
+                    create_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,name:$name,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_generate_new:$crypto_address_generate_new,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,deposit_enabled:$deposit_enabled,withdrawal_enabled:$withdrawal_enabled,fiat_deposit_details:$fiat_deposit_details)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4090,8 +4179,8 @@ async delete_payment_route({args,  headers}:{args: DeletePaymentRouteArgs,  head
 async update_payment_route({args,  headers}:{args: UpdatePaymentRouteArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String,$psp_service_id: String,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$crypto_network: String,$crypto_network_name: String,$crypto_address_tag_type: String,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_active: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$deposit_enabled: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$payment_route_id: String!,$fiat_deposit_details: FiatDepositDetailsInput) {
-                    update_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,deposit_enabled:$deposit_enabled,withdrawal_enabled:$withdrawal_enabled,payment_route_id:$payment_route_id,fiat_deposit_details:$fiat_deposit_details)
+                mutation($currency_id: String,$psp_service_id: String,$name: String,$fiat_transfer_type: String,$fiat_transfer_type_name: String,$crypto_network: String,$crypto_network_name: String,$crypto_address_generate_new: ToggleSwitch,$crypto_address_tag_type: String,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$is_active: ToggleSwitch,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$deposit_enabled: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$payment_route_id: String!,$fiat_deposit_details: FiatDepositDetailsInput) {
+                    update_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,name:$name,fiat_transfer_type:$fiat_transfer_type,fiat_transfer_type_name:$fiat_transfer_type_name,crypto_network:$crypto_network,crypto_network_name:$crypto_network_name,crypto_address_generate_new:$crypto_address_generate_new,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,deposit_enabled:$deposit_enabled,withdrawal_enabled:$withdrawal_enabled,payment_route_id:$payment_route_id,fiat_deposit_details:$fiat_deposit_details)
                         
                 }
                 `,args || {},headers,'update_payment_route')
@@ -4794,7 +4883,7 @@ async import_balances_from_v3({args,  headers}:{args: ImportBalancesFromV3Args, 
 async open_margin_trade({args, fields,  headers}:{args: OpenMarginTradeArgs, fields:((keyof MarginTrade) | Partial<Record<keyof MarginTrade,any[]>>)[], headers?:HeadersInit}):Promise<MarginTrade>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($instrument_id: String!,$side: MarginTradeSide!,$leverage: Int!,$amount: Float!,$limit_price: Float,$stop_loss: Float!,$take_profit: Float!,$user_id: String) {
+                mutation($instrument_id: String!,$side: MarginTradeSide!,$leverage: Int!,$amount: Float!,$limit_price: Float,$stop_loss: Float,$take_profit: Float,$user_id: String) {
                     open_margin_trade(instrument_id:$instrument_id,side:$side,leverage:$leverage,amount:$amount,limit_price:$limit_price,stop_loss:$stop_loss,take_profit:$take_profit,user_id:$user_id)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -4811,6 +4900,16 @@ async close_margin_trade({args,  headers}:{args: CloseMarginTradeArgs,  headers?
                         
                 }
                 `,args || {},headers,'close_margin_trade')
+                }
+
+async send_margin_trade_notif({args,  headers}:{args: SendMarginTradeNotifArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($user_id: String!,$free_balance: Float!,$pnl: Float!,$margin_call_level: String!) {
+                    send_margin_trade_notif(user_id:$user_id,free_balance:$free_balance,pnl:$pnl,margin_call_level:$margin_call_level)
+                        
+                }
+                `,args || {},headers,'send_margin_trade_notif')
                 }
 
 async create_spreadsheet({args, fields,  headers}:{args: CreateSpreadsheetArgs, fields:((keyof GoogleSpreadsheetOperationResult) | Partial<Record<keyof GoogleSpreadsheetOperationResult,any[]>>)[], headers?:HeadersInit}):Promise<GoogleSpreadsheetOperationResult>{ 
@@ -5717,6 +5816,68 @@ async portfolio_history({args,  headers}:{args: PortfolioHistoryArgs,  headers?:
                         
                 }
                 `,args || {},headers,'portfolio_history')
+                }
+
+async profits_dashboard({args,  headers}:{args: ProfitsDashboardArgs,  headers?:HeadersInit}):Promise<number[][]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$interval: DashboardReportInterval!) {
+                    profits_dashboard(currency_id:$currency_id,interval:$interval)
+                        
+                }
+                `,args || {},headers,'profits_dashboard')
+                }
+
+async conversions_dashboard({args,  headers}:{args: ConversionsDashboardArgs,  headers?:HeadersInit}):Promise<number[][]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$interval: DashboardReportInterval!) {
+                    conversions_dashboard(currency_id:$currency_id,interval:$interval)
+                        
+                }
+                `,args || {},headers,'conversions_dashboard')
+                }
+
+async volume_dashboard({args,  headers}:{args: VolumeDashboardArgs,  headers?:HeadersInit}):Promise<number[][]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$interval: DashboardReportInterval!) {
+                    volume_dashboard(currency_id:$currency_id,interval:$interval)
+                        
+                }
+                `,args || {},headers,'volume_dashboard')
+                }
+
+async deposits_dashboard({args,  headers}:{args: DepositsDashboardArgs,  headers?:HeadersInit}):Promise<number[][]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$interval: DashboardReportInterval!) {
+                    deposits_dashboard(currency_id:$currency_id,interval:$interval)
+                        
+                }
+                `,args || {},headers,'deposits_dashboard')
+                }
+
+async withdrawals_dashboard({args,  headers}:{args: WithdrawalsDashboardArgs,  headers?:HeadersInit}):Promise<number[][]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$interval: DashboardReportInterval!) {
+                    withdrawals_dashboard(currency_id:$currency_id,interval:$interval)
+                        
+                }
+                `,args || {},headers,'withdrawals_dashboard')
+                }
+
+async summary_dashboard({args, fields,  headers}:{args: SummaryDashboardArgs, fields:((keyof Summary) | Partial<Record<keyof Summary,any[]>>)[], headers?:HeadersInit}):Promise<Summary>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$interval: DashboardReportInterval!) {
+                    summary_dashboard(currency_id:$currency_id,interval:$interval)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'summary_dashboard')
                 }
 
 async blacklist_items({args, fields,  headers}:{args?: BlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
