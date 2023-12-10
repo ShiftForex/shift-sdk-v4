@@ -57,6 +57,21 @@ admin = 'admin',
 trader = 'trader'
 }
 
+export enum UploadDocumentType {
+profile_picture = 'profile_picture',
+passport = 'passport',
+national_identity = 'national_identity',
+driver_license = 'driver_license',
+birth_certificate = 'birth_certificate',
+bank_statement = 'bank_statement',
+utility_bill = 'utility_bill',
+proof_of_residence = 'proof_of_residence',
+proof_of_id_front = 'proof_of_id_front',
+proof_of_id_back = 'proof_of_id_back',
+company_registration = 'company_registration',
+memorandum_of_association = 'memorandum_of_association'
+}
+
 export enum CurrencyType {
 crypto = 'crypto',
 fiat = 'fiat'
@@ -447,6 +462,7 @@ ip_whitelist = 'ip_whitelist',
 hedging_accounts = 'hedging_accounts',
 find_config_changes = 'find_config_changes',
 config_changes_events = 'config_changes_events',
+admin_properties = 'admin_properties',
 user_ip_geo_history = 'user_ip_geo_history',
 user_ip_geo_history_overview = 'user_ip_geo_history_overview',
 user_ip_geo_history_detail = 'user_ip_geo_history_detail',
@@ -607,6 +623,9 @@ update_hedging_account = 'update_hedging_account',
 import_balances_from_v3 = 'import_balances_from_v3',
 send_margin_trade_notif = 'send_margin_trade_notif',
 create_spreadsheet = 'create_spreadsheet',
+update_admin_properties = 'update_admin_properties',
+create_upload = 'create_upload',
+complete_upload = 'complete_upload',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 create_ip_blacklist_items = 'create_ip_blacklist_items',
 update_ip_blacklist_item = 'update_ip_blacklist_item',
@@ -782,6 +801,26 @@ export interface Int{
 Int?: number;
 }
 
+export interface Upload{
+upload_id: string;
+user_id: string;
+document_type: UploadDocumentType;
+content_type: string;
+size: number;
+original_name: string;
+s3_bucket: string;
+s3_etag: string;
+s3_key: string;
+s3_location?: string;
+s3_public_url?: string;
+created_at: string;
+}
+
+export interface NewUploadResult{
+upload_id: string;
+upload_url: string;
+}
+
 export interface KycUserData{
 user_id: string;
 kyc_property: string;
@@ -942,8 +981,6 @@ balance: number;
 version: number;
 created_at: string;
 updated_at: string;
-created_at_iso: string;
-updated_at_iso: string;
 }
 
 export interface AccountsResult{
@@ -955,10 +992,11 @@ balance: number;
 version: number;
 created_at: string;
 updated_at: string;
-created_at_iso: string;
-updated_at_iso: string;
 email?: string;
 username?: string;
+created_at_iso: string;
+updated_at_iso: string;
+balance_quoted?: number;
 }
 
 export interface Instrument{
@@ -1234,6 +1272,7 @@ user?: User;
 trades: Trade[];
 instrument: Instrument;
 fees: AccountTransaction[];
+total: number;
 created_at_iso: string;
 updated_at_iso: string;
 expires_at_iso?: string;
@@ -1268,6 +1307,7 @@ price: number;
 quantity_mode: OrderQuantityMode;
 quantity: number;
 fees: EstimateOrderFee[];
+total: number;
 }
 
 export interface UsersTradingVolume{
@@ -1391,6 +1431,7 @@ intermediary_street_address?: string;
 intermediary_city?: string;
 intermediary_region?: string;
 intermediary_bic?: string;
+properties: PaymentProperty[];
 }
 
 export interface DepositAddressCrypto{
@@ -1452,6 +1493,13 @@ fiat_beneficiary_name?: string;
 fiat_beneficiary_account_number?: string;
 fiat_beneficiary_address_line_1?: string;
 fiat_beneficiary_address_line_2?: string;
+}
+
+export interface PaymentProperty{
+payment_id: string;
+name: string;
+value: string;
+updated_at: string;
 }
 
 export interface Summary{
@@ -1793,6 +1841,7 @@ intermediary_street_address?: string;
 intermediary_city?: string;
 intermediary_region?: string;
 intermediary_bic?: string;
+properties: FiatDepositProperty[];
 }
 
 export interface PushToken{
@@ -1832,6 +1881,13 @@ userFriendlyMessage?: string;
 message?: string;
 }
 
+export interface AdminProperty{
+admin_id: string;
+name: string;
+value: string;
+updated_at: string;
+}
+
 export interface RegionBlacklistItemInput{
 code: string;
 list: BlacklistItemInput[];
@@ -1859,6 +1915,13 @@ fiat_beneficiary_address_line_1?: string;
 fiat_beneficiary_address_line_2?: string;
 }
 
+export interface PaymentPropertyInput{
+payment_id: string;
+name: string;
+value: string;
+updated_at: string;
+}
+
 export interface KycPreferenceInput{
 provider?: KycProvider;
 provider_url?: string;
@@ -1869,7 +1932,7 @@ enabled: boolean;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'admin_properties'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'blacklist_items'
 
 export interface PagerInput{
 limit?: number;
@@ -1882,7 +1945,7 @@ property?: string;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'send_margin_trade_notif'|'create_spreadsheet'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -1924,6 +1987,7 @@ intermediary_street_address?: string;
 intermediary_city?: string;
 intermediary_region?: string;
 intermediary_bic?: string;
+properties: FiatDepositPropertyInput[];
 }
 
 export interface NotificationOptionsArgs{
@@ -1956,6 +2020,11 @@ value: string;
 export interface KycUserDataEntryInput{
 kyc_property: string;
 kyc_value: string;
+}
+
+export interface UpdateAdminPropertyInput{
+name: string;
+value: string;
 }
 
 export interface Subscription{
@@ -2204,6 +2273,7 @@ intermediary_street_address?: string;
 intermediary_city?: string;
 intermediary_region?: string;
 intermediary_bic?: string;
+properties?: FiatDepositPropertyInput[];
 }
 
 export interface CreatePaymentManualArgs{
@@ -2971,6 +3041,23 @@ export interface CreateSpreadsheetArgs{
 spreadsheetId: string;
 }
 
+export interface UpdateAdminPropertiesArgs{
+properties: UpdateAdminPropertyInput[];
+}
+
+export interface CreateUploadArgs{
+document_type: UploadDocumentType;
+content_type: string;
+user_id?: string;
+}
+
+export interface CompleteUploadArgs{
+upload_id: string;
+size: number;
+original_name: string;
+s3_etag: string;
+}
+
 export interface CreateIpBlacklistItemArgs{
 ip_address: string;
 reason?: string;
@@ -3495,6 +3582,11 @@ search?: string;
 export interface ConfigChangesEventsArgs{
 }
 
+export interface AdminPropertiesArgs{
+name?: string;
+search?: string;
+}
+
 export interface UserIpGeoHistoryArgs{
 date_ts?: string;
 user_id?: string;
@@ -3786,8 +3878,8 @@ async create_withdrawal_crypto({args, fields,  headers}:{args: CreateWithdrawalC
 async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFiatArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String,$fiat_bank_bic: String,$fiat_bank_iban: String,$fiat_beneficiary_name: String,$fiat_beneficiary_email: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String,$bank_id_session: String,$intermediary_bank_name: String,$intermediary_bank_postal_code: String,$intermediary_iban: String,$intermediary_country: String,$intermediary_street_address: String,$intermediary_city: String,$intermediary_region: String,$intermediary_bic: String) {
-                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_bank_iban:$fiat_bank_iban,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_email:$fiat_beneficiary_email,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session,intermediary_bank_name:$intermediary_bank_name,intermediary_bank_postal_code:$intermediary_bank_postal_code,intermediary_iban:$intermediary_iban,intermediary_country:$intermediary_country,intermediary_street_address:$intermediary_street_address,intermediary_city:$intermediary_city,intermediary_region:$intermediary_region,intermediary_bic:$intermediary_bic)
+                mutation($user_id: String,$amount: Float!,$currency_id: String!,$psp_service_id: String,$fiat_bank_name: String,$fiat_bank_bic: String,$fiat_bank_iban: String,$fiat_beneficiary_name: String,$fiat_beneficiary_email: String,$fiat_beneficiary_account_number: String,$fiat_beneficiary_address_line_1: String,$fiat_beneficiary_address_line_2: String,$fiat_bank_address: String,$fiat_routing_number: String,$fiat_reference: String,$fiat_notes: String,$fiat_transfer_type: String,$reference: String,$mfa_token: String,$fees_included: ToggleSwitch,$fiat_bank_country: String,$fiat_bank_region: String,$fiat_bank_city: String,$fiat_bank_postal_code: String,$fiat_beneficiary_country: String,$fiat_beneficiary_region: String,$fiat_beneficiary_city: String,$fiat_beneficiary_postal_code: String,$fiat_bank_swift: String,$manual_transaction_date: String,$bank_id_session: String,$intermediary_bank_name: String,$intermediary_bank_postal_code: String,$intermediary_iban: String,$intermediary_country: String,$intermediary_street_address: String,$intermediary_city: String,$intermediary_region: String,$intermediary_bic: String,$properties: [FiatDepositPropertyInput!]) {
+                    create_withdrawal_fiat(user_id:$user_id,amount:$amount,currency_id:$currency_id,psp_service_id:$psp_service_id,fiat_bank_name:$fiat_bank_name,fiat_bank_bic:$fiat_bank_bic,fiat_bank_iban:$fiat_bank_iban,fiat_beneficiary_name:$fiat_beneficiary_name,fiat_beneficiary_email:$fiat_beneficiary_email,fiat_beneficiary_account_number:$fiat_beneficiary_account_number,fiat_beneficiary_address_line_1:$fiat_beneficiary_address_line_1,fiat_beneficiary_address_line_2:$fiat_beneficiary_address_line_2,fiat_bank_address:$fiat_bank_address,fiat_routing_number:$fiat_routing_number,fiat_reference:$fiat_reference,fiat_notes:$fiat_notes,fiat_transfer_type:$fiat_transfer_type,reference:$reference,mfa_token:$mfa_token,fees_included:$fees_included,fiat_bank_country:$fiat_bank_country,fiat_bank_region:$fiat_bank_region,fiat_bank_city:$fiat_bank_city,fiat_bank_postal_code:$fiat_bank_postal_code,fiat_beneficiary_country:$fiat_beneficiary_country,fiat_beneficiary_region:$fiat_beneficiary_region,fiat_beneficiary_city:$fiat_beneficiary_city,fiat_beneficiary_postal_code:$fiat_beneficiary_postal_code,fiat_bank_swift:$fiat_bank_swift,manual_transaction_date:$manual_transaction_date,bank_id_session:$bank_id_session,intermediary_bank_name:$intermediary_bank_name,intermediary_bank_postal_code:$intermediary_bank_postal_code,intermediary_iban:$intermediary_iban,intermediary_country:$intermediary_country,intermediary_street_address:$intermediary_street_address,intermediary_city:$intermediary_city,intermediary_region:$intermediary_region,intermediary_bic:$intermediary_bic,properties:$properties)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4835,6 +4927,42 @@ async create_spreadsheet({args, fields,  headers}:{args: CreateSpreadsheetArgs, 
                 `,args || {},headers,'create_spreadsheet')
                 }
 
+async update_admin_properties({args, fields,  headers}:{args: UpdateAdminPropertiesArgs, fields:((keyof AdminProperty) | Partial<Record<keyof AdminProperty,any[]>>)[], headers?:HeadersInit}):Promise<AdminProperty[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($properties: [UpdateAdminPropertyInput!]!) {
+                    update_admin_properties(properties:$properties)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'update_admin_properties')
+                }
+
+async create_upload({args, fields,  headers}:{args: CreateUploadArgs, fields:((keyof NewUploadResult) | Partial<Record<keyof NewUploadResult,any[]>>)[], headers?:HeadersInit}):Promise<NewUploadResult>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($document_type: UploadDocumentType!,$content_type: String!,$user_id: String) {
+                    create_upload(document_type:$document_type,content_type:$content_type,user_id:$user_id)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_upload')
+                }
+
+async complete_upload({args, fields,  headers}:{args: CompleteUploadArgs, fields:((keyof Upload) | Partial<Record<keyof Upload,any[]>>)[], headers?:HeadersInit}):Promise<Upload>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($upload_id: String!,$size: Float!,$original_name: String!,$s3_etag: String!) {
+                    complete_upload(upload_id:$upload_id,size:$size,original_name:$original_name,s3_etag:$s3_etag)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'complete_upload')
+                }
+
 async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklistItemArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -5657,6 +5785,18 @@ async config_changes_events({  headers}:{  headers?:HeadersInit}={}):Promise<str
                         
                 }
                 `,{},headers,'config_changes_events')
+                }
+
+async admin_properties({args, fields,  headers}:{args?: AdminPropertiesArgs, fields:((keyof AdminProperty) | Partial<Record<keyof AdminProperty,any[]>>)[], headers?:HeadersInit}):Promise<AdminProperty[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($name: String,$search: String) {
+                    admin_properties(name:$name,search:$search)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'admin_properties')
                 }
 
 async user_ip_geo_history({args, fields,  headers}:{args?: UserIpGeoHistoryArgs, fields:((keyof UserIpGeoHistory) | Partial<Record<keyof UserIpGeoHistory,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistory[]>{ 
