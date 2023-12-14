@@ -1503,14 +1503,14 @@ updated_at: string;
 }
 
 export interface Summary{
-equity: number;
-equity_change: number;
-profit: number;
-number_of_trades: number;
-trades_volume_usd: number;
-deposits_volume_in_usd: number;
-withdrawals_volume_in_usd: number;
-fees_volume_in_usd: number;
+equity?: number;
+equity_change?: number;
+profit?: number;
+number_of_trades?: number;
+trades_volume_usd?: number;
+deposits_volume_in_usd?: number;
+withdrawals_volume_in_usd?: number;
+fees_volume_in_usd?: number;
 }
 
 export interface ConversionQuotesRisks{
@@ -2375,6 +2375,7 @@ cognito_registration?: ToggleSwitch;
 cognito_email?: ToggleSwitch;
 permissions: Permission[];
 mfa_secret?: string;
+password?: string;
 }
 
 export interface CreateAccountTransactionArgs{
@@ -2697,6 +2698,7 @@ disable_strategy_on_error_attempts_threshold_exceeded?: ToggleSwitch;
 instruments_settings_sync_enabled?: ToggleSwitch;
 meta?: string;
 is_active?: ToggleSwitch;
+version?: number;
 min_spread?: number;
 on_min_spread_violation?: OnMinSpreadViolation;
 maximum_publish_quantity?: number;
@@ -3030,11 +3032,7 @@ user_ids: string[];
 export interface SendMarginTradeNotifArgs{
 user_id: string;
 trigger: NotificationTrigger;
-free_balance: number;
-pnl: number;
-margin_call_level?: number;
-liquidation_level?: number;
-margin_trade_id?: string;
+payload: string;
 }
 
 export interface CreateSpreadsheetArgs{
@@ -3243,6 +3241,8 @@ export interface UsersArgs{
 parent_user_id?: string;
 username?: string;
 email?: string;
+is_active?: ToggleSwitch;
+is_deleted?: ToggleSwitch;
 user_id?: string;
 search?: string;
 kyc_property?: string;
@@ -3998,8 +3998,8 @@ async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof
 async create_user({args, fields,  headers}:{args: CreateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$parent_user_id: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$fee_group_id: String,$limit_group_id: String,$crypto_pay: ToggleSwitch,$username: String!,$cognito_registration: ToggleSwitch,$cognito_email: ToggleSwitch,$permissions: [Permission!]!,$mfa_secret: String) {
-                    create_user(user_id:$user_id,parent_user_id:$parent_user_id,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,crypto_pay:$crypto_pay,username:$username,cognito_registration:$cognito_registration,cognito_email:$cognito_email,permissions:$permissions,mfa_secret:$mfa_secret)
+                mutation($user_id: String,$parent_user_id: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$fee_group_id: String,$limit_group_id: String,$crypto_pay: ToggleSwitch,$username: String!,$cognito_registration: ToggleSwitch,$cognito_email: ToggleSwitch,$permissions: [Permission!]!,$mfa_secret: String,$password: String) {
+                    create_user(user_id:$user_id,parent_user_id:$parent_user_id,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,crypto_pay:$crypto_pay,username:$username,cognito_registration:$cognito_registration,cognito_email:$cognito_email,permissions:$permissions,mfa_secret:$mfa_secret,password:$password)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4322,8 +4322,8 @@ async create_instrument_strategy({args, fields,  headers}:{args: CreateInstrumen
 async update_instrument_strategy({args,  headers}:{args: UpdateInstrumentStrategyArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String,$instrument_id: String,$remote_instrument_id: String,$loop_interval: Int,$active_layers_count: Int,$layer_discount_factor: Float,$markup_ask: Float,$markup_bid: Float,$order_min_quantity: Float,$order_max_quantity: Float,$order_ttl_ms: Int,$hedge_quantity_trigger_buy: Float,$hedge_quantity_trigger_sell: Float,$hedge_quantity_increment: Float,$hedge_balance: Float,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$maximum_publish_quantity: Float,$instrument_strategy_id: String!) {
-                    update_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedge_balance:$hedge_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,meta:$meta,is_active:$is_active,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,maximum_publish_quantity:$maximum_publish_quantity,instrument_strategy_id:$instrument_strategy_id)
+                mutation($hedging_adapter_id: String,$instrument_id: String,$remote_instrument_id: String,$loop_interval: Int,$active_layers_count: Int,$layer_discount_factor: Float,$markup_ask: Float,$markup_bid: Float,$order_min_quantity: Float,$order_max_quantity: Float,$order_ttl_ms: Int,$hedge_quantity_trigger_buy: Float,$hedge_quantity_trigger_sell: Float,$hedge_quantity_increment: Float,$hedge_balance: Float,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$maximum_publish_quantity: Float,$instrument_strategy_id: String!) {
+                    update_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,order_ttl_ms:$order_ttl_ms,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedge_balance:$hedge_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,meta:$meta,is_active:$is_active,version:$version,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,maximum_publish_quantity:$maximum_publish_quantity,instrument_strategy_id:$instrument_strategy_id)
                         
                 }
                 `,args || {},headers,'update_instrument_strategy')
@@ -4908,8 +4908,8 @@ async import_balances_from_v3({args,  headers}:{args: ImportBalancesFromV3Args, 
 async send_margin_trade_notif({args,  headers}:{args: SendMarginTradeNotifArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String!,$trigger: NotificationTrigger!,$free_balance: Float!,$pnl: Float!,$margin_call_level: Float,$liquidation_level: Float,$margin_trade_id: String) {
-                    send_margin_trade_notif(user_id:$user_id,trigger:$trigger,free_balance:$free_balance,pnl:$pnl,margin_call_level:$margin_call_level,liquidation_level:$liquidation_level,margin_trade_id:$margin_trade_id)
+                mutation($user_id: String!,$trigger: NotificationTrigger!,$payload: String!) {
+                    send_margin_trade_notif(user_id:$user_id,trigger:$trigger,payload:$payload)
                         
                 }
                 `,args || {},headers,'send_margin_trade_notif')
@@ -5192,8 +5192,8 @@ async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesR
 async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($parent_user_id: String,$username: String,$email: String,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserKycStatus,$kyc_level: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
-                    users(parent_user_id:$parent_user_id,username:$username,email:$email,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level,pager:$pager,sort:$sort,dateRange:$dateRange)
+                query($parent_user_id: String,$username: String,$email: String,$is_active: ToggleSwitch,$is_deleted: ToggleSwitch,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserKycStatus,$kyc_level: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    users(parent_user_id:$parent_user_id,username:$username,email:$email,is_active:$is_active,is_deleted:$is_deleted,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
