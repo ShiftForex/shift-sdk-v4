@@ -53,6 +53,11 @@ on = 'on',
 off = 'off'
 }
 
+export enum Role {
+admin = 'admin',
+trader = 'trader'
+}
+
 export enum UserKycStatus {
 incomplete = 'incomplete',
 rejected = 'rejected',
@@ -64,11 +69,6 @@ not_started = 'not_started'
 export enum KycType {
 individual = 'individual',
 corporate = 'corporate'
-}
-
-export enum Role {
-admin = 'admin',
-trader = 'trader'
 }
 
 export enum UploadDocumentType {
@@ -277,7 +277,6 @@ delete_permissions_share = 'delete_permissions_share',
 notification_settings = 'notification_settings',
 update_notification_settings = 'update_notification_settings',
 create_kyc_sum_and_substance_token = 'create_kyc_sum_and_substance_token',
-create_kyc_prime_trust_token = 'create_kyc_prime_trust_token',
 create_kyc_manual_request = 'create_kyc_manual_request',
 update_kyc_preference = 'update_kyc_preference',
 estimate_network_fee = 'estimate_network_fee',
@@ -564,6 +563,7 @@ cancel_order = 'cancel_order',
 cancel_all_orders = 'cancel_all_orders',
 service_signin = 'service_signin',
 checkin = 'checkin',
+restrictions_check = 'restrictions_check',
 create_instrument = 'create_instrument',
 update_instrument = 'update_instrument',
 delete_instrument = 'delete_instrument',
@@ -638,7 +638,6 @@ admin_from_preset = 'admin_from_preset',
 create_kyc_manual_request = 'create_kyc_manual_request',
 create_kyc_sum_and_substance_token = 'create_kyc_sum_and_substance_token',
 create_kyc_session = 'create_kyc_session',
-create_kyc_prime_trust_token = 'create_kyc_prime_trust_token',
 update_kyc_preferences = 'update_kyc_preferences',
 create_webhook = 'create_webhook',
 update_webhook = 'update_webhook',
@@ -836,25 +835,7 @@ anti_phishing_code?: string;
 parent_user?: User;
 created_at_iso: string;
 updated_at_iso?: string;
-date_of_birth_iso?: string;
 trading_volumes: UsersTradingVolume[];
-mobile_nr?: string;
-first_name?: string;
-last_name?: string;
-address_country?: string;
-address_state?: string;
-address_city?: string;
-address_zip?: string;
-address_line_1?: string;
-address_line_2?: string;
-date_of_birth?: string;
-tax_id?: string;
-account_opening_purpose?: string;
-company_name?: string;
-company_registration_nr?: string;
-company_position?: string;
-affiliate_code?: string;
-unique_id?: string;
 role?: Role;
 }
 
@@ -2071,7 +2052,7 @@ property?: string;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'create_kyc_prime_trust_token'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'update_elliptic_risk_threshold'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'restrictions_check'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'update_elliptic_risk_threshold'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -2261,6 +2242,9 @@ service_api_secret: string;
 }
 
 export interface CheckinArgs{
+}
+
+export interface RestrictionsCheckArgs{
 }
 
 export interface CreateInstrumentArgs{
@@ -2496,7 +2480,6 @@ mfa_token?: string;
 mfa_status?: ToggleSwitch;
 default_timezone?: ToggleSwitch;
 permissions: Permission[];
-anti_phishing_code?: string;
 }
 
 export interface CreateUserArgs{
@@ -2519,6 +2502,7 @@ password?: string;
 
 export interface UpdateAntiPhishingCodeArgs{
 anti_phishing_code: string;
+token: string;
 }
 
 export interface CreateAccountTransactionArgs{
@@ -2952,11 +2936,6 @@ user_id?: string;
 
 export interface CreateKycSessionArgs{
 kyc_type?: KycType;
-user_id?: string;
-}
-
-export interface CreateKycPrimeTrustTokenArgs{
-is_company: boolean;
 user_id?: string;
 }
 
@@ -4007,6 +3986,16 @@ async checkin({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{
                 `,{},headers,'checkin')
                 }
 
+async restrictions_check({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation {
+                    restrictions_check
+                        
+                }
+                `,{},headers,'restrictions_check')
+                }
+
 async create_instrument({args, fields,  headers}:{args: CreateInstrumentArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -4234,8 +4223,8 @@ async change_user_password({args,  headers}:{args: ChangeUserPasswordArgs,  head
 async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($parent_user_id: String,$username: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$is_active: ToggleSwitch,$mfa_for_withdraw: ToggleSwitch,$updated_at: String,$crypto_pay: ToggleSwitch,$user_id: String,$favorite_instruments: [string!]!,$favorite_addresses_crypto: [FavoriteAddressCryptoItem!]!,$favorite_fiat_destinations: [FavoriteFiatDestinationItem!]!,$notifications_settings: [NotificationTrigger!]!,$notifications_options: NotificationOptionsArgs,$mfa_token: String,$mfa_status: ToggleSwitch,$default_timezone: ToggleSwitch,$permissions: [Permission!]!,$anti_phishing_code: String) {
-                    update_user(parent_user_id:$parent_user_id,username:$username,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,is_active:$is_active,mfa_for_withdraw:$mfa_for_withdraw,updated_at:$updated_at,crypto_pay:$crypto_pay,user_id:$user_id,favorite_instruments:$favorite_instruments,favorite_addresses_crypto:$favorite_addresses_crypto,favorite_fiat_destinations:$favorite_fiat_destinations,notifications_settings:$notifications_settings,notifications_options:$notifications_options,mfa_token:$mfa_token,mfa_status:$mfa_status,default_timezone:$default_timezone,permissions:$permissions,anti_phishing_code:$anti_phishing_code)
+                mutation($parent_user_id: String,$username: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$is_active: ToggleSwitch,$mfa_for_withdraw: ToggleSwitch,$updated_at: String,$crypto_pay: ToggleSwitch,$user_id: String,$favorite_instruments: [string!]!,$favorite_addresses_crypto: [FavoriteAddressCryptoItem!]!,$favorite_fiat_destinations: [FavoriteFiatDestinationItem!]!,$notifications_settings: [NotificationTrigger!]!,$notifications_options: NotificationOptionsArgs,$mfa_token: String,$mfa_status: ToggleSwitch,$default_timezone: ToggleSwitch,$permissions: [Permission!]!) {
+                    update_user(parent_user_id:$parent_user_id,username:$username,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,is_active:$is_active,mfa_for_withdraw:$mfa_for_withdraw,updated_at:$updated_at,crypto_pay:$crypto_pay,user_id:$user_id,favorite_instruments:$favorite_instruments,favorite_addresses_crypto:$favorite_addresses_crypto,favorite_fiat_destinations:$favorite_fiat_destinations,notifications_settings:$notifications_settings,notifications_options:$notifications_options,mfa_token:$mfa_token,mfa_status:$mfa_status,default_timezone:$default_timezone,permissions:$permissions)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -4258,8 +4247,8 @@ async create_user({args, fields,  headers}:{args: CreateUserArgs, fields:((keyof
 async update_anti_phishing_code({args,  headers}:{args: UpdateAntiPhishingCodeArgs,  headers?:HeadersInit}):Promise<string>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($anti_phishing_code: String!) {
-                    update_anti_phishing_code(anti_phishing_code:$anti_phishing_code)
+                mutation($anti_phishing_code: String!,$token: String!) {
+                    update_anti_phishing_code(anti_phishing_code:$anti_phishing_code,token:$token)
                         
                 }
                 `,args || {},headers,'update_anti_phishing_code')
@@ -4795,16 +4784,6 @@ async create_kyc_session({args,  headers}:{args?: CreateKycSessionArgs,  headers
                         
                 }
                 `,args || {},headers,'create_kyc_session')
-                }
-
-async create_kyc_prime_trust_token({args,  headers}:{args: CreateKycPrimeTrustTokenArgs,  headers?:HeadersInit}):Promise<string>{ 
-            if(!headers) headers = {};
-            return this.gql_request(gql`
-                mutation($is_company: Boolean!,$user_id: String) {
-                    create_kyc_prime_trust_token(is_company:$is_company,user_id:$user_id)
-                        
-                }
-                `,args || {},headers,'create_kyc_prime_trust_token')
                 }
 
 async update_kyc_preferences({args, fields,  headers}:{args?: UpdateKycPreferencesArgs, fields:((keyof KycPreferences) | Partial<Record<keyof KycPreferences,any[]>>)[], headers?:HeadersInit}):Promise<KycPreferences>{ 
