@@ -48,6 +48,11 @@ account_transaction = 'account_transaction',
 strategy_rule_violation = 'strategy_rule_violation'
 }
 
+export enum CurrencyType {
+crypto = 'crypto',
+fiat = 'fiat'
+}
+
 export enum ToggleSwitch {
 on = 'on',
 off = 'off'
@@ -84,11 +89,6 @@ proof_of_id_front = 'proof_of_id_front',
 proof_of_id_back = 'proof_of_id_back',
 company_registration = 'company_registration',
 memorandum_of_association = 'memorandum_of_association'
-}
-
-export enum CurrencyType {
-crypto = 'crypto',
-fiat = 'fiat'
 }
 
 export enum FeeCalculationType {
@@ -321,7 +321,21 @@ instruments_strategies_rules = 'instruments_strategies_rules',
 create_instrument_strategy_rule = 'create_instrument_strategy_rule',
 update_instrument_strategy_rule = 'update_instrument_strategy_rule',
 delete_instrument_strategy_rule = 'delete_instrument_strategy_rule',
-instruments_strategies_alerts = 'instruments_strategies_alerts'
+instruments_strategies_alerts = 'instruments_strategies_alerts',
+vaults = 'vaults',
+create_vault = 'create_vault',
+update_vault = 'update_vault',
+delete_vault = 'delete_vault',
+vaults_transactions = 'vaults_transactions',
+create_vault_transaction = 'create_vault_transaction',
+create_vault_manual_transaction = 'create_vault_manual_transaction',
+vaults_accounts = 'vaults_accounts',
+trigger_vaults_interests_calculation = 'trigger_vaults_interests_calculation',
+trigger_vaults_locks_withdrawals = 'trigger_vaults_locks_withdrawals',
+estimate_vault_interests = 'estimate_vault_interests',
+vaults_transactions_requests = 'vaults_transactions_requests',
+update_vault_transaction_request = 'update_vault_transaction_request',
+cancel_vault_transaction_request = 'cancel_vault_transaction_request'
 }
 
 export enum OrderSide {
@@ -405,6 +419,25 @@ wallet = 'wallet',
 transaction = 'transaction'
 }
 
+export enum VaultRateType {
+flexible = 'flexible',
+fixed = 'fixed'
+}
+
+export enum VaultsTransactionClass {
+deposit = 'deposit',
+withdrawal = 'withdrawal',
+interest = 'interest',
+manual = 'manual'
+}
+
+export enum VaultTransactionRequestStatus {
+pending = 'pending',
+approved = 'approved',
+rejected = 'rejected',
+cancelled = 'cancelled'
+}
+
 export enum ConversionStatus {
 new = 'new',
 completed = 'completed',
@@ -474,6 +507,7 @@ default_notifications = 'default_notifications',
 delayed_mutations = 'delayed_mutations',
 geo_restrictions = 'geo_restrictions',
 mfa_provider = 'mfa_provider',
+is_margin_trading_enabled = 'is_margin_trading_enabled',
 accounts_portfolio_report = 'accounts_portfolio_report',
 orders_summary_report = 'orders_summary_report',
 conversions_summary_report = 'conversions_summary_report',
@@ -506,9 +540,10 @@ elliptic_screenings = 'elliptic_screenings',
 elliptic_risk_threshold = 'elliptic_risk_threshold',
 instruments_strategies_rules = 'instruments_strategies_rules',
 instruments_strategies_alerts = 'instruments_strategies_alerts',
-user_ip_geo_history = 'user_ip_geo_history',
-user_ip_geo_history_overview = 'user_ip_geo_history_overview',
-user_ip_geo_history_detail = 'user_ip_geo_history_detail',
+vaults = 'vaults',
+estimate_vault_interests = 'estimate_vault_interests',
+vaults_accounts = 'vaults_accounts',
+vaults_transactions = 'vaults_transactions',
 portfolio_history = 'portfolio_history',
 profits_dashboard = 'profits_dashboard',
 conversions_dashboard = 'conversions_dashboard',
@@ -516,7 +551,11 @@ volume_dashboard = 'volume_dashboard',
 deposits_dashboard = 'deposits_dashboard',
 withdrawals_dashboard = 'withdrawals_dashboard',
 summary_dashboard = 'summary_dashboard',
-blacklist_items = 'blacklist_items'
+vaults_transactions_requests = 'vaults_transactions_requests',
+blacklist_items = 'blacklist_items',
+user_ip_geo_history = 'user_ip_geo_history',
+user_ip_geo_history_overview = 'user_ip_geo_history_overview',
+user_ip_geo_history_detail = 'user_ip_geo_history_detail'
 }
 
 export enum SortDirection {
@@ -585,6 +624,7 @@ delete_user = 'delete_user',
 add_push_token = 'add_push_token',
 clear_push_tokens = 'clear_push_tokens',
 change_user_password = 'change_user_password',
+update_user_password = 'update_user_password',
 update_user = 'update_user',
 create_user = 'create_user',
 update_anti_phishing_code = 'update_anti_phishing_code',
@@ -672,7 +712,6 @@ create_ip_whitelist_items = 'create_ip_whitelist_items',
 update_ip_whitelist_item = 'update_ip_whitelist_item',
 delete_ip_whitelist_item = 'delete_ip_whitelist_item',
 update_hedging_account = 'update_hedging_account',
-import_balances_from_v3 = 'import_balances_from_v3',
 send_margin_trade_notif = 'send_margin_trade_notif',
 create_spreadsheet = 'create_spreadsheet',
 update_admin_properties = 'update_admin_properties',
@@ -684,6 +723,15 @@ update_elliptic_risk_threshold = 'update_elliptic_risk_threshold',
 create_instrument_strategy_rule = 'create_instrument_strategy_rule',
 update_instrument_strategy_rule = 'update_instrument_strategy_rule',
 delete_instrument_strategy_rule = 'delete_instrument_strategy_rule',
+create_vault = 'create_vault',
+update_vault = 'update_vault',
+delete_vault = 'delete_vault',
+trigger_vaults_interests_calculation = 'trigger_vaults_interests_calculation',
+trigger_vaults_locks_withdrawals = 'trigger_vaults_locks_withdrawals',
+create_vault_transaction = 'create_vault_transaction',
+create_vault_manual_transactions = 'create_vault_manual_transactions',
+update_vault_transaction_request = 'update_vault_transaction_request',
+cancel_vault_transaction_request = 'cancel_vault_transaction_request',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 create_ip_blacklist_items = 'create_ip_blacklist_items',
 update_ip_blacklist_item = 'update_ip_blacklist_item',
@@ -789,6 +837,29 @@ country_blacklist: BlacklistItem[];
 current_geo?: GeoInformation;
 }
 
+export interface Currency{
+serial_id?: number;
+currency_id: string;
+type: CurrencyType;
+precision: number;
+name: string;
+is_active: ToggleSwitch;
+payment_routes: PaymentRoute[];
+}
+
+export interface Int{
+Int?: number;
+}
+
+export interface CurrencyPrice{
+base_currency_id: string;
+quote_currency_id: string;
+ask: number;
+bid: number;
+source: string;
+updated_at: string;
+}
+
 export interface User{
 serial_id?: number;
 user_id: string;
@@ -839,10 +910,6 @@ trading_volumes: UsersTradingVolume[];
 role?: Role;
 }
 
-export interface Int{
-Int?: number;
-}
-
 export interface Upload{
 upload_id: string;
 user_id: string;
@@ -870,25 +937,6 @@ kyc_value: string;
 updated_at: string;
 }
 
-export interface Currency{
-serial_id?: number;
-currency_id: string;
-type: CurrencyType;
-precision: number;
-name: string;
-is_active: ToggleSwitch;
-payment_routes: PaymentRoute[];
-}
-
-export interface CurrencyPrice{
-base_currency_id: string;
-quote_currency_id: string;
-ask: number;
-bid: number;
-source: string;
-updated_at: string;
-}
-
 export interface CognitoPool{
 serial_id?: number;
 name: string;
@@ -899,6 +947,7 @@ is_active: ToggleSwitch;
 }
 
 export interface FeeGroup{
+serial_id?: number;
 fee_group_id: string;
 name?: string;
 description?: string;
@@ -1517,22 +1566,11 @@ properties: PaymentProperty[];
 screenings: EllipticScreening[];
 }
 
-export interface DepositAddressCrypto{
-deposit_address_crypto_id: string;
-user_id: string;
-currency_id: string;
-address?: string;
-address_tag_type?: CryptoAddressTagType;
-address_tag_value?: string;
-network?: string;
-psp_service_id?: string;
-reference?: string;
-address_type?: string;
-created_at: string;
+export interface PaymentProperty{
+payment_id: string;
+name: string;
+value?: string;
 updated_at: string;
-created_at_iso: string;
-updated_at_iso: string;
-user: User;
 }
 
 export interface FiatDepositProperty{
@@ -1584,11 +1622,22 @@ crypto_network: string;
 crypto_network_name: string;
 }
 
-export interface PaymentProperty{
-payment_id: string;
-name: string;
-value: string;
+export interface DepositAddressCrypto{
+deposit_address_crypto_id: string;
+user_id: string;
+currency_id: string;
+address?: string;
+address_tag_type?: CryptoAddressTagType;
+address_tag_value?: string;
+network?: string;
+psp_service_id?: string;
+reference?: string;
+address_type?: string;
+created_at: string;
 updated_at: string;
+created_at_iso: string;
+updated_at_iso: string;
+user: User;
 }
 
 export interface EllipticScreening{
@@ -1610,15 +1659,70 @@ rule_name?: string;
 risk_score: number;
 }
 
-export interface Summary{
-equity?: number;
-equity_change?: number;
-profit?: number;
-number_of_trades?: number;
-trades_volume?: number;
-deposits_volume?: number;
-withdrawals_volume?: number;
-fees_volume?: number;
+export interface Vault{
+serial_id?: number;
+vault_id: string;
+currency_id: string;
+name?: string;
+annual_rate_percent: number;
+max_withdrawal_amount: number;
+max_deposit_amount: number;
+min_withdrawal_amount: number;
+min_deposit_amount: number;
+cut_off_time_seconds: number;
+lock_in_period_seconds?: number;
+effective_date_from: string;
+effective_date_to: string;
+rate_type: VaultRateType;
+is_active: ToggleSwitch;
+withdrawal_enabled: ToggleSwitch;
+deposit_enabled: ToggleSwitch;
+last_interest_at?: string;
+created_at: string;
+updated_at: string;
+}
+
+export interface VaultTransaction{
+serial_id?: number;
+vault_id: string;
+user_id: string;
+vault_transaction_id: string;
+vault_account_id: string;
+amount: number;
+balance_after: number;
+transaction_type: AccountTransactionType;
+transaction_class: VaultsTransactionClass;
+comment?: string;
+created_by?: string;
+created_at: string;
+vault: Vault;
+}
+
+export interface VaultAccount{
+serial_id: number;
+vault_account_id: string;
+vault_id: string;
+user_id: string;
+balance: number;
+version: number;
+created_at: string;
+updated_at: string;
+vault: Vault;
+}
+
+export interface VaultTransactionRequest{
+serial_id?: number;
+request_id: string;
+user_id: string;
+vault_id: string;
+transaction_type: AccountTransactionType;
+transaction_class: VaultsTransactionClass;
+amount: number;
+status: VaultTransactionRequestStatus;
+approval_reason?: string;
+approved_by?: string;
+approved_at?: string;
+created_at: string;
 }
 
 export interface ConversionQuotesRisks{
@@ -1995,6 +2099,17 @@ value: string;
 updated_at: string;
 }
 
+export interface Summary{
+equity?: number;
+equity_change?: number;
+profit?: number;
+number_of_trades?: number;
+trades_volume?: number;
+deposits_volume?: number;
+withdrawals_volume?: number;
+fees_volume?: number;
+}
+
 export interface RegionBlacklistItemInput{
 code: string;
 list: BlacklistItemInput[];
@@ -2003,6 +2118,13 @@ list: BlacklistItemInput[];
 export interface BlacklistItemInput{
 code: string;
 name?: string;
+}
+
+export interface PaymentPropertyInput{
+payment_id: string;
+name: string;
+value?: string;
+updated_at: string;
 }
 
 export interface FiatDepositPropertyInput{
@@ -2022,13 +2144,6 @@ fiat_beneficiary_address_line_1?: string;
 fiat_beneficiary_address_line_2?: string;
 }
 
-export interface PaymentPropertyInput{
-payment_id: string;
-name: string;
-value: string;
-updated_at: string;
-}
-
 export interface KycPreferenceInput{
 provider?: KycProvider;
 provider_url?: string;
@@ -2039,7 +2154,7 @@ enabled: boolean;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'admin_properties'|'elliptic_screenings'|'elliptic_risk_threshold'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'blacklist_items'
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'is_margin_trading_enabled'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'admin_properties'|'elliptic_screenings'|'elliptic_risk_threshold'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'vaults'|'estimate_vault_interests'|'vaults_accounts'|'vaults_transactions'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'vaults_transactions_requests'|'blacklist_items'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
 
 export interface PagerInput{
 limit?: number;
@@ -2052,7 +2167,7 @@ property?: string;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'restrictions_check'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'import_balances_from_v3'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'update_elliptic_risk_threshold'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'restrictions_check'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'update_elliptic_risk_threshold'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_vault'|'update_vault'|'delete_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -2131,15 +2246,18 @@ kyc_property: string;
 kyc_value: string;
 }
 
-export interface ImportGroupsArgs{
-v3_group_name: string;
-group_name?: string;
-kyc_status: UserKycStatus;
-}
-
 export interface UpdateAdminPropertyInput{
 name: string;
 value: string;
+}
+
+export interface CreateVaultTransactionInput{
+vault_id: string;
+user_id: string;
+amount: number;
+transaction_type: AccountTransactionType;
+transaction_class: VaultsTransactionClass;
+comment?: string;
 }
 
 export interface Subscription{
@@ -2459,6 +2577,11 @@ previous_password: string;
 proposed_password: string;
 }
 
+export interface UpdateUserPasswordArgs{
+user_id: string;
+password: string;
+}
+
 export interface UpdateUserArgs{
 parent_user_id?: string;
 username?: string;
@@ -2522,7 +2645,8 @@ export interface UpdateLimitGroupArgs{
 name?: string;
 description?: string;
 kyc_status?: UserKycStatus;
-limit_group_id: string;
+limit_group_id?: string;
+serial_ids: number[];
 disabled_currencies: string[];
 disabled_instruments: string[];
 }
@@ -2544,7 +2668,8 @@ name?: string;
 description?: string;
 beneficiary_user_id?: string;
 kyc_status?: UserKycStatus;
-fee_group_id: string;
+fee_group_id?: string;
+serial_ids: number[];
 }
 
 export interface DeleteFeeGroupArgs{
@@ -2717,6 +2842,7 @@ withdrawal_daily_limit?: number;
 withdrawal_weekly_limit?: number;
 withdrawal_monthly_limit?: number;
 withdrawal_auto_approval_amount?: number;
+notion_currency?: string;
 serial_ids: number[];
 }
 
@@ -3170,15 +3296,6 @@ hedging_adapter_id: string;
 currency_id: string;
 }
 
-export interface ImportBalancesFromV3Args{
-exchange_id: string;
-api_key: string;
-admin_service_jwt?: string;
-user_ids: string[];
-emails: string[];
-groups: ImportGroupsArgs[];
-}
-
 export interface SendMarginTradeNotifArgs{
 user_id: string;
 trigger: NotificationTrigger;
@@ -3248,6 +3365,76 @@ instrument_strategy_id: string;
 
 export interface DeleteInstrumentStrategyRuleArgs{
 instrument_strategy_id: string;
+}
+
+export interface CreateVaultArgs{
+currency_id: string;
+name?: string;
+annual_rate_percent: number;
+max_withdrawal_amount: number;
+max_deposit_amount: number;
+min_withdrawal_amount: number;
+min_deposit_amount: number;
+cut_off_time_seconds: number;
+lock_in_period_seconds?: number;
+effective_date_from: string;
+effective_date_to: string;
+rate_type: VaultRateType;
+is_active: ToggleSwitch;
+withdrawal_enabled: ToggleSwitch;
+deposit_enabled: ToggleSwitch;
+last_interest_at?: string;
+}
+
+export interface UpdateVaultArgs{
+currency_id?: string;
+name?: string;
+annual_rate_percent?: number;
+max_withdrawal_amount?: number;
+max_deposit_amount?: number;
+min_withdrawal_amount?: number;
+min_deposit_amount?: number;
+cut_off_time_seconds?: number;
+lock_in_period_seconds?: number;
+effective_date_from?: string;
+effective_date_to?: string;
+rate_type?: VaultRateType;
+is_active?: ToggleSwitch;
+withdrawal_enabled?: ToggleSwitch;
+deposit_enabled?: ToggleSwitch;
+last_interest_at?: string;
+vault_id: string;
+}
+
+export interface DeleteVaultArgs{
+vault_id: string;
+}
+
+export interface TriggerVaultsInterestsCalculationArgs{
+}
+
+export interface TriggerVaultsLocksWithdrawalsArgs{
+}
+
+export interface CreateVaultTransactionArgs{
+vault_id: string;
+amount: number;
+transaction_type: AccountTransactionType;
+user_id?: string;
+}
+
+export interface CreateVaultManualTransactionsArgs{
+items: CreateVaultTransactionInput[];
+}
+
+export interface UpdateVaultTransactionRequestArgs{
+request_id: string;
+status: VaultTransactionRequestStatus;
+approval_reason?: string;
+}
+
+export interface CancelVaultTransactionRequestArgs{
+request_id: string;
 }
 
 export interface CreateIpBlacklistItemArgs{
@@ -3407,6 +3594,7 @@ export interface ConversionsArgs{
 user_id?: string;
 search?: string;
 reference?: string;
+status_in: ConversionStatus[];
 conversion_quote_id?: string;
 source_currency_id?: string;
 target_currency_id?: string;
@@ -3604,6 +3792,9 @@ export interface GeoRestrictionsArgs{
 }
 
 export interface MfaProviderArgs{
+}
+
+export interface IsMarginTradingEnabledArgs{
 }
 
 export interface AccountsPortfolioReportArgs{
@@ -3814,24 +4005,41 @@ pager?: PagerInput;
 sort?: SortInput;
 }
 
-export interface UserIpGeoHistoryArgs{
-date_ts?: string;
+export interface VaultsArgs{
+vault_id?: string;
+currency_id?: string;
+is_active?: ToggleSwitch;
+withdrawal_enabled?: ToggleSwitch;
+deposit_enabled?: ToggleSwitch;
+search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+}
+
+export interface EstimateVaultInterestsArgs{
+vault_id: string;
+amount: number;
+}
+
+export interface VaultsAccountsArgs{
+vault_account_id?: string;
+vault_id?: string;
 user_id?: string;
-ip_address?: string;
-country?: string;
-user_agent?: string;
+search?: string;
+pager?: PagerInput;
+sort?: SortInput;
 }
 
-export interface UserIpGeoHistoryOverviewArgs{
-from_date: string;
-to_date: string;
-}
-
-export interface UserIpGeoHistoryDetailArgs{
-lat: number;
-lon: number;
-from_date: string;
-to_date: string;
+export interface VaultsTransactionsArgs{
+vault_id?: string;
+user_id?: string;
+vault_transaction_id?: string;
+transaction_type?: AccountTransactionType;
+transaction_class?: VaultsTransactionClass;
+search?: string;
+pager?: PagerInput;
+date_range?: DateRangeInput;
+sort?: SortInput;
 }
 
 export interface PortfolioHistoryArgs{
@@ -3871,6 +4079,21 @@ currency_id: string;
 interval: DashboardReportInterval;
 }
 
+export interface VaultsTransactionsRequestsArgs{
+serial_id?: number;
+request_id?: string;
+user_id?: string;
+vault_id?: string;
+transaction_type?: AccountTransactionType;
+transaction_class?: VaultsTransactionClass;
+status?: VaultTransactionRequestStatus;
+approved_by?: string;
+search?: string;
+pager?: PagerInput;
+date_range?: DateRangeInput;
+sort?: SortInput;
+}
+
 export interface BlacklistItemsArgs{
 ip_address?: string;
 reason?: string;
@@ -3878,6 +4101,26 @@ search?: string;
 pager?: PagerInput;
 sort?: SortInput;
 dateRange?: DateRangeInput;
+}
+
+export interface UserIpGeoHistoryArgs{
+date_ts?: string;
+user_id?: string;
+ip_address?: string;
+country?: string;
+user_agent?: string;
+}
+
+export interface UserIpGeoHistoryOverviewArgs{
+from_date: string;
+to_date: string;
+}
+
+export interface UserIpGeoHistoryDetailArgs{
+lat: number;
+lon: number;
+from_date: string;
+to_date: string;
 }
 
 
@@ -4220,6 +4463,16 @@ async change_user_password({args,  headers}:{args: ChangeUserPasswordArgs,  head
                 `,args || {},headers,'change_user_password')
                 }
 
+async update_user_password({args,  headers}:{args: UpdateUserPasswordArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($user_id: String!,$password: String!) {
+                    update_user_password(user_id:$user_id,password:$password)
+                        
+                }
+                `,args || {},headers,'update_user_password')
+                }
+
 async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -4281,8 +4534,8 @@ async create_limit_group({args, fields,  headers}:{args: CreateLimitGroupArgs, f
 async update_limit_group({args,  headers}:{args: UpdateLimitGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$limit_group_id: String!,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!) {
-                    update_limit_group(name:$name,description:$description,kyc_status:$kyc_status,limit_group_id:$limit_group_id,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments)
+                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$limit_group_id: String,$serial_ids: [number!]!,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!) {
+                    update_limit_group(name:$name,description:$description,kyc_status:$kyc_status,limit_group_id:$limit_group_id,serial_ids:$serial_ids,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments)
                         
                 }
                 `,args || {},headers,'update_limit_group')
@@ -4313,8 +4566,8 @@ async create_fee_group({args, fields,  headers}:{args?: CreateFeeGroupArgs, fiel
 async update_fee_group({args,  headers}:{args: UpdateFeeGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$description: String,$beneficiary_user_id: String,$kyc_status: UserKycStatus,$fee_group_id: String!) {
-                    update_fee_group(name:$name,description:$description,beneficiary_user_id:$beneficiary_user_id,kyc_status:$kyc_status,fee_group_id:$fee_group_id)
+                mutation($name: String,$description: String,$beneficiary_user_id: String,$kyc_status: UserKycStatus,$fee_group_id: String,$serial_ids: [number!]!) {
+                    update_fee_group(name:$name,description:$description,beneficiary_user_id:$beneficiary_user_id,kyc_status:$kyc_status,fee_group_id:$fee_group_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'update_fee_group')
@@ -4473,8 +4726,8 @@ async create_payment_limit({args, fields,  headers}:{args: CreatePaymentLimitArg
 async update_payment_limit({args,  headers}:{args: UpdatePaymentLimitArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String,$currency_id: String,$deposit_enabled: ToggleSwitch,$deposit_min_amount: Float,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$deposit_auto_approval_amount: Float,$withdrawal_enabled: ToggleSwitch,$withdrawal_min_amount: Float,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$withdrawal_auto_approval_amount: Float,$serial_ids: [number!]!) {
-                    update_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount,serial_ids:$serial_ids)
+                mutation($limit_group_id: String,$currency_id: String,$deposit_enabled: ToggleSwitch,$deposit_min_amount: Float,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$deposit_auto_approval_amount: Float,$withdrawal_enabled: ToggleSwitch,$withdrawal_min_amount: Float,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$withdrawal_auto_approval_amount: Float,$notion_currency: String,$serial_ids: [number!]!) {
+                    update_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount,notion_currency:$notion_currency,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'update_payment_limit')
@@ -5154,16 +5407,6 @@ async update_hedging_account({args,  headers}:{args: UpdateHedgingAccountArgs,  
                 `,args || {},headers,'update_hedging_account')
                 }
 
-async import_balances_from_v3({args,  headers}:{args: ImportBalancesFromV3Args,  headers?:HeadersInit}):Promise<boolean>{ 
-            if(!headers) headers = {};
-            return this.gql_request(gql`
-                mutation($exchange_id: String!,$api_key: String!,$admin_service_jwt: String,$user_ids: [string!]!,$emails: [string!]!,$groups: [ImportGroupsArgs!]!) {
-                    import_balances_from_v3(exchange_id:$exchange_id,api_key:$api_key,admin_service_jwt:$admin_service_jwt,user_ids:$user_ids,emails:$emails,groups:$groups)
-                        
-                }
-                `,args || {},headers,'import_balances_from_v3')
-                }
-
 async send_margin_trade_notif({args,  headers}:{args: SendMarginTradeNotifArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -5284,6 +5527,104 @@ async delete_instrument_strategy_rule({args,  headers}:{args: DeleteInstrumentSt
                         
                 }
                 `,args || {},headers,'delete_instrument_strategy_rule')
+                }
+
+async create_vault({args, fields,  headers}:{args: CreateVaultArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($currency_id: String!,$name: String,$annual_rate_percent: Float!,$max_withdrawal_amount: Float!,$max_deposit_amount: Float!,$min_withdrawal_amount: Float!,$min_deposit_amount: Float!,$cut_off_time_seconds: Int!,$lock_in_period_seconds: Int,$effective_date_from: String!,$effective_date_to: String!,$rate_type: VaultRateType!,$is_active: ToggleSwitch!,$withdrawal_enabled: ToggleSwitch!,$deposit_enabled: ToggleSwitch!,$last_interest_at: String) {
+                    create_vault(currency_id:$currency_id,name:$name,annual_rate_percent:$annual_rate_percent,max_withdrawal_amount:$max_withdrawal_amount,max_deposit_amount:$max_deposit_amount,min_withdrawal_amount:$min_withdrawal_amount,min_deposit_amount:$min_deposit_amount,cut_off_time_seconds:$cut_off_time_seconds,lock_in_period_seconds:$lock_in_period_seconds,effective_date_from:$effective_date_from,effective_date_to:$effective_date_to,rate_type:$rate_type,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,last_interest_at:$last_interest_at)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_vault')
+                }
+
+async update_vault({args, fields,  headers}:{args: UpdateVaultArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($currency_id: String,$name: String,$annual_rate_percent: Float,$max_withdrawal_amount: Float,$max_deposit_amount: Float,$min_withdrawal_amount: Float,$min_deposit_amount: Float,$cut_off_time_seconds: Int,$lock_in_period_seconds: Int,$effective_date_from: String,$effective_date_to: String,$rate_type: VaultRateType,$is_active: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$deposit_enabled: ToggleSwitch,$last_interest_at: String,$vault_id: String!) {
+                    update_vault(currency_id:$currency_id,name:$name,annual_rate_percent:$annual_rate_percent,max_withdrawal_amount:$max_withdrawal_amount,max_deposit_amount:$max_deposit_amount,min_withdrawal_amount:$min_withdrawal_amount,min_deposit_amount:$min_deposit_amount,cut_off_time_seconds:$cut_off_time_seconds,lock_in_period_seconds:$lock_in_period_seconds,effective_date_from:$effective_date_from,effective_date_to:$effective_date_to,rate_type:$rate_type,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,last_interest_at:$last_interest_at,vault_id:$vault_id)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'update_vault')
+                }
+
+async delete_vault({args, fields,  headers}:{args: DeleteVaultArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($vault_id: String!) {
+                    delete_vault(vault_id:$vault_id)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'delete_vault')
+                }
+
+async trigger_vaults_interests_calculation({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation {
+                    trigger_vaults_interests_calculation
+                        
+                }
+                `,{},headers,'trigger_vaults_interests_calculation')
+                }
+
+async trigger_vaults_locks_withdrawals({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation {
+                    trigger_vaults_locks_withdrawals
+                        
+                }
+                `,{},headers,'trigger_vaults_locks_withdrawals')
+                }
+
+async create_vault_transaction({args, fields,  headers}:{args: CreateVaultTransactionArgs, fields:((keyof VaultTransaction) | Partial<Record<keyof VaultTransaction,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransaction>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($vault_id: String!,$amount: Float!,$transaction_type: AccountTransactionType!,$user_id: String) {
+                    create_vault_transaction(vault_id:$vault_id,amount:$amount,transaction_type:$transaction_type,user_id:$user_id)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_vault_transaction')
+                }
+
+async create_vault_manual_transactions({args,  headers}:{args: CreateVaultManualTransactionsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($items: [CreateVaultTransactionInput!]!) {
+                    create_vault_manual_transactions(items:$items)
+                        
+                }
+                `,args || {},headers,'create_vault_manual_transactions')
+                }
+
+async update_vault_transaction_request({args,  headers}:{args: UpdateVaultTransactionRequestArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($request_id: String!,$status: VaultTransactionRequestStatus!,$approval_reason: String) {
+                    update_vault_transaction_request(request_id:$request_id,status:$status,approval_reason:$approval_reason)
+                        
+                }
+                `,args || {},headers,'update_vault_transaction_request')
+                }
+
+async cancel_vault_transaction_request({args,  headers}:{args: CancelVaultTransactionRequestArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($request_id: String!) {
+                    cancel_vault_transaction_request(request_id:$request_id)
+                        
+                }
+                `,args || {},headers,'cancel_vault_transaction_request')
                 }
 
 async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklistItemArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem>{ 
@@ -5476,11 +5817,11 @@ async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddresses
                 `,args || {},headers,'deposit_addresses_crypto')
                 }
 
-async conversions({args, fields,  headers}:{args?: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
+async conversions({args, fields,  headers}:{args: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String,$reference: String,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
-                    conversions(user_id:$user_id,search:$search,reference:$reference,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,pager:$pager,sort:$sort,dateRange:$dateRange)
+                query($user_id: String,$search: String,$reference: String,$status_in: [ConversionStatus!]!,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    conversions(user_id:$user_id,search:$search,reference:$reference,status_in:$status_in,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5790,6 +6131,16 @@ async mfa_provider({  headers}:{  headers?:HeadersInit}={}):Promise<string>{
                         
                 }
                 `,{},headers,'mfa_provider')
+                }
+
+async is_margin_trading_enabled({  headers}:{  headers?:HeadersInit}={}):Promise<string>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    is_margin_trading_enabled
+                        
+                }
+                `,{},headers,'is_margin_trading_enabled')
                 }
 
 async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfolioReportArgs, fields:((keyof AccountsPortfolioReportItem) | Partial<Record<keyof AccountsPortfolioReportItem,any[]>>)[], headers?:HeadersInit}):Promise<AccountsPortfolioReportItem[]>{ 
@@ -6168,40 +6519,50 @@ async instruments_strategies_alerts({args, fields,  headers}:{args?: Instruments
                 `,args || {},headers,'instruments_strategies_alerts')
                 }
 
-async user_ip_geo_history({args, fields,  headers}:{args?: UserIpGeoHistoryArgs, fields:((keyof UserIpGeoHistory) | Partial<Record<keyof UserIpGeoHistory,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistory[]>{ 
+async vaults({args, fields,  headers}:{args?: VaultsArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($date_ts: String,$user_id: String,$ip_address: String,$country: String,$user_agent: String) {
-                    user_ip_geo_history(date_ts:$date_ts,user_id:$user_id,ip_address:$ip_address,country:$country,user_agent:$user_agent)
+                query($vault_id: String,$currency_id: String,$is_active: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$deposit_enabled: ToggleSwitch,$search: String,$pager: PagerInput,$sort: SortInput) {
+                    vaults(vault_id:$vault_id,currency_id:$currency_id,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,search:$search,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,args || {},headers,'user_ip_geo_history')
+                `,args || {},headers,'vaults')
                 }
 
-async user_ip_geo_history_overview({args, fields,  headers}:{args: UserIpGeoHistoryOverviewArgs, fields:((keyof UserIpGeoHistoryOverview) | Partial<Record<keyof UserIpGeoHistoryOverview,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistoryOverview[]>{ 
+async estimate_vault_interests({args,  headers}:{args: EstimateVaultInterestsArgs,  headers?:HeadersInit}):Promise<number>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($from_date: String!,$to_date: String!) {
-                    user_ip_geo_history_overview(from_date:$from_date,to_date:$to_date)
-                        {
-                            ${buildGraphQLQuery(fields)}
-                        }
+                query($vault_id: String!,$amount: Float!) {
+                    estimate_vault_interests(vault_id:$vault_id,amount:$amount)
+                        
                 }
-                `,args || {},headers,'user_ip_geo_history_overview')
+                `,args || {},headers,'estimate_vault_interests')
                 }
 
-async user_ip_geo_history_detail({args, fields,  headers}:{args: UserIpGeoHistoryDetailArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
+async vaults_accounts({args, fields,  headers}:{args?: VaultsAccountsArgs, fields:((keyof VaultAccount) | Partial<Record<keyof VaultAccount,any[]>>)[], headers?:HeadersInit}):Promise<VaultAccount[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($lat: Float!,$lon: Float!,$from_date: String!,$to_date: String!) {
-                    user_ip_geo_history_detail(lat:$lat,lon:$lon,from_date:$from_date,to_date:$to_date)
+                query($vault_account_id: String,$vault_id: String,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput) {
+                    vaults_accounts(vault_account_id:$vault_account_id,vault_id:$vault_id,user_id:$user_id,search:$search,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
-                `,args || {},headers,'user_ip_geo_history_detail')
+                `,args || {},headers,'vaults_accounts')
+                }
+
+async vaults_transactions({args, fields,  headers}:{args?: VaultsTransactionsArgs, fields:((keyof VaultTransaction) | Partial<Record<keyof VaultTransaction,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransaction[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($vault_id: String,$user_id: String,$vault_transaction_id: String,$transaction_type: AccountTransactionType,$transaction_class: VaultsTransactionClass,$search: String,$pager: PagerInput,$date_range: DateRangeInput,$sort: SortInput) {
+                    vaults_transactions(vault_id:$vault_id,user_id:$user_id,vault_transaction_id:$vault_transaction_id,transaction_type:$transaction_type,transaction_class:$transaction_class,search:$search,pager:$pager,date_range:$date_range,sort:$sort)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'vaults_transactions')
                 }
 
 async portfolio_history({args,  headers}:{args: PortfolioHistoryArgs,  headers?:HeadersInit}):Promise<number[][]>{ 
@@ -6276,6 +6637,18 @@ async summary_dashboard({args, fields,  headers}:{args: SummaryDashboardArgs, fi
                 `,args || {},headers,'summary_dashboard')
                 }
 
+async vaults_transactions_requests({args, fields,  headers}:{args?: VaultsTransactionsRequestsArgs, fields:((keyof VaultTransactionRequest) | Partial<Record<keyof VaultTransactionRequest,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransactionRequest[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($serial_id: Int,$request_id: String,$user_id: String,$vault_id: String,$transaction_type: AccountTransactionType,$transaction_class: VaultsTransactionClass,$status: VaultTransactionRequestStatus,$approved_by: String,$search: String,$pager: PagerInput,$date_range: DateRangeInput,$sort: SortInput) {
+                    vaults_transactions_requests(serial_id:$serial_id,request_id:$request_id,user_id:$user_id,vault_id:$vault_id,transaction_type:$transaction_type,transaction_class:$transaction_class,status:$status,approved_by:$approved_by,search:$search,pager:$pager,date_range:$date_range,sort:$sort)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'vaults_transactions_requests')
+                }
+
 async blacklist_items({args, fields,  headers}:{args?: BlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -6286,6 +6659,42 @@ async blacklist_items({args, fields,  headers}:{args?: BlacklistItemsArgs, field
                         }
                 }
                 `,args || {},headers,'blacklist_items')
+                }
+
+async user_ip_geo_history({args, fields,  headers}:{args?: UserIpGeoHistoryArgs, fields:((keyof UserIpGeoHistory) | Partial<Record<keyof UserIpGeoHistory,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistory[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($date_ts: String,$user_id: String,$ip_address: String,$country: String,$user_agent: String) {
+                    user_ip_geo_history(date_ts:$date_ts,user_id:$user_id,ip_address:$ip_address,country:$country,user_agent:$user_agent)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'user_ip_geo_history')
+                }
+
+async user_ip_geo_history_overview({args, fields,  headers}:{args: UserIpGeoHistoryOverviewArgs, fields:((keyof UserIpGeoHistoryOverview) | Partial<Record<keyof UserIpGeoHistoryOverview,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistoryOverview[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($from_date: String!,$to_date: String!) {
+                    user_ip_geo_history_overview(from_date:$from_date,to_date:$to_date)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'user_ip_geo_history_overview')
+                }
+
+async user_ip_geo_history_detail({args, fields,  headers}:{args: UserIpGeoHistoryDetailArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($lat: Float!,$lon: Float!,$from_date: String!,$to_date: String!) {
+                    user_ip_geo_history_detail(lat:$lat,lon:$lon,from_date:$from_date,to_date:$to_date)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'user_ip_geo_history_detail')
                 }
 
 
