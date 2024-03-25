@@ -335,7 +335,12 @@ trigger_vaults_locks_withdrawals = 'trigger_vaults_locks_withdrawals',
 estimate_vault_interests = 'estimate_vault_interests',
 vaults_transactions_requests = 'vaults_transactions_requests',
 update_vault_transaction_request = 'update_vault_transaction_request',
-cancel_vault_transaction_request = 'cancel_vault_transaction_request'
+cancel_vault_transaction_request = 'cancel_vault_transaction_request',
+referrals = 'referrals',
+create_referral = 'create_referral',
+claim_referral = 'claim_referral',
+signup_referral_reward = 'signup_referral_reward',
+update_signup_referral_reward = 'update_signup_referral_reward'
 }
 
 export enum OrderSide {
@@ -467,6 +472,11 @@ android = 'android',
 ios = 'ios'
 }
 
+export enum ReferralRewardType {
+reward = 'reward',
+fee_commission = 'fee_commission'
+}
+
 export enum QueryEnum {
 open_orders = 'open_orders',
 closed_orders = 'closed_orders',
@@ -552,6 +562,8 @@ deposits_dashboard = 'deposits_dashboard',
 withdrawals_dashboard = 'withdrawals_dashboard',
 summary_dashboard = 'summary_dashboard',
 vaults_transactions_requests = 'vaults_transactions_requests',
+referrals = 'referrals',
+signup_referral_reward = 'signup_referral_reward',
 blacklist_items = 'blacklist_items',
 user_ip_geo_history = 'user_ip_geo_history',
 user_ip_geo_history_overview = 'user_ip_geo_history_overview',
@@ -613,6 +625,7 @@ delete_currency = 'delete_currency',
 validate_address_crypto = 'validate_address_crypto',
 reprocess_payment = 'reprocess_payment',
 update_payment_approval_status = 'update_payment_approval_status',
+cancel_withdrawal = 'cancel_withdrawal',
 create_withdrawal_crypto = 'create_withdrawal_crypto',
 create_withdrawal_fiat = 'create_withdrawal_fiat',
 create_payment_manual = 'create_payment_manual',
@@ -732,6 +745,9 @@ create_vault_transaction = 'create_vault_transaction',
 create_vault_manual_transactions = 'create_vault_manual_transactions',
 update_vault_transaction_request = 'update_vault_transaction_request',
 cancel_vault_transaction_request = 'cancel_vault_transaction_request',
+create_referral = 'create_referral',
+claim_referral = 'claim_referral',
+update_signup_referral_reward = 'update_signup_referral_reward',
 create_ip_blacklist_item = 'create_ip_blacklist_item',
 create_ip_blacklist_items = 'create_ip_blacklist_items',
 update_ip_blacklist_item = 'update_ip_blacklist_item',
@@ -972,6 +988,7 @@ fee_group: FeeGroup;
 }
 
 export interface TradingFee{
+serial_id?: number;
 instrument_id: string;
 fee_group_id: string;
 maker_progressive: number;
@@ -1396,7 +1413,7 @@ stop_price?: number;
 notes?: string;
 user?: User;
 trades: Trade[];
-instrument: Instrument;
+instrument?: Instrument;
 fees: AccountTransaction[];
 total: number;
 created_at_iso: string;
@@ -1526,6 +1543,8 @@ created_at: string;
 fees_included: ToggleSwitch;
 updated_at: string;
 version: number;
+amount_quoted?: number;
+fee_quoted?: number;
 user: User;
 created_at_iso: string;
 updated_at_iso: string;
@@ -2110,6 +2129,23 @@ withdrawals_volume?: number;
 fees_volume?: number;
 }
 
+export interface Referral{
+serial_id: number;
+referral_id: string;
+user_id?: string;
+created_at: string;
+}
+
+export interface ReferralRewardMeta{
+type: ReferralRewardType;
+currency_id?: string;
+amount?: number;
+commission_rate_percent?: number;
+commission_effective_period_seconds?: number;
+effective_from?: string;
+effective_to?: string;
+}
+
 export interface RegionBlacklistItemInput{
 code: string;
 list: BlacklistItemInput[];
@@ -2153,8 +2189,18 @@ provider_secret_key: string;
 enabled: boolean;
 }
 
+export interface ReferralRewardMetaInput{
+type: ReferralRewardType;
+currency_id?: string;
+amount?: number;
+commission_rate_percent?: number;
+commission_effective_period_seconds?: number;
+effective_from?: string;
+effective_to?: string;
+}
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'is_margin_trading_enabled'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'admin_properties'|'elliptic_screenings'|'elliptic_risk_threshold'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'vaults'|'estimate_vault_interests'|'vaults_accounts'|'vaults_transactions'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'vaults_transactions_requests'|'blacklist_items'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
+
+export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'mfa_provider'|'is_margin_trading_enabled'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'ip_whitelist'|'hedging_accounts'|'find_config_changes'|'config_changes_events'|'admin_properties'|'elliptic_screenings'|'elliptic_risk_threshold'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'vaults'|'estimate_vault_interests'|'vaults_accounts'|'vaults_transactions'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'vaults_transactions_requests'|'referrals'|'signup_referral_reward'|'blacklist_items'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
 
 export interface PagerInput{
 limit?: number;
@@ -2167,7 +2213,7 @@ property?: string;
 }
 
 
-export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'restrictions_check'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'update_elliptic_risk_threshold'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_vault'|'update_vault'|'delete_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
+export type MutationType = 'create_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'restrictions_check'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'cancel_withdrawal'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'create_payment_fee'|'delete_payment_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_mfa_provider'|'create_super_admins'|'delete_super_admins'|'create_readonly_admins'|'delete_readonly_admins'|'create_permission_share'|'delete_permission_share'|'admin_from_preset'|'create_kyc_manual_request'|'create_kyc_sum_and_substance_token'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'update_user_mfa_status'|'verify_user_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_spreadsheet'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'update_elliptic_risk_threshold'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_vault'|'update_vault'|'delete_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_referral'|'claim_referral'|'update_signup_referral_reward'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'
 
 export interface FavoriteAddressCryptoItem{
 currency_id: string;
@@ -2402,6 +2448,7 @@ serial_ids: number[];
 
 export interface DeleteInstrumentArgs{
 instrument_id: string;
+serial_ids: number[];
 }
 
 export interface FillInstrumentArgs{
@@ -2452,6 +2499,10 @@ export interface UpdatePaymentApprovalStatusArgs{
 payment_id: string;
 approval_status: PaymentApprovalStatus;
 approval_reason?: string;
+}
+
+export interface CancelWithdrawalArgs{
+payment_id: string;
 }
 
 export interface CreateWithdrawalCryptoArgs{
@@ -2653,6 +2704,7 @@ disabled_instruments: string[];
 
 export interface DeleteLimitGroupArgs{
 limit_group_id: string;
+serial_ids: number[];
 }
 
 export interface CreateFeeGroupArgs{
@@ -2674,6 +2726,7 @@ serial_ids: number[];
 
 export interface DeleteFeeGroupArgs{
 fee_group_id: string;
+serial_ids: number[];
 }
 
 export interface EstimatePaymentFeeArgs{
@@ -2714,6 +2767,7 @@ calculation_type?: FeeCalculationType;
 
 export interface DeletePaymentFeeArgs{
 serial_id?: number;
+serial_ids: number[];
 }
 
 export interface UpdatePaymentFeeArgs{
@@ -2726,7 +2780,8 @@ withdrawal_flat_fee?: number;
 deposit_progressive_fee?: number;
 deposit_flat_fee?: number;
 calculation_type?: FeeCalculationType;
-serial_id: number;
+serial_id?: number;
+serial_ids: number[];
 }
 
 export interface CreateTradingFeeArgs{
@@ -2739,17 +2794,21 @@ taker_flat: number;
 }
 
 export interface UpdateTradingFeeArgs{
+serial_id?: number;
 maker_progressive?: number;
 taker_progressive?: number;
 maker_flat?: number;
 taker_flat?: number;
-instrument_id: string;
-fee_group_id: string;
+instrument_id?: string;
+fee_group_id?: string;
+serial_ids: number[];
 }
 
 export interface DeleteTradingFeeArgs{
-instrument_id: string;
-fee_group_id: string;
+serial_id?: number;
+serial_ids: number[];
+instrument_id?: string;
+fee_group_id?: string;
 }
 
 export interface CreatePaymentSessionArgs{
@@ -2849,6 +2908,7 @@ serial_ids: number[];
 export interface DeletePaymentLimitArgs{
 limit_group_id: string;
 currency_id: string;
+serial_ids: number[];
 }
 
 export interface CreateApiKeyArgs{
@@ -2977,6 +3037,7 @@ old_hedge_balance: number;
 export interface DeleteInstrumentStrategyArgs{
 hedging_adapter_id: string;
 instrument_id: string;
+serial_ids: number[];
 }
 
 export interface UpdateSystemSettingArgs{
@@ -3437,6 +3498,19 @@ export interface CancelVaultTransactionRequestArgs{
 request_id: string;
 }
 
+export interface CreateReferralArgs{
+user_id?: string;
+}
+
+export interface ClaimReferralArgs{
+referral_id: string;
+user_id?: string;
+}
+
+export interface UpdateSignupReferralRewardArgs{
+rewards: ReferralRewardMetaInput[];
+}
+
 export interface CreateIpBlacklistItemArgs{
 ip_address: string;
 reason?: string;
@@ -3544,6 +3618,7 @@ limit?: number;
 
 export interface PaymentsArgs{
 payment_id?: string;
+remote_txid?: string;
 kyt_status?: PaymentKytStatus;
 currency_id?: string;
 type?: PaymentType;
@@ -3562,6 +3637,7 @@ sort?: SortInput;
 dateRange?: DateRangeInput;
 kyt_status_in: PaymentKytStatus[];
 currency_type?: CurrencyType;
+quote_currency_id?: string;
 }
 
 export interface DepositAddressCryptoArgs{
@@ -3631,6 +3707,8 @@ username?: string;
 email?: string;
 is_active?: ToggleSwitch;
 is_deleted?: ToggleSwitch;
+fee_group_id?: string;
+limit_group_id?: string;
 user_id?: string;
 search?: string;
 kyc_property?: string;
@@ -3906,7 +3984,7 @@ search?: string;
 }
 
 export interface KycUserDataArgs{
-user_id: string;
+user_id?: string;
 search?: string;
 kyc_properties: string[];
 }
@@ -4094,6 +4172,17 @@ date_range?: DateRangeInput;
 sort?: SortInput;
 }
 
+export interface ReferralsArgs{
+referral_id?: string;
+user_id?: string;
+search?: string;
+pager?: PagerInput;
+sort?: SortInput;
+}
+
+export interface SignupReferralRewardArgs{
+}
+
 export interface BlacklistItemsArgs{
 ip_address?: string;
 reason?: string;
@@ -4264,8 +4353,8 @@ async update_instrument({args,  headers}:{args: UpdateInstrumentArgs,  headers?:
 async delete_instrument({args,  headers}:{args: DeleteInstrumentArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($instrument_id: String!) {
-                    delete_instrument(instrument_id:$instrument_id)
+                mutation($instrument_id: String!,$serial_ids: [number!]!) {
+                    delete_instrument(instrument_id:$instrument_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'delete_instrument')
@@ -4341,6 +4430,16 @@ async update_payment_approval_status({args,  headers}:{args: UpdatePaymentApprov
                         
                 }
                 `,args || {},headers,'update_payment_approval_status')
+                }
+
+async cancel_withdrawal({args,  headers}:{args: CancelWithdrawalArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($payment_id: String!) {
+                    cancel_withdrawal(payment_id:$payment_id)
+                        
+                }
+                `,args || {},headers,'cancel_withdrawal')
                 }
 
 async create_withdrawal_crypto({args, fields,  headers}:{args: CreateWithdrawalCryptoArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
@@ -4544,8 +4643,8 @@ async update_limit_group({args,  headers}:{args: UpdateLimitGroupArgs,  headers?
 async delete_limit_group({args,  headers}:{args: DeleteLimitGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String!) {
-                    delete_limit_group(limit_group_id:$limit_group_id)
+                mutation($limit_group_id: String!,$serial_ids: [number!]!) {
+                    delete_limit_group(limit_group_id:$limit_group_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'delete_limit_group')
@@ -4576,8 +4675,8 @@ async update_fee_group({args,  headers}:{args: UpdateFeeGroupArgs,  headers?:Hea
 async delete_fee_group({args,  headers}:{args: DeleteFeeGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($fee_group_id: String!) {
-                    delete_fee_group(fee_group_id:$fee_group_id)
+                mutation($fee_group_id: String!,$serial_ids: [number!]!) {
+                    delete_fee_group(fee_group_id:$fee_group_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'delete_fee_group')
@@ -4617,11 +4716,11 @@ async create_payment_fee({args, fields,  headers}:{args: CreatePaymentFeeArgs, f
                 `,args || {},headers,'create_payment_fee')
                 }
 
-async delete_payment_fee({args,  headers}:{args?: DeletePaymentFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+async delete_payment_fee({args,  headers}:{args: DeletePaymentFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($serial_id: Int) {
-                    delete_payment_fee(serial_id:$serial_id)
+                mutation($serial_id: Int,$serial_ids: [number!]!) {
+                    delete_payment_fee(serial_id:$serial_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'delete_payment_fee')
@@ -4630,8 +4729,8 @@ async delete_payment_fee({args,  headers}:{args?: DeletePaymentFeeArgs,  headers
 async update_payment_fee({args,  headers}:{args: UpdatePaymentFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String,$fee_group_id: String,$crypto_network: String,$fiat_transfer_type: String,$withdrawal_progressive_fee: Float,$withdrawal_flat_fee: Float,$deposit_progressive_fee: Float,$deposit_flat_fee: Float,$calculation_type: FeeCalculationType,$serial_id: Int!) {
-                    update_payment_fee(currency_id:$currency_id,fee_group_id:$fee_group_id,crypto_network:$crypto_network,fiat_transfer_type:$fiat_transfer_type,withdrawal_progressive_fee:$withdrawal_progressive_fee,withdrawal_flat_fee:$withdrawal_flat_fee,deposit_progressive_fee:$deposit_progressive_fee,deposit_flat_fee:$deposit_flat_fee,calculation_type:$calculation_type,serial_id:$serial_id)
+                mutation($currency_id: String,$fee_group_id: String,$crypto_network: String,$fiat_transfer_type: String,$withdrawal_progressive_fee: Float,$withdrawal_flat_fee: Float,$deposit_progressive_fee: Float,$deposit_flat_fee: Float,$calculation_type: FeeCalculationType,$serial_id: Int,$serial_ids: [number!]!) {
+                    update_payment_fee(currency_id:$currency_id,fee_group_id:$fee_group_id,crypto_network:$crypto_network,fiat_transfer_type:$fiat_transfer_type,withdrawal_progressive_fee:$withdrawal_progressive_fee,withdrawal_flat_fee:$withdrawal_flat_fee,deposit_progressive_fee:$deposit_progressive_fee,deposit_flat_fee:$deposit_flat_fee,calculation_type:$calculation_type,serial_id:$serial_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'update_payment_fee')
@@ -4652,8 +4751,8 @@ async create_trading_fee({args, fields,  headers}:{args: CreateTradingFeeArgs, f
 async update_trading_fee({args,  headers}:{args: UpdateTradingFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($maker_progressive: Float,$taker_progressive: Float,$maker_flat: Float,$taker_flat: Float,$instrument_id: String!,$fee_group_id: String!) {
-                    update_trading_fee(maker_progressive:$maker_progressive,taker_progressive:$taker_progressive,maker_flat:$maker_flat,taker_flat:$taker_flat,instrument_id:$instrument_id,fee_group_id:$fee_group_id)
+                mutation($serial_id: Int,$maker_progressive: Float,$taker_progressive: Float,$maker_flat: Float,$taker_flat: Float,$instrument_id: String,$fee_group_id: String,$serial_ids: [number!]!) {
+                    update_trading_fee(serial_id:$serial_id,maker_progressive:$maker_progressive,taker_progressive:$taker_progressive,maker_flat:$maker_flat,taker_flat:$taker_flat,instrument_id:$instrument_id,fee_group_id:$fee_group_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'update_trading_fee')
@@ -4662,8 +4761,8 @@ async update_trading_fee({args,  headers}:{args: UpdateTradingFeeArgs,  headers?
 async delete_trading_fee({args,  headers}:{args: DeleteTradingFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($instrument_id: String!,$fee_group_id: String!) {
-                    delete_trading_fee(instrument_id:$instrument_id,fee_group_id:$fee_group_id)
+                mutation($serial_id: Int,$serial_ids: [number!]!,$instrument_id: String,$fee_group_id: String) {
+                    delete_trading_fee(serial_id:$serial_id,serial_ids:$serial_ids,instrument_id:$instrument_id,fee_group_id:$fee_group_id)
                         
                 }
                 `,args || {},headers,'delete_trading_fee')
@@ -4736,8 +4835,8 @@ async update_payment_limit({args,  headers}:{args: UpdatePaymentLimitArgs,  head
 async delete_payment_limit({args,  headers}:{args: DeletePaymentLimitArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String!,$currency_id: String!) {
-                    delete_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id)
+                mutation($limit_group_id: String!,$currency_id: String!,$serial_ids: [number!]!) {
+                    delete_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'delete_payment_limit')
@@ -4842,8 +4941,8 @@ async update_instrument_strategy_hedge_balance({args,  headers}:{args: UpdateIns
 async delete_instrument_strategy({args,  headers}:{args: DeleteInstrumentStrategyArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String!,$instrument_id: String!) {
-                    delete_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id)
+                mutation($hedging_adapter_id: String!,$instrument_id: String!,$serial_ids: [number!]!) {
+                    delete_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'delete_instrument_strategy')
@@ -5627,6 +5726,40 @@ async cancel_vault_transaction_request({args,  headers}:{args: CancelVaultTransa
                 `,args || {},headers,'cancel_vault_transaction_request')
                 }
 
+async create_referral({args, fields,  headers}:{args?: CreateReferralArgs, fields:((keyof Referral) | Partial<Record<keyof Referral,any[]>>)[], headers?:HeadersInit}):Promise<Referral>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($user_id: String) {
+                    create_referral(user_id:$user_id)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_referral')
+                }
+
+async claim_referral({args,  headers}:{args: ClaimReferralArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($referral_id: String!,$user_id: String) {
+                    claim_referral(referral_id:$referral_id,user_id:$user_id)
+                        
+                }
+                `,args || {},headers,'claim_referral')
+                }
+
+async update_signup_referral_reward({args, fields,  headers}:{args: UpdateSignupReferralRewardArgs, fields:((keyof ReferralRewardMeta) | Partial<Record<keyof ReferralRewardMeta,any[]>>)[], headers?:HeadersInit}):Promise<ReferralRewardMeta[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($rewards: [ReferralRewardMetaInput!]!) {
+                    update_signup_referral_reward(rewards:$rewards)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'update_signup_referral_reward')
+                }
+
 async create_ip_blacklist_item({args, fields,  headers}:{args: CreateIpBlacklistItemArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -5784,8 +5917,8 @@ async currencies({args, fields,  headers}:{args?: CurrenciesArgs, fields:((keyof
 async payments({args, fields,  headers}:{args: PaymentsArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($payment_id: String,$kyt_status: [PaymentStatus!],$currency_id: String,$type: PaymentType,$reference: String,$created_by: String,$payment_id_in: [string!]!,$payment_id_not_in: [string!]!,$user_id: String,$user_id_in: [string!]!,$user_id_not_in: [string!]!,$search: String,$status: [PaymentStatus!]!,$approval_status: [PaymentApprovalStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$kyt_status_in: [PaymentKytStatus!]!,$currency_type: CurrencyType) {
-                    payments(payment_id:$payment_id,kyt_status:$kyt_status,currency_id:$currency_id,type:$type,reference:$reference,created_by:$created_by,payment_id_in:$payment_id_in,payment_id_not_in:$payment_id_not_in,user_id:$user_id,user_id_in:$user_id_in,user_id_not_in:$user_id_not_in,search:$search,status:$status,approval_status:$approval_status,pager:$pager,sort:$sort,dateRange:$dateRange,kyt_status_in:$kyt_status_in,currency_type:$currency_type)
+                query($payment_id: String,$remote_txid: String,$kyt_status: [PaymentStatus!],$currency_id: String,$type: PaymentType,$reference: String,$created_by: String,$payment_id_in: [string!]!,$payment_id_not_in: [string!]!,$user_id: String,$user_id_in: [string!]!,$user_id_not_in: [string!]!,$search: String,$status: [PaymentStatus!]!,$approval_status: [PaymentApprovalStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$kyt_status_in: [PaymentKytStatus!]!,$currency_type: CurrencyType,$quote_currency_id: String) {
+                    payments(payment_id:$payment_id,remote_txid:$remote_txid,kyt_status:$kyt_status,currency_id:$currency_id,type:$type,reference:$reference,created_by:$created_by,payment_id_in:$payment_id_in,payment_id_not_in:$payment_id_not_in,user_id:$user_id,user_id_in:$user_id_in,user_id_not_in:$user_id_not_in,search:$search,status:$status,approval_status:$approval_status,pager:$pager,sort:$sort,dateRange:$dateRange,kyt_status_in:$kyt_status_in,currency_type:$currency_type,quote_currency_id:$quote_currency_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5856,8 +5989,8 @@ async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesR
 async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($parent_user_id: String,$username: String,$email: String,$is_active: ToggleSwitch,$is_deleted: ToggleSwitch,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserStatus,$kyc_level: String,$status: UserStatus,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
-                    users(parent_user_id:$parent_user_id,username:$username,email:$email,is_active:$is_active,is_deleted:$is_deleted,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange)
+                query($parent_user_id: String,$username: String,$email: String,$is_active: ToggleSwitch,$is_deleted: ToggleSwitch,$fee_group_id: String,$limit_group_id: String,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserStatus,$kyc_level: String,$status: UserStatus,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    users(parent_user_id:$parent_user_id,username:$username,email:$email,is_active:$is_active,is_deleted:$is_deleted,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6370,7 +6503,7 @@ async delayed_requests({args, fields,  headers}:{args?: DelayedRequestsArgs, fie
 async kyc_user_data({args, fields,  headers}:{args: KycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String!,$search: String,$kyc_properties: [string!]!) {
+                query($user_id: String,$search: String,$kyc_properties: [string!]!) {
                     kyc_user_data(user_id:$user_id,search:$search,kyc_properties:$kyc_properties)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -6647,6 +6780,30 @@ async vaults_transactions_requests({args, fields,  headers}:{args?: VaultsTransa
                         }
                 }
                 `,args || {},headers,'vaults_transactions_requests')
+                }
+
+async referrals({args, fields,  headers}:{args?: ReferralsArgs, fields:((keyof Referral) | Partial<Record<keyof Referral,any[]>>)[], headers?:HeadersInit}):Promise<Referral[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($referral_id: String,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput) {
+                    referrals(referral_id:$referral_id,user_id:$user_id,search:$search,pager:$pager,sort:$sort)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'referrals')
+                }
+
+async signup_referral_reward({ fields,  headers}:{ fields:((keyof ReferralRewardMeta) | Partial<Record<keyof ReferralRewardMeta,any[]>>)[], headers?:HeadersInit}):Promise<ReferralRewardMeta[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    signup_referral_reward
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,{},headers,'signup_referral_reward')
                 }
 
 async blacklist_items({args, fields,  headers}:{args?: BlacklistItemsArgs, fields:((keyof IpBlacklistItem) | Partial<Record<keyof IpBlacklistItem,any[]>>)[], headers?:HeadersInit}):Promise<IpBlacklistItem[]>{ 
