@@ -142,6 +142,19 @@ debit = 'debit',
 credit = 'credit'
 }
 
+export enum FeeCalculationType {
+sum = 'sum',
+max = 'max'
+}
+
+export enum HedgingOrderStatus {
+new = 'new',
+pending = 'pending',
+completed = 'completed',
+cancelled = 'cancelled',
+rejected = 'rejected'
+}
+
 export enum InstrumentHistoryPeriodicity {
 minute = 'minute',
 minute5 = 'minute5',
@@ -389,20 +402,49 @@ delete_referral_reward = 'delete_referral_reward',
 analytics_dashboard = 'analytics_dashboard',
 aggregate_dashboard = 'aggregate_dashboard',
 restart_system = 'restart_system',
-emit_event = 'emit_event'
+emit_event = 'emit_event',
+derivatives_instruments = 'derivatives_instruments',
+create_derivatives_instrument = 'create_derivatives_instrument',
+update_derivatives_instrument = 'update_derivatives_instrument',
+delete_derivatives_instrument = 'delete_derivatives_instrument',
+derivatives_instrument_strategies = 'derivatives_instrument_strategies',
+create_derivatives_instrument_strategy = 'create_derivatives_instrument_strategy',
+update_derivatives_instrument_strategy = 'update_derivatives_instrument_strategy',
+delete_derivatives_instrument_strategy = 'delete_derivatives_instrument_strategy',
+derivatives_fee_groups = 'derivatives_fee_groups',
+create_derivatives_fee_group = 'create_derivatives_fee_group',
+update_derivatives_fee_group = 'update_derivatives_fee_group',
+delete_derivatives_fee_group = 'delete_derivatives_fee_group',
+derivatives_hedging_adapters = 'derivatives_hedging_adapters',
+create_derivatives_hedging_adapter = 'create_derivatives_hedging_adapter',
+update_derivatives_hedging_adapter = 'update_derivatives_hedging_adapter',
+delete_derivatives_hedging_adapter = 'delete_derivatives_hedging_adapter',
+derivatives_currencies = 'derivatives_currencies',
+create_derivatives_currency = 'create_derivatives_currency',
+update_derivatives_currency = 'update_derivatives_currency',
+delete_derivatives_currency = 'delete_derivatives_currency',
+create_derivatives_order = 'create_derivatives_order',
+cancel_derivatives_order = 'cancel_derivatives_order',
+estimate_derivatives_order = 'estimate_derivatives_order',
+open_derivatives_orders = 'open_derivatives_orders',
+closed_derivatives_orders = 'closed_derivatives_orders',
+update_open_derivatives_position = 'update_open_derivatives_position',
+open_derivatives_positions = 'open_derivatives_positions',
+closed_derivatives_positions = 'closed_derivatives_positions',
+derivatives_trading_fees = 'derivatives_trading_fees',
+update_derivatives_trading_fee = 'update_derivatives_trading_fee',
+derivatives_dashboards = 'derivatives_dashboards'
 }
 
-export enum FeeCalculationType {
-sum = 'sum',
-max = 'max'
+export enum KytProvider {
+elliptic = 'elliptic',
+scorechain = 'scorechain'
 }
 
-export enum HedgingOrderStatus {
-new = 'new',
-pending = 'pending',
-completed = 'completed',
-cancelled = 'cancelled',
-rejected = 'rejected'
+export enum KytAnalysisTarget {
+wallet = 'wallet',
+transaction = 'transaction',
+address = 'address'
 }
 
 export enum PaymentKytStatus {
@@ -438,17 +480,6 @@ approved = 'approved',
 rejected = 'rejected'
 }
 
-export enum KytProvider {
-elliptic = 'elliptic',
-scorechain = 'scorechain'
-}
-
-export enum KytAnalysisTarget {
-wallet = 'wallet',
-transaction = 'transaction',
-address = 'address'
-}
-
 export enum VerificationType {
 none = 'none',
 totp = 'totp',
@@ -462,6 +493,13 @@ export enum ConversionStatus {
 new = 'new',
 completed = 'completed',
 rejected = 'rejected'
+}
+
+export enum ReferralRewardType {
+one_time = 'one_time',
+fee_commission = 'fee_commission',
+fee_cashback = 'fee_cashback',
+rebate = 'rebate'
 }
 
 export enum DelayedRequestStatus {
@@ -493,13 +531,6 @@ pending = 'pending',
 approved = 'approved',
 rejected = 'rejected',
 cancelled = 'cancelled'
-}
-
-export enum ReferralRewardType {
-one_time = 'one_time',
-fee_commission = 'fee_commission',
-fee_cashback = 'fee_cashback',
-rebate = 'rebate'
 }
 
 export enum TradginGridMode {
@@ -552,6 +583,7 @@ ios = 'ios'
 }
 
 export enum QueryEnum {
+version = 'version',
 open_orders = 'open_orders',
 closed_orders = 'closed_orders',
 estimate_order = 'estimate_order',
@@ -563,7 +595,6 @@ instruments = 'instruments',
 instrument_price_bars = 'instrument_price_bars',
 currencies = 'currencies',
 payments = 'payments',
-vasps_list = 'vasps_list',
 deposit_address_crypto = 'deposit_address_crypto',
 deposit_addresses_crypto = 'deposit_addresses_crypto',
 conversions = 'conversions',
@@ -596,6 +627,7 @@ trader_mfa_provider = 'trader_mfa_provider',
 admin_mfa_provider = 'admin_mfa_provider',
 is_margin_trading_enabled = 'is_margin_trading_enabled',
 products_enabled = 'products_enabled',
+user_products_enabled = 'user_products_enabled',
 accounts_portfolio_report = 'accounts_portfolio_report',
 orders_summary_report = 'orders_summary_report',
 conversions_summary_report = 'conversions_summary_report',
@@ -607,6 +639,7 @@ permissions_subjects = 'permissions_subjects',
 all_permission_subjects = 'all_permission_subjects',
 permissions_share = 'permissions_share',
 kyc_preferences = 'kyc_preferences',
+vasps_list = 'vasps_list',
 webhooks = 'webhooks',
 hedging_adapter_ids = 'hedging_adapter_ids',
 hedging_adapters = 'hedging_adapters',
@@ -648,6 +681,7 @@ deposits_dashboard = 'deposits_dashboard',
 withdrawals_dashboard = 'withdrawals_dashboard',
 summary_dashboard = 'summary_dashboard',
 unified_transactions = 'unified_transactions',
+unified_transactions_lps = 'unified_transactions_lps',
 vaults_transactions_requests = 'vaults_transactions_requests',
 referrals = 'referrals',
 aggregated_payments_limits = 'aggregated_payments_limits',
@@ -666,6 +700,12 @@ referral_rewards = 'referral_rewards',
 required_actions = 'required_actions',
 trading_grids = 'trading_grids',
 trading_grid_levels = 'trading_grid_levels',
+user_fees_config = 'user_fees_config',
+estimate_payment_notional_fee = 'estimate_payment_notional_fee',
+cash_holdings_report = 'cash_holdings_report',
+trade_tiers = 'trade_tiers',
+trade_volumes = 'trade_volumes',
+wallets = 'wallets',
 user_ip_geo_history = 'user_ip_geo_history',
 user_ip_geo_history_overview = 'user_ip_geo_history_overview',
 user_ip_geo_history_detail = 'user_ip_geo_history_detail'
@@ -730,8 +770,12 @@ service_signin = 'service_signin',
 checkin = 'checkin',
 checkout = 'checkout',
 restrictions_check = 'restrictions_check',
+register_trader_local = 'register_trader_local',
+trader_signin_local = 'trader_signin_local',
 create_admins = 'create_admins',
 delete_admin = 'delete_admin',
+admin_signin_local = 'admin_signin_local',
+create_local_admin = 'create_local_admin',
 create_instrument = 'create_instrument',
 update_instrument = 'update_instrument',
 delete_instrument = 'delete_instrument',
@@ -813,7 +857,6 @@ delete_hedging_adapter = 'delete_hedging_adapter',
 create_trading_limit = 'create_trading_limit',
 update_trading_limit = 'update_trading_limit',
 delete_trading_limit = 'delete_trading_limit',
-send_push = 'send_push',
 update_delayed_request = 'update_delayed_request',
 delete_delayed_request = 'delete_delayed_request',
 create_user_mfa_secret = 'create_user_mfa_secret',
@@ -823,6 +866,7 @@ update_admin_mfa_status = 'update_admin_mfa_status',
 verify_user_mfa_token = 'verify_user_mfa_token',
 verify_admin_mfa_token = 'verify_admin_mfa_token',
 send_test_email = 'send_test_email',
+send_test_push = 'send_test_push',
 create_kyc_user_data = 'create_kyc_user_data',
 update_kyc_user_data = 'update_kyc_user_data',
 delete_kyc_user_data = 'delete_kyc_user_data',
@@ -884,7 +928,14 @@ delete_referral_reward = 'delete_referral_reward',
 start_trading_grid = 'start_trading_grid',
 stop_trading_grid = 'stop_trading_grid',
 update_trading_grid = 'update_trading_grid',
-estimate_trading_grid = 'estimate_trading_grid'
+estimate_trading_grid = 'estimate_trading_grid',
+user_switch_fee_group = 'user_switch_fee_group',
+update_withdrawal_notional_fee = 'update_withdrawal_notional_fee',
+create_trade_tier = 'create_trade_tier',
+update_trade_tier = 'update_trade_tier',
+delete_trade_tier = 'delete_trade_tier',
+delete_trades_volume = 'delete_trades_volume',
+create_wallet = 'create_wallet'
 }
 
 export enum CounterpartyType {
@@ -895,6 +946,12 @@ unhosted_wallet = 'unhosted_wallet'
 export enum SyncConfigMode {
 merge = 'merge',
 replace = 'replace'
+}
+
+export enum FxcmFeeGroups {
+ZeroCommission = 'ZeroCommission',
+RawSpreads = 'RawSpreads',
+InstitutionalSpreads = 'InstitutionalSpreads'
 }
 
 export enum __TypeKind {
@@ -1161,6 +1218,7 @@ created_at: string;
 mfa_for_withdraw?: ToggleSwitch;
 updated_at: string;
 crypto_pay: ToggleSwitch;
+password_hash?: string;
 version?: number;
 kyc_data: KycUserData[];
 fee_group: FeeGroup;
@@ -1194,6 +1252,8 @@ updated_at_iso?: string;
 trading_volumes: UsersTradingVolume[];
 role?: Role;
 is_referral_claim_available: boolean;
+trades_volume: number;
+trade_tier: TradeTier;
 }
 
 export interface Boolean{
@@ -1226,9 +1286,11 @@ ts_iso: string;
 export interface Admin{
 admin_id: string;
 name: string;
-updated_by: string;
+updated_by?: string;
 created_at: string;
+updated_at: string;
 last_login_at?: string;
+password_hash?: string;
 last_login_ip?: string;
 }
 
@@ -1248,6 +1310,15 @@ created_at: string;
 updated_at: string;
 created_by: string;
 updated_by?: string;
+}
+
+export interface CognitoPool{
+serial_id?: number;
+name: string;
+cognito_pool_id: string;
+role: Role;
+jwks: string;
+is_active: ToggleSwitch;
 }
 
 export interface AccountTransaction{
@@ -1285,10 +1356,20 @@ serial_id?: number;
 account_id: string;
 user_id: string;
 currency_id: string;
+wallet_id: string;
 balance: number;
 version: number;
 created_at: string;
 updated_at: string;
+}
+
+export interface Wallet{
+serial_id: number;
+wallet_id: string;
+user_id: string;
+name: string;
+description?: string;
+created_at: string;
 }
 
 export interface AccountTransactionNotionalValue{
@@ -1302,6 +1383,7 @@ serial_id?: number;
 account_id: string;
 user_id: string;
 currency_id: string;
+wallet_id: string;
 balance: number;
 version: number;
 created_at: string;
@@ -1329,6 +1411,164 @@ currency_id: string;
 amount: number;
 }
 
+export interface HedgingAccount{
+serial_id?: number;
+hedging_adapter_id: string;
+currency_id: string;
+balance: number;
+usd_threshold: number;
+is_active: ToggleSwitch;
+usd_balance?: number;
+}
+
+export interface HedgingAdapter{
+serial_id?: number;
+hedging_adapter_id: string;
+service_url: string;
+service_api_key: string;
+broker_user_id: string;
+hedging_enabled: ToggleSwitch;
+account_balances_sync_enabled: ToggleSwitch;
+meta?: string;
+created_at: string;
+maker_fee?: number;
+taker_fee?: number;
+fees_sync_enabled: ToggleSwitch;
+created_at_iso: string;
+}
+
+export interface OrderbookItem{
+price: number;
+quantity: number;
+exchange?: string;
+}
+
+export interface OrderbookUpdateResult{
+instrument_id: string;
+sell: OrderbookItem[];
+buy: OrderbookItem[];
+ts: string;
+total_volume?: number;
+best_ask?: number;
+best_bid?: number;
+ts_iso: string;
+}
+
+export interface FeeGroup{
+serial_id?: number;
+fee_group_id: string;
+name?: string;
+description?: string;
+beneficiary_user_id: string;
+kyc_status?: UserKycStatus;
+meta?: string;
+trading_fees: TradingFee[];
+payment_fees: PaymentFee[];
+}
+
+export interface PaymentFee{
+serial_id?: number;
+payment_route_id?: string;
+currency_id: string;
+fee_group_id: string;
+withdrawal_progressive_fee?: number;
+withdrawal_flat_fee?: number;
+deposit_progressive_fee?: number;
+deposit_flat_fee?: number;
+calculation_type?: FeeCalculationType;
+fee_group: FeeGroup;
+payment_route?: PaymentRoute;
+}
+
+export interface LimitGroup{
+serial_id?: number;
+limit_group_id: string;
+name?: string;
+description?: string;
+kyc_status?: UserKycStatus;
+meta?: string;
+payment_limits: PaymentLimit[];
+trading_limits: TradingLimit[];
+disabled_instruments: string[];
+disabled_currencies: string[];
+disabled_payment_routes: string[];
+aggregated_payment_limit?: AggregatedPaymentLimit;
+}
+
+export interface PaymentLimit{
+serial_id?: number;
+limit_group_id: string;
+currency_id: string;
+deposit_enabled: ToggleSwitch;
+deposit_min_amount: number;
+deposit_daily_limit: number;
+deposit_weekly_limit: number;
+deposit_monthly_limit: number;
+deposit_auto_approval_amount: number;
+withdrawal_enabled: ToggleSwitch;
+withdrawal_min_amount: number;
+withdrawal_daily_limit: number;
+withdrawal_weekly_limit: number;
+withdrawal_monthly_limit: number;
+withdrawal_auto_approval_amount: number;
+notion_currency?: string;
+auto_reject: ToggleSwitch;
+limit_group: LimitGroup;
+}
+
+export interface TradingLimit{
+serial_id?: number;
+limit_group_id: string;
+instrument_id: string;
+daily_limit: number;
+weekly_limit: number;
+monthly_limit: number;
+notion_currency?: string;
+limit_group: LimitGroup;
+}
+
+export interface InstrumentPrice{
+instrument_id: string;
+ask?: number;
+bid?: number;
+price_24h_change?: number;
+volume?: number;
+ts: string;
+bid_volume_l3?: number;
+bid_vwap_l3?: number;
+bid_volume_l5?: number;
+bid_vwap_l5?: number;
+ask_volume_l3?: number;
+ask_vwap_l3?: number;
+ask_volume_l5?: number;
+ask_vwap_l5?: number;
+ts_iso: string;
+}
+
+export interface HedgingOrder{
+serial_id: number;
+hedging_order_id: string;
+remote_order_id?: string;
+hedging_adapter_id: string;
+instrument_id: string;
+side: OrderSide;
+status: HedgingOrderStatus;
+type: OrderType;
+limit_price?: number;
+quantity: number;
+executed_quantity: number;
+remaining_quantity: number;
+error_message?: string;
+meta?: string;
+created_at: string;
+updated_at: string;
+expires_at?: string;
+version: number;
+created_at_iso: string;
+updated_at_iso: string;
+instrument: Instrument;
+}
+
 export interface Instrument{
 serial_id?: number;
 name: string;
@@ -1353,6 +1593,7 @@ quote_currency: Currency;
 trading_fees?: TradingFee;
 price?: InstrumentPrice;
 volatility: number;
+volume_24h?: number;
 }
 
 export interface DateRangeInput{
@@ -1370,24 +1611,6 @@ volume_from?: number;
 volume_to?: number;
 price_24h_change?: number;
 ts: string;
-ts_iso: string;
-}
-
-export interface InstrumentPrice{
-instrument_id: string;
-ask?: number;
-bid?: number;
-price_24h_change?: number;
-volume?: number;
-ts: string;
-bid_volume_l3?: number;
-bid_vwap_l3?: number;
-bid_volume_l5?: number;
-bid_vwap_l5?: number;
-ask_volume_l3?: number;
-ask_vwap_l3?: number;
-ask_volume_l5?: number;
-ask_vwap_l5?: number;
 ts_iso: string;
 }
 
@@ -1502,6 +1725,7 @@ is_active: ToggleSwitch;
 type: ApiKeyTypes;
 trader_id?: string;
 created_by: string;
+hmac_required: string;
 created_at_iso: string;
 expires_at_iso?: string;
 permissions: Permission[];
@@ -1514,89 +1738,9 @@ expires_at: string;
 api_key_secret: string;
 }
 
-export interface CognitoPool{
-serial_id?: number;
-name: string;
-cognito_pool_id: string;
-role: Role;
-jwks: string;
-is_active: ToggleSwitch;
-}
-
 export interface SignInResult{
 jwt: string;
 expires_at: number;
-}
-
-export interface FeeGroup{
-serial_id?: number;
-fee_group_id: string;
-name?: string;
-description?: string;
-beneficiary_user_id: string;
-kyc_status?: UserKycStatus;
-meta?: string;
-trading_fees: TradingFee[];
-payment_fees: PaymentFee[];
-}
-
-export interface PaymentFee{
-serial_id?: number;
-payment_route_id?: string;
-currency_id: string;
-fee_group_id: string;
-withdrawal_progressive_fee?: number;
-withdrawal_flat_fee?: number;
-deposit_progressive_fee?: number;
-deposit_flat_fee?: number;
-calculation_type?: FeeCalculationType;
-fee_group: FeeGroup;
-payment_route?: PaymentRoute;
-}
-
-export interface LimitGroup{
-serial_id?: number;
-limit_group_id: string;
-name?: string;
-description?: string;
-kyc_status?: UserKycStatus;
-meta?: string;
-payment_limits: PaymentLimit[];
-trading_limits: TradingLimit[];
-disabled_instruments: string[];
-disabled_currencies: string[];
-aggregated_payment_limit?: AggregatedPaymentLimit;
-}
-
-export interface PaymentLimit{
-serial_id?: number;
-limit_group_id: string;
-currency_id: string;
-deposit_enabled: ToggleSwitch;
-deposit_min_amount: number;
-deposit_daily_limit: number;
-deposit_weekly_limit: number;
-deposit_monthly_limit: number;
-deposit_auto_approval_amount: number;
-withdrawal_enabled: ToggleSwitch;
-withdrawal_min_amount: number;
-withdrawal_daily_limit: number;
-withdrawal_weekly_limit: number;
-withdrawal_monthly_limit: number;
-withdrawal_auto_approval_amount: number;
-notion_currency?: string;
-limit_group: LimitGroup;
-}
-
-export interface TradingLimit{
-serial_id?: number;
-limit_group_id: string;
-instrument_id: string;
-daily_limit: number;
-weekly_limit: number;
-monthly_limit: number;
-notion_currency?: string;
-limit_group: LimitGroup;
 }
 
 export interface TimelineEvent{
@@ -1605,39 +1749,6 @@ event_name: NotificationTrigger;
 event_data: string;
 created_at: string;
 instrument?: Instrument;
-}
-
-export interface HedgingAdapter{
-serial_id?: number;
-hedging_adapter_id: string;
-service_url: string;
-service_api_key: string;
-broker_user_id: string;
-hedging_enabled: ToggleSwitch;
-account_balances_sync_enabled: ToggleSwitch;
-meta?: string;
-created_at: string;
-maker_fee?: number;
-taker_fee?: number;
-fees_sync_enabled: ToggleSwitch;
-created_at_iso: string;
-}
-
-export interface OrderbookItem{
-price: number;
-quantity: number;
-exchange?: string;
-}
-
-export interface OrderbookUpdateResult{
-instrument_id: string;
-sell: OrderbookItem[];
-buy: OrderbookItem[];
-ts: string;
-total_volume?: number;
-best_ask?: number;
-best_bid?: number;
-ts_iso: string;
 }
 
 export interface UserIpGeoHistory{
@@ -1682,40 +1793,6 @@ taker_flat: number;
 fee_group: FeeGroup;
 }
 
-export interface HedgingAccount{
-serial_id?: number;
-hedging_adapter_id: string;
-currency_id: string;
-balance: number;
-usd_threshold: number;
-is_active: ToggleSwitch;
-usd_balance?: number;
-}
-
-export interface HedgingOrder{
-serial_id: number;
-hedging_order_id: string;
-remote_order_id?: string;
-hedging_adapter_id: string;
-instrument_id: string;
-side: OrderSide;
-status: HedgingOrderStatus;
-type: OrderType;
-limit_price?: number;
-quantity: number;
-executed_quantity: number;
-remaining_quantity: number;
-error_message?: string;
-meta?: string;
-created_at: string;
-updated_at: string;
-expires_at?: string;
-version: number;
-created_at_iso: string;
-updated_at_iso: string;
-instrument: Instrument;
-}
-
 export interface UsersTradingVolume{
 user_id: string;
 instrument_id: string;
@@ -1747,7 +1824,7 @@ created_at: string;
 quantity_mode: OrderQuantityMode;
 created_at_iso: string;
 user?: User;
-instrument: Instrument;
+instrument?: Instrument;
 order?: Order;
 }
 
@@ -1760,6 +1837,27 @@ withdrawal_weekly_limit: number;
 withdrawal_monthly_limit: number;
 is_active: ToggleSwitch;
 limit_group: LimitGroup;
+}
+
+export interface KytScreening{
+serial_id?: number;
+screening_id?: string;
+provider: KytProvider;
+payment_id: string;
+risk_score?: number;
+error_message?: string;
+analysis_target?: KytAnalysisTarget;
+analysed_at: string;
+created_at: string;
+updated_at: string;
+pdf_report_url: string;
+evaluation_detail: EllipticEvaluationSource[];
+}
+
+export interface EllipticEvaluationSource{
+rule_id: string;
+rule_name?: string;
+risk_score: number;
 }
 
 export interface Payment{
@@ -1856,27 +1954,6 @@ value?: string;
 updated_at: string;
 }
 
-export interface KytScreening{
-serial_id?: number;
-screening_id?: string;
-provider: KytProvider;
-payment_id: string;
-risk_score?: number;
-error_message?: string;
-analysis_target?: KytAnalysisTarget;
-analysed_at: string;
-created_at: string;
-updated_at: string;
-pdf_report_url: string;
-evaluation_detail: EllipticEvaluationSource[];
-}
-
-export interface EllipticEvaluationSource{
-rule_id: string;
-rule_name?: string;
-risk_score: number;
-}
-
 export interface PaymentRoute{
 serial_id?: number;
 payment_route_id: string;
@@ -1939,6 +2016,7 @@ updated_at: string;
 user: User;
 created_at_iso: string;
 updated_at_iso?: string;
+raw_price?: number;
 expires_at_iso: string;
 }
 
@@ -1991,6 +2069,41 @@ expires_at_iso: string;
 current_time_iso: string;
 }
 
+export interface TradesVolume{
+serial_id: number;
+user_id: string;
+volume: number;
+created_at: string;
+}
+
+export interface TradeTier{
+serial_id: number;
+tier_id: string;
+fee_group_id: string;
+name: string;
+maker_progressive: number;
+taker_progressive: number;
+threshold: number;
+}
+
+export interface ReferralTransactionInfo{
+serial_id?: number;
+referral_transaction_id: string;
+account_transaction_id?: string;
+target_user_id: string;
+referral_id: string;
+reward_type: ReferralRewardType;
+amount: number;
+currency_id: string;
+is_delayed: ToggleSwitch;
+delayed_until?: string;
+comment?: string;
+created_at: string;
+account_transaction: AccountTransaction;
+target_user: User;
+created_at_iso: string;
+}
+
 export interface Webhook{
 webhook_id: string;
 url: string;
@@ -2017,9 +2130,9 @@ admin_ip?: string;
 approved_by?: string;
 approved_by_ip?: string;
 created_at: string;
-approved_at: string;
+approved_at?: string;
 created_at_iso: string;
-approved_at_iso: string;
+approved_at_iso?: string;
 }
 
 export interface LimitsStatusStructure{
@@ -2036,7 +2149,7 @@ monthly: LimitsStatusStructure;
 
 export interface LimitsStatus{
 payments: LimitsStatusPeriods;
-aggregated: LimitsStatusPeriods;
+aggregated?: LimitsStatusPeriods;
 }
 
 export interface EstimateNetworkFeeResultItem{
@@ -2079,20 +2192,21 @@ min_deposit_amount: number;
 cut_off_time_seconds: number;
 lock_in_period_seconds?: number;
 effective_date_from: string;
-effective_date_to: string;
+effective_date_to?: string;
 rate_type: VaultRateType;
 is_active: ToggleSwitch;
 withdrawal_enabled: ToggleSwitch;
 deposit_enabled: ToggleSwitch;
 withdrawal_policy: VaultWithdrawalPolicy;
-withdrawal_delay_seconds: number;
+withdrawal_delay_seconds?: number;
 last_interest_at?: string;
 created_at: string;
 updated_at: string;
+meta?: string;
 total_balance: number;
 currency?: Currency;
 effective_date_from_iso: string;
-effective_date_to_iso: string;
+effective_date_to_iso?: string;
 created_at_iso: string;
 updated_at_iso?: string;
 }
@@ -2110,10 +2224,11 @@ currency_id?: string;
 transaction_type: AccountTransactionType;
 transaction_class: VaultsTransactionClass;
 comment?: string;
-is_delayed: ToggleSwitch;
+is_delayed?: ToggleSwitch;
 delayed_until?: string;
 created_by?: string;
 created_at: string;
+delayed_until_iso?: string;
 vault?: Vault;
 user?: User;
 created_at_iso: string;
@@ -2150,9 +2265,11 @@ approved_by?: string;
 approved_at?: string;
 created_at: string;
 updated_at: string;
+username: string;
+vault: Vault;
 created_at_iso: string;
 updated_at_iso: string;
-approved_at_iso: string;
+approved_at_iso?: string;
 }
 
 export interface Referral{
@@ -2173,17 +2290,6 @@ parent_user: User;
 created_at_iso: string;
 }
 
-export interface ReferralTransactionInfo{
-serial_id?: number;
-account_transaction_id: string;
-target_user_id: string;
-referral_id: string;
-reward_type: ReferralRewardType;
-created_at: string;
-account_transaction: AccountTransaction;
-target_user: User;
-}
-
 export interface ReferralReward{
 serial_id?: number;
 is_active: ToggleSwitch;
@@ -2193,10 +2299,28 @@ min_deposited_volume_required: ToggleSwitch;
 min_deposited_volume: number;
 min_deposited_volume_currency_id?: string;
 kyc_required: ToggleSwitch;
+is_delayed: ToggleSwitch;
+delayed_period_seconds?: number;
+min_staked_vault_required: ToggleSwitch;
+min_staked_vault_volume?: number;
+min_staked_vault_currency_id?: string;
 created_at: string;
 updated_at: string;
 created_at_iso: string;
 updated_at_iso: string;
+}
+
+export interface CashHoldingsReport{
+serial_id: number;
+type: string;
+transaction_class: string;
+user_id: string;
+wallet_id: string;
+currency_id: string;
+amount: number;
+post_balance: number;
+note?: string;
+created_at?: string;
 }
 
 export interface TradingGrid{
@@ -2218,8 +2342,6 @@ collateral_reserve_order_id?: string;
 collateral_release_order_id?: string;
 reserved_fees_quote_currency: number;
 reserved_fees_base_currency: number;
-base_currency_account_id: string;
-quote_currency_account_id: string;
 pnl_quote_currency: number;
 status: TradingGridStatus;
 status_message?: string;
@@ -2417,6 +2539,11 @@ individual?: KycPreference;
 corporate?: KycPreference;
 }
 
+export interface Vasp{
+id: string;
+name: string;
+}
+
 export interface CreateAccountTransactionResult{
 parent_transaction_id: string;
 account_transactions: AccountTransaction[];
@@ -2460,11 +2587,6 @@ timestamp: number;
 
 export interface AmlScreeningResult{
 chainanalysis?: AmlScreeningChainAnalysis;
-}
-
-export interface Vasp{
-id: string;
-name: string;
 }
 
 export interface MarginUserFreeBalanceItem{
@@ -2535,6 +2657,7 @@ secondary_type?: string;
 exchange_account?: string;
 transaction_type?: string;
 lp_transaction_type?: string;
+additional_context?: string;
 }
 
 export interface LicenseStatus{
@@ -2569,6 +2692,23 @@ profit_percentage: number;
 floating_pnl: number;
 annualized_yield: number;
 simulation_details: SimulationDetails;
+}
+
+export interface FxcmFeesConfigType{
+withdrawalFeePercentage: number;
+withdrawalMinNotional: number;
+rebates: RebateStructure[];
+comissions: FxcmFees;
+spreads: FxcmFees;
+}
+
+export interface FxcmFees{
+FxcmFees?: FxcmFees;
+}
+
+export interface RebateStructure{
+notional_level: number;
+rebate: number;
 }
 
 export interface RegionBlacklistItemInput{
@@ -2615,7 +2755,7 @@ enabled: boolean;
 }
 
 
-export type QueryType = 'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'admins'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'vasps_list'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'trader_mfa_provider'|'admin_mfa_provider'|'is_margin_trading_enabled'|'products_enabled'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'all_permission_subjects'|'permissions_share'|'kyc_preferences'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'currency_prices'|'convert_currency_amount'|'ip_whitelist'|'hedging_accounts'|'margin_account_transactions'|'margin_users_free_balances'|'admin_properties'|'admin_mfa_status'|'elliptic_screenings'|'elliptic_risk_threshold'|'scorechain_screenings'|'scorechain_minimal_risk_score'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'vaults'|'vaults_average_user_apy'|'estimate_vault_interests'|'vaults_accounts'|'vaults_total_user_balance_quoted'|'vaults_transactions'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'unified_transactions'|'vaults_transactions_requests'|'referrals'|'aggregated_payments_limits'|'audit_trail_log'|'my_audit_trail_log'|'admin_events_log'|'referrals_history'|'referred_users_count'|'referrer_total_reward_quoted'|'blacklist_items'|'system_logs'|'whoami'|'referrals_transactions_info'|'license'|'referral_rewards'|'required_actions'|'trading_grids'|'trading_grid_levels'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
+export type QueryType = 'version'|'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'admins'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'trader_mfa_provider'|'admin_mfa_provider'|'is_margin_trading_enabled'|'products_enabled'|'user_products_enabled'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'all_permission_subjects'|'permissions_share'|'kyc_preferences'|'vasps_list'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'currency_prices'|'convert_currency_amount'|'ip_whitelist'|'hedging_accounts'|'margin_account_transactions'|'margin_users_free_balances'|'admin_properties'|'admin_mfa_status'|'elliptic_screenings'|'elliptic_risk_threshold'|'scorechain_screenings'|'scorechain_minimal_risk_score'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'vaults'|'vaults_average_user_apy'|'estimate_vault_interests'|'vaults_accounts'|'vaults_total_user_balance_quoted'|'vaults_transactions'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'unified_transactions'|'unified_transactions_lps'|'vaults_transactions_requests'|'referrals'|'aggregated_payments_limits'|'audit_trail_log'|'my_audit_trail_log'|'admin_events_log'|'referrals_history'|'referred_users_count'|'referrer_total_reward_quoted'|'blacklist_items'|'system_logs'|'whoami'|'referrals_transactions_info'|'license'|'referral_rewards'|'required_actions'|'trading_grids'|'trading_grid_levels'|'user_fees_config'|'estimate_payment_notional_fee'|'cash_holdings_report'|'trade_tiers'|'trade_volumes'|'wallets'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
 
 export interface PagerInput{
 limit?: number;
@@ -2633,7 +2773,7 @@ serial_id_to?: number;
 }
 
 
-export type MutationType = 'restart_system'|'create_order'|'update_open_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'checkout'|'restrictions_check'|'create_admins'|'delete_admin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'update_service_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'operate_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'trigger_create_hedging_remote_order_job'|'trigger_complete_hedging_remote_order_job'|'trigger_reject_hedging_remote_order_job'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_admin_permissions'|'create_kyc_manual_request'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'emit_event'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'send_push'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'create_admin_mfa_secret'|'update_user_mfa_status'|'update_admin_mfa_status'|'verify_user_mfa_token'|'verify_admin_mfa_token'|'send_test_email'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_margin_account_transaction'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_elliptic_risk_threshold'|'update_scorechain_minimal_risk_score'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_vault'|'update_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'trigger_expired_vaults_processing'|'trigger_delayed_vaults_trx_processing'|'create_vault_withdrawal'|'create_vault_deposit'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_referral'|'claim_referral'|'calculate_payments_limits'|'create_aggregated_payment_limit'|'update_aggregated_payment_limit'|'delete_aggregated_payment_limit'|'sync_config'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'|'reset_demo_balances'|'activate_license'|'renew_license'|'create_referral_reward'|'update_referral_reward'|'delete_referral_reward'|'start_trading_grid'|'stop_trading_grid'|'update_trading_grid'|'estimate_trading_grid'
+export type MutationType = 'restart_system'|'create_order'|'update_open_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'checkout'|'restrictions_check'|'register_trader_local'|'trader_signin_local'|'create_admins'|'delete_admin'|'admin_signin_local'|'create_local_admin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'update_service_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'operate_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'trigger_create_hedging_remote_order_job'|'trigger_complete_hedging_remote_order_job'|'trigger_reject_hedging_remote_order_job'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_admin_permissions'|'create_kyc_manual_request'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'emit_event'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'create_admin_mfa_secret'|'update_user_mfa_status'|'update_admin_mfa_status'|'verify_user_mfa_token'|'verify_admin_mfa_token'|'send_test_email'|'send_test_push'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_margin_account_transaction'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_elliptic_risk_threshold'|'update_scorechain_minimal_risk_score'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_vault'|'update_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'trigger_expired_vaults_processing'|'trigger_delayed_vaults_trx_processing'|'create_vault_withdrawal'|'create_vault_deposit'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_referral'|'claim_referral'|'calculate_payments_limits'|'create_aggregated_payment_limit'|'update_aggregated_payment_limit'|'delete_aggregated_payment_limit'|'sync_config'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'|'reset_demo_balances'|'activate_license'|'renew_license'|'create_referral_reward'|'update_referral_reward'|'delete_referral_reward'|'start_trading_grid'|'stop_trading_grid'|'update_trading_grid'|'estimate_trading_grid'|'user_switch_fee_group'|'update_withdrawal_notional_fee'|'create_trade_tier'|'update_trade_tier'|'delete_trade_tier'|'delete_trades_volume'|'create_wallet'
 
 export interface TravelRulePropertiesArgs{
 counterparty: TravelRuleCounterParty;
@@ -2708,6 +2848,7 @@ export interface RecordTransactionItem{
 account_transaction_id?: string;
 user_id: string;
 currency_id: string;
+wallet_id: string;
 type: AccountTransactionType;
 transaction_class: AccountTransactionClass;
 amount: number;
@@ -2834,6 +2975,7 @@ export interface RestartSystemArgs{
 
 export interface CreateOrderArgs{
 user_id?: string;
+wallet_id?: string;
 client_order_id?: string;
 instrument_id: string;
 quantity: number;
@@ -2853,6 +2995,7 @@ user_id?: string;
 order_id: string;
 quantity: number;
 price: number;
+expires_at?: string;
 }
 
 export interface CancelMultipleOrdersArgs{
@@ -2884,6 +3027,18 @@ export interface CheckoutArgs{
 export interface RestrictionsCheckArgs{
 }
 
+export interface RegisterTraderLocalArgs{
+email: string;
+password: string;
+first_name: string;
+last_name: string;
+}
+
+export interface TraderSigninLocalArgs{
+email: string;
+password: string;
+}
+
 export interface CreateAdminsArgs{
 emails: string[];
 subjects: string[];
@@ -2891,6 +3046,17 @@ subjects: string[];
 
 export interface DeleteAdminArgs{
 name: string;
+}
+
+export interface AdminSigninLocalArgs{
+email: string;
+password: string;
+}
+
+export interface CreateLocalAdminArgs{
+email: string;
+password: string;
+subjects: string[];
 }
 
 export interface CreateInstrumentArgs{
@@ -3025,6 +3191,9 @@ message?: string;
 reference?: string;
 create_account_operations?: boolean;
 manual_transaction_date?: string;
+properties?: FiatDepositPropertyInput[];
+status?: PaymentStatus;
+approval_status?: PaymentApprovalStatus;
 }
 
 export interface CreateConversionOrderArgs{
@@ -3034,6 +3203,7 @@ reference?: string;
 source_currency_amount?: number;
 target_currency_amount?: number;
 return_on_complete?: boolean;
+wallet_id?: string;
 }
 
 export interface CreateConversionQuoteArgs{
@@ -3125,6 +3295,7 @@ mfa_secret?: string;
 first_name?: string;
 last_name?: string;
 password?: string;
+password_hash?: string;
 client_user_id?: string;
 client_custom_properties: ClientCustomPropertyItem[];
 }
@@ -3146,6 +3317,7 @@ meta?: string;
 limit_group_id?: string;
 disabled_currencies: string[];
 disabled_instruments: string[];
+disabled_payment_routes: string[];
 aggregated_payment_limit?: CreateAggregatedPaymentLimitArgs;
 }
 
@@ -3157,6 +3329,7 @@ meta?: string;
 limit_group_id?: string;
 serial_ids: number[];
 disabled_currencies: string[];
+disabled_payment_routes: string[];
 disabled_instruments: string[];
 aggregated_payment_limit?: UpdateAggregatedPaymentLimitArgs;
 }
@@ -3281,6 +3454,7 @@ fiat_deposit_properties: FiatDepositPropertyInput[];
 deposit_enabled?: ToggleSwitch;
 withdrawal_enabled?: ToggleSwitch;
 is_crypto_to_fiat?: ToggleSwitch;
+meta?: string;
 }
 
 export interface DeletePaymentRouteArgs{
@@ -3300,6 +3474,7 @@ is_active?: ToggleSwitch;
 network_fee_currency_id?: string;
 fiat_deposit_properties: FiatDepositPropertyInput[];
 is_crypto_to_fiat?: ToggleSwitch;
+meta?: string;
 payment_route_id?: string;
 serial_ids: number[];
 crypto_address_generate_new?: ToggleSwitch;
@@ -3325,6 +3500,7 @@ withdrawal_daily_limit?: number;
 withdrawal_weekly_limit?: number;
 withdrawal_monthly_limit?: number;
 withdrawal_auto_approval_amount: number;
+auto_reject: ToggleSwitch;
 }
 
 export interface UpdatePaymentLimitArgs{
@@ -3344,6 +3520,7 @@ withdrawal_daily_limit?: number;
 withdrawal_weekly_limit?: number;
 withdrawal_monthly_limit?: number;
 serial_ids: number[];
+auto_reject?: ToggleSwitch;
 }
 
 export interface DeletePaymentLimitArgs{
@@ -3637,12 +3814,6 @@ limit_group_id: string;
 instrument_id: string;
 }
 
-export interface SendPushArgs{
-title: string;
-message: string;
-body: string;
-}
-
 export interface UpdateDelayedRequestArgs{
 delayed_request_id?: string;
 approval_status?: DelayedRequestStatus;
@@ -3682,6 +3853,13 @@ token: string;
 export interface SendTestEmailArgs{
 trigger: NotificationTrigger;
 to: string;
+}
+
+export interface SendTestPushArgs{
+title: string;
+message: string;
+body: string;
+trigger?: NotificationTrigger;
 }
 
 export interface CreateKycUserDataArgs{
@@ -3884,13 +4062,14 @@ min_deposit_amount: number;
 cut_off_time_seconds: number;
 lock_in_period_seconds?: number;
 effective_date_from: string;
-effective_date_to: string;
+effective_date_to?: string;
 rate_type: VaultRateType;
 is_active: ToggleSwitch;
 withdrawal_enabled: ToggleSwitch;
 deposit_enabled: ToggleSwitch;
-withdrawal_policy: VaultWithdrawalPolicy;
-withdrawal_delay_seconds: number;
+withdrawal_policy?: VaultWithdrawalPolicy;
+withdrawal_delay_seconds?: number;
+meta?: string;
 }
 
 export interface UpdateVaultArgs{
@@ -3911,6 +4090,7 @@ withdrawal_enabled?: ToggleSwitch;
 deposit_enabled?: ToggleSwitch;
 withdrawal_policy?: VaultWithdrawalPolicy;
 withdrawal_delay_seconds?: number;
+meta?: string;
 vault_id: string;
 }
 
@@ -3930,12 +4110,14 @@ export interface CreateVaultWithdrawalArgs{
 vault_id: string;
 amount: number;
 user_id?: string;
+use_all_funds?: boolean;
 }
 
 export interface CreateVaultDepositArgs{
 vault_id: string;
 amount: number;
 user_id?: string;
+use_all_funds?: boolean;
 }
 
 export interface CreateVaultTransactionArgs{
@@ -3943,6 +4125,7 @@ vault_id: string;
 amount: number;
 transaction_type: AccountTransactionType;
 user_id?: string;
+use_all_funds?: boolean;
 }
 
 export interface CreateVaultManualTransactionsArgs{
@@ -4054,6 +4237,11 @@ min_deposited_volume_required: ToggleSwitch;
 min_deposited_volume?: number;
 min_deposited_volume_currency_id?: string;
 kyc_required: ToggleSwitch;
+is_delayed?: ToggleSwitch;
+delayed_period_seconds?: number;
+min_staked_vault_required?: ToggleSwitch;
+min_staked_vault_volume?: number;
+min_staked_vault_currency_id?: string;
 }
 
 export interface UpdateReferralRewardArgs{
@@ -4063,7 +4251,12 @@ min_deposited_volume_required?: ToggleSwitch;
 min_deposited_volume?: number;
 min_deposited_volume_currency_id?: string;
 kyc_required?: ToggleSwitch;
+delayed_period_seconds?: number;
+min_staked_vault_volume?: number;
+min_staked_vault_currency_id?: string;
 type: ReferralRewardType;
+is_delayed?: ToggleSwitch;
+min_staked_vault_required?: ToggleSwitch;
 }
 
 export interface DeleteReferralRewardArgs{
@@ -4080,6 +4273,7 @@ price_range_from: number;
 price_range_to: number;
 stop_loss_percentage?: number;
 take_profit_percentage?: number;
+wallet_id?: string;
 }
 
 export interface StopTradingGridArgs{
@@ -4102,10 +4296,55 @@ price_range_from: number;
 price_range_to: number;
 stop_loss_percentage?: number;
 take_profit_percentage?: number;
+wallet_id?: string;
 time_from: number;
 time_to: number;
 }
 
+export interface UserSwitchFeeGroupArgs{
+fee_group_name: FxcmFeeGroups;
+}
+
+export interface UpdateWithdrawalNotionalFeeArgs{
+notional: number;
+}
+
+export interface CreateTradeTierArgs{
+fee_group_id: string;
+name: string;
+maker_progressive: number;
+taker_progressive: number;
+threshold: number;
+}
+
+export interface UpdateTradeTierArgs{
+tier_id?: string;
+name?: string;
+maker_progressive?: number;
+taker_progressive?: number;
+threshold?: number;
+serial_ids: number[];
+}
+
+export interface DeleteTradeTierArgs{
+tier_id: string;
+serial_ids: number[];
+}
+
+export interface DeleteTradesVolumeArgs{
+user_id: string;
+serial_ids: number[];
+}
+
+export interface CreateWalletArgs{
+name: string;
+user_id?: string;
+description?: string;
+}
+
+
+export interface VersionArgs{
+}
 
 export interface OpenOrdersArgs{
 order_id?: string;
@@ -4123,6 +4362,7 @@ pager?: PagerInput;
 sort?: SortInput;
 dateRange?: DateRangeInput;
 serialIdRange?: SerialIdRangeInput;
+wallet_id?: string;
 }
 
 export interface ClosedOrdersArgs{
@@ -4141,6 +4381,7 @@ pager?: PagerInput;
 sort?: SortInput;
 dateRange?: DateRangeInput;
 serialIdRange?: SerialIdRangeInput;
+wallet_id?: string;
 }
 
 export interface EstimateOrderArgs{
@@ -4228,9 +4469,7 @@ kyt_status_in: PaymentKytStatus[];
 currency_type?: CurrencyType;
 quote_currency_id?: string;
 internal_transfer_cross_reference?: string;
-}
-
-export interface VaspsListArgs{
+crypto_pay_payments?: boolean;
 }
 
 export interface DepositAddressCryptoArgs{
@@ -4271,6 +4510,7 @@ pager?: PagerInput;
 sort?: SortInput;
 dateRange?: DateRangeInput;
 serialIdRange?: SerialIdRangeInput;
+wallet_id?: string;
 }
 
 export interface ConversionQuotesArgs{
@@ -4313,7 +4553,7 @@ pager?: PagerInput;
 sort?: SortInput;
 dateRange?: DateRangeInput;
 serialIdRange?: SerialIdRangeInput;
-mfa_status?: string;
+mfa_status?: ToggleSwitch;
 }
 
 export interface TotalUsersArgs{
@@ -4351,11 +4591,13 @@ export interface AccountsBalancesArgs{
 user_id?: string;
 currency_id?: string;
 hide_zero_balances?: ToggleSwitch;
+wallet_id?: string;
 }
 
 export interface AccountsArgs{
 account_id?: string;
 currency_id?: string;
+wallet_id?: string;
 user_id?: string;
 search?: string;
 pager?: PagerInput;
@@ -4487,6 +4729,10 @@ export interface ProductsEnabledArgs{
 role: ClientRole;
 }
 
+export interface UserProductsEnabledArgs{
+role: ClientRole;
+}
+
 export interface AccountsPortfolioReportArgs{
 currencies: string[];
 }
@@ -4536,6 +4782,9 @@ group_by?: FindPermissionsShareGroupBy;
 }
 
 export interface KycPreferencesArgs{
+}
+
+export interface VaspsListArgs{
 }
 
 export interface WebhooksArgs{
@@ -4829,8 +5078,12 @@ start_date: string;
 end_date: string;
 side?: OrderSide;
 currencies: string[];
-transactions_types: string[];
 exchanges: string[];
+search?: string;
+pager?: PagerInput;
+}
+
+export interface UnifiedTransactionsLpsArgs{
 }
 
 export interface VaultsTransactionsRequestsArgs{
@@ -4846,6 +5099,7 @@ search?: string;
 pager?: PagerInput;
 date_range?: DateRangeInput;
 sort?: SortInput;
+currency_id?: string;
 }
 
 export interface ReferralsArgs{
@@ -4942,6 +5196,7 @@ target_user_id?: string;
 referral_id?: string;
 reward_type?: ReferralRewardType;
 currency_id?: string;
+is_delayed?: ToggleSwitch;
 date_range?: DateRangeInput;
 search?: string;
 pager?: PagerInput;
@@ -4964,6 +5219,7 @@ price_from?: number;
 price_to?: number;
 pager?: PagerInput;
 sort?: SortInput;
+wallet_id?: string;
 }
 
 export interface TradingGridLevelsArgs{
@@ -4974,6 +5230,45 @@ buy_order_id?: string;
 trading_grid_id?: string;
 pager?: PagerInput;
 sort?: SortInput;
+}
+
+export interface UserFeesConfigArgs{
+}
+
+export interface EstimatePaymentNotionalFeeArgs{
+currency_id: string;
+type: PaymentType;
+amount: number;
+}
+
+export interface CashHoldingsReportArgs{
+user_id?: string;
+date_range?: DateRangeInput;
+}
+
+export interface TradeTiersArgs{
+tier_id?: string;
+fee_group_id?: string;
+name?: string;
+pager?: PagerInput;
+sort?: SortInput;
+}
+
+export interface TradeVolumesArgs{
+serial_id?: number;
+user_id?: string;
+pager?: PagerInput;
+sort?: SortInput;
+}
+
+export interface WalletsArgs{
+wallet_id?: string;
+user_id?: string;
+name?: string;
+description?: string;
+pager?: PagerInput;
+sort?: SortInput;
+dateRange?: DateRangeInput;
 }
 
 export interface UserIpGeoHistoryArgs{
@@ -5049,8 +5344,8 @@ to_date: string;
 async create_order({args, fields,  headers}:{args: CreateOrderArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$client_order_id: String,$instrument_id: String!,$quantity: Float!,$quantity_mode: OrderQuantityMode,$type: OrderType!,$side: OrderSide!,$time_in_force: OrderTimeInForce!,$price: Float,$expires_at: String,$notes: String,$stop_price: Float,$post_only: ToggleSwitch) {
-                    create_order(user_id:$user_id,client_order_id:$client_order_id,instrument_id:$instrument_id,quantity:$quantity,quantity_mode:$quantity_mode,type:$type,side:$side,time_in_force:$time_in_force,price:$price,expires_at:$expires_at,notes:$notes,stop_price:$stop_price,post_only:$post_only)
+                mutation($user_id: String,$wallet_id: String,$client_order_id: String,$instrument_id: String!,$quantity: Float!,$quantity_mode: OrderQuantityMode,$type: OrderType!,$side: OrderSide!,$time_in_force: OrderTimeInForce!,$price: Float,$expires_at: String,$notes: String,$stop_price: Float,$post_only: ToggleSwitch) {
+                    create_order(user_id:$user_id,wallet_id:$wallet_id,client_order_id:$client_order_id,instrument_id:$instrument_id,quantity:$quantity,quantity_mode:$quantity_mode,type:$type,side:$side,time_in_force:$time_in_force,price:$price,expires_at:$expires_at,notes:$notes,stop_price:$stop_price,post_only:$post_only)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5061,8 +5356,8 @@ async create_order({args, fields,  headers}:{args: CreateOrderArgs, fields:((key
 async update_open_order({args, fields,  headers}:{args: UpdateOpenOrderArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$order_id: String!,$quantity: Float!,$price: Float!) {
-                    update_open_order(user_id:$user_id,order_id:$order_id,quantity:$quantity,price:$price)
+                mutation($user_id: String,$order_id: String!,$quantity: Float!,$price: Float!,$expires_at: String) {
+                    update_open_order(user_id:$user_id,order_id:$order_id,quantity:$quantity,price:$price,expires_at:$expires_at)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5142,6 +5437,26 @@ async restrictions_check({  headers}:{  headers?:HeadersInit}={}):Promise<boolea
                 `,{},headers,'restrictions_check')
                 }
 
+async register_trader_local({args,  headers}:{args: RegisterTraderLocalArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($email: String!,$password: String!,$first_name: String!,$last_name: String!) {
+                    register_trader_local(email:$email,password:$password,first_name:$first_name,last_name:$last_name)
+                        
+                }
+                `,args || {},headers,'register_trader_local')
+                }
+
+async trader_signin_local({args,  headers}:{args: TraderSigninLocalArgs,  headers?:HeadersInit}):Promise<string>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($email: String!,$password: String!) {
+                    trader_signin_local(email:$email,password:$password)
+                        
+                }
+                `,args || {},headers,'trader_signin_local')
+                }
+
 async create_admins({args,  headers}:{args: CreateAdminsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -5160,6 +5475,26 @@ async delete_admin({args,  headers}:{args: DeleteAdminArgs,  headers?:HeadersIni
                         
                 }
                 `,args || {},headers,'delete_admin')
+                }
+
+async admin_signin_local({args,  headers}:{args: AdminSigninLocalArgs,  headers?:HeadersInit}):Promise<string>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($email: String!,$password: String!) {
+                    admin_signin_local(email:$email,password:$password)
+                        
+                }
+                `,args || {},headers,'admin_signin_local')
+                }
+
+async create_local_admin({args,  headers}:{args: CreateLocalAdminArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($email: String!,$password: String!,$subjects: [string!]!) {
+                    create_local_admin(email:$email,password:$password,subjects:$subjects)
+                        
+                }
+                `,args || {},headers,'create_local_admin')
                 }
 
 async create_instrument({args, fields,  headers}:{args: CreateInstrumentArgs, fields:((keyof Instrument) | Partial<Record<keyof Instrument,any[]>>)[], headers?:HeadersInit}):Promise<Instrument>{ 
@@ -5293,8 +5628,8 @@ async create_withdrawal_fiat({args, fields,  headers}:{args: CreateWithdrawalFia
 async create_payment_manual({args, fields,  headers}:{args: CreatePaymentManualArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($payment_route_id: String!,$remote_txid: String,$user_id: String!,$amount: Float!,$type: PaymentType!,$body_amount: Float,$message: String,$reference: String,$create_account_operations: Boolean,$manual_transaction_date: String) {
-                    create_payment_manual(payment_route_id:$payment_route_id,remote_txid:$remote_txid,user_id:$user_id,amount:$amount,type:$type,body_amount:$body_amount,message:$message,reference:$reference,create_account_operations:$create_account_operations,manual_transaction_date:$manual_transaction_date)
+                mutation($payment_route_id: String!,$remote_txid: String,$user_id: String!,$amount: Float!,$type: PaymentType!,$body_amount: Float,$message: String,$reference: String,$create_account_operations: Boolean,$manual_transaction_date: String,$properties: [FiatDepositPropertyInput!],$status: PaymentStatus,$approval_status: PaymentApprovalStatus) {
+                    create_payment_manual(payment_route_id:$payment_route_id,remote_txid:$remote_txid,user_id:$user_id,amount:$amount,type:$type,body_amount:$body_amount,message:$message,reference:$reference,create_account_operations:$create_account_operations,manual_transaction_date:$manual_transaction_date,properties:$properties,status:$status,approval_status:$approval_status)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5305,8 +5640,8 @@ async create_payment_manual({args, fields,  headers}:{args: CreatePaymentManualA
 async create_conversion_order({args, fields,  headers}:{args: CreateConversionOrderArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$conversion_quote_id: String!,$reference: String,$source_currency_amount: Float,$target_currency_amount: Float,$return_on_complete: Boolean) {
-                    create_conversion_order(user_id:$user_id,conversion_quote_id:$conversion_quote_id,reference:$reference,source_currency_amount:$source_currency_amount,target_currency_amount:$target_currency_amount,return_on_complete:$return_on_complete)
+                mutation($user_id: String,$conversion_quote_id: String!,$reference: String,$source_currency_amount: Float,$target_currency_amount: Float,$return_on_complete: Boolean,$wallet_id: String) {
+                    create_conversion_order(user_id:$user_id,conversion_quote_id:$conversion_quote_id,reference:$reference,source_currency_amount:$source_currency_amount,target_currency_amount:$target_currency_amount,return_on_complete:$return_on_complete,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5411,8 +5746,8 @@ async update_user({args, fields,  headers}:{args: UpdateUserArgs, fields:((keyof
 async create_user({args, fields,  headers}:{args: CreateUserArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$parent_user_id: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$fee_group_id: String,$limit_group_id: String,$crypto_pay: ToggleSwitch,$username: String!,$cognito_registration: ToggleSwitch,$cognito_email: ToggleSwitch,$permissions: [Permission!]!,$mfa_secret: String,$first_name: String,$last_name: String,$password: String,$client_user_id: String,$client_custom_properties: [ClientCustomPropertyItem!]!) {
-                    create_user(user_id:$user_id,parent_user_id:$parent_user_id,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,crypto_pay:$crypto_pay,username:$username,cognito_registration:$cognito_registration,cognito_email:$cognito_email,permissions:$permissions,mfa_secret:$mfa_secret,first_name:$first_name,last_name:$last_name,password:$password,client_user_id:$client_user_id,client_custom_properties:$client_custom_properties)
+                mutation($user_id: String,$parent_user_id: String,$email: String,$language: String,$timezone: String,$primary_market_currency: String,$fee_group_id: String,$limit_group_id: String,$crypto_pay: ToggleSwitch,$username: String!,$cognito_registration: ToggleSwitch,$cognito_email: ToggleSwitch,$permissions: [Permission!]!,$mfa_secret: String,$first_name: String,$last_name: String,$password: String,$password_hash: String,$client_user_id: String,$client_custom_properties: [ClientCustomPropertyItem!]!) {
+                    create_user(user_id:$user_id,parent_user_id:$parent_user_id,email:$email,language:$language,timezone:$timezone,primary_market_currency:$primary_market_currency,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,crypto_pay:$crypto_pay,username:$username,cognito_registration:$cognito_registration,cognito_email:$cognito_email,permissions:$permissions,mfa_secret:$mfa_secret,first_name:$first_name,last_name:$last_name,password:$password,password_hash:$password_hash,client_user_id:$client_user_id,client_custom_properties:$client_custom_properties)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5445,8 +5780,8 @@ async create_account_transaction({args, fields,  headers}:{args: CreateAccountTr
 async create_limit_group({args, fields,  headers}:{args: CreateLimitGroupArgs, fields:((keyof LimitGroup) | Partial<Record<keyof LimitGroup,any[]>>)[], headers?:HeadersInit}):Promise<LimitGroup>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$meta: String,$limit_group_id: String,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!,$aggregated_payment_limit: CreateAggregatedPaymentLimitArgs) {
-                    create_limit_group(name:$name,description:$description,kyc_status:$kyc_status,meta:$meta,limit_group_id:$limit_group_id,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments,aggregated_payment_limit:$aggregated_payment_limit)
+                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$meta: String,$limit_group_id: String,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!,$disabled_payment_routes: [string!]!,$aggregated_payment_limit: CreateAggregatedPaymentLimitArgs) {
+                    create_limit_group(name:$name,description:$description,kyc_status:$kyc_status,meta:$meta,limit_group_id:$limit_group_id,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments,disabled_payment_routes:$disabled_payment_routes,aggregated_payment_limit:$aggregated_payment_limit)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5457,8 +5792,8 @@ async create_limit_group({args, fields,  headers}:{args: CreateLimitGroupArgs, f
 async update_limit_group({args,  headers}:{args: UpdateLimitGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$meta: String,$limit_group_id: String,$serial_ids: [number!]!,$disabled_currencies: [string!]!,$disabled_instruments: [string!]!,$aggregated_payment_limit: UpdateAggregatedPaymentLimitArgs) {
-                    update_limit_group(name:$name,description:$description,kyc_status:$kyc_status,meta:$meta,limit_group_id:$limit_group_id,serial_ids:$serial_ids,disabled_currencies:$disabled_currencies,disabled_instruments:$disabled_instruments,aggregated_payment_limit:$aggregated_payment_limit)
+                mutation($name: String,$description: String,$kyc_status: UserKycStatus,$meta: String,$limit_group_id: String,$serial_ids: [number!]!,$disabled_currencies: [string!]!,$disabled_payment_routes: [string!]!,$disabled_instruments: [string!]!,$aggregated_payment_limit: UpdateAggregatedPaymentLimitArgs) {
+                    update_limit_group(name:$name,description:$description,kyc_status:$kyc_status,meta:$meta,limit_group_id:$limit_group_id,serial_ids:$serial_ids,disabled_currencies:$disabled_currencies,disabled_payment_routes:$disabled_payment_routes,disabled_instruments:$disabled_instruments,aggregated_payment_limit:$aggregated_payment_limit)
                         
                 }
                 `,args || {},headers,'update_limit_group')
@@ -5583,8 +5918,8 @@ async create_payment_session({args,  headers}:{args: CreatePaymentSessionArgs,  
 async create_payment_route({args, fields,  headers}:{args: CreatePaymentRouteArgs, fields:((keyof PaymentRoute) | Partial<Record<keyof PaymentRoute,any[]>>)[], headers?:HeadersInit}):Promise<PaymentRoute>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String!,$psp_service_id: String!,$name: String,$crypto_network: String,$crypto_address_generate_new: ToggleSwitch,$crypto_address_tag_type: CryptoAddressTagType,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$fiat_transfer_type: String,$is_active: ToggleSwitch!,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$fiat_deposit_properties: [FiatDepositPropertyInput!]!,$deposit_enabled: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$is_crypto_to_fiat: ToggleSwitch) {
-                    create_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,name:$name,crypto_network:$crypto_network,crypto_address_generate_new:$crypto_address_generate_new,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,fiat_transfer_type:$fiat_transfer_type,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,fiat_deposit_properties:$fiat_deposit_properties,deposit_enabled:$deposit_enabled,withdrawal_enabled:$withdrawal_enabled,is_crypto_to_fiat:$is_crypto_to_fiat)
+                mutation($currency_id: String!,$psp_service_id: String!,$name: String,$crypto_network: String,$crypto_address_generate_new: ToggleSwitch,$crypto_address_tag_type: CryptoAddressTagType,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$fiat_transfer_type: String,$is_active: ToggleSwitch!,$extend_network_fee: ToggleSwitch,$network_fee_currency_id: String,$is_development: ToggleSwitch,$verification_type: VerificationType,$fiat_deposit_properties: [FiatDepositPropertyInput!]!,$deposit_enabled: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$is_crypto_to_fiat: ToggleSwitch,$meta: String) {
+                    create_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,name:$name,crypto_network:$crypto_network,crypto_address_generate_new:$crypto_address_generate_new,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,fiat_transfer_type:$fiat_transfer_type,is_active:$is_active,extend_network_fee:$extend_network_fee,network_fee_currency_id:$network_fee_currency_id,is_development:$is_development,verification_type:$verification_type,fiat_deposit_properties:$fiat_deposit_properties,deposit_enabled:$deposit_enabled,withdrawal_enabled:$withdrawal_enabled,is_crypto_to_fiat:$is_crypto_to_fiat,meta:$meta)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5605,8 +5940,8 @@ async delete_payment_route({args,  headers}:{args: DeletePaymentRouteArgs,  head
 async update_payment_route({args,  headers}:{args: UpdatePaymentRouteArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String,$psp_service_id: String,$name: String,$crypto_network: String,$crypto_address_tag_type: CryptoAddressTagType,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$fiat_transfer_type: String,$is_active: ToggleSwitch,$network_fee_currency_id: String,$fiat_deposit_properties: [FiatDepositPropertyInput!]!,$is_crypto_to_fiat: ToggleSwitch,$payment_route_id: String,$serial_ids: [number!]!,$crypto_address_generate_new: ToggleSwitch,$verification_type: VerificationType,$extend_network_fee: ToggleSwitch,$is_development: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$deposit_enabled: ToggleSwitch) {
-                    update_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,name:$name,crypto_network:$crypto_network,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,fiat_transfer_type:$fiat_transfer_type,is_active:$is_active,network_fee_currency_id:$network_fee_currency_id,fiat_deposit_properties:$fiat_deposit_properties,is_crypto_to_fiat:$is_crypto_to_fiat,payment_route_id:$payment_route_id,serial_ids:$serial_ids,crypto_address_generate_new:$crypto_address_generate_new,verification_type:$verification_type,extend_network_fee:$extend_network_fee,is_development:$is_development,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled)
+                mutation($currency_id: String,$psp_service_id: String,$name: String,$crypto_network: String,$crypto_address_tag_type: CryptoAddressTagType,$fiat_iframe_deposit_url: String,$fiat_iframe_withdrawal_url: String,$fiat_transfer_type: String,$is_active: ToggleSwitch,$network_fee_currency_id: String,$fiat_deposit_properties: [FiatDepositPropertyInput!]!,$is_crypto_to_fiat: ToggleSwitch,$meta: String,$payment_route_id: String,$serial_ids: [number!]!,$crypto_address_generate_new: ToggleSwitch,$verification_type: VerificationType,$extend_network_fee: ToggleSwitch,$is_development: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$deposit_enabled: ToggleSwitch) {
+                    update_payment_route(currency_id:$currency_id,psp_service_id:$psp_service_id,name:$name,crypto_network:$crypto_network,crypto_address_tag_type:$crypto_address_tag_type,fiat_iframe_deposit_url:$fiat_iframe_deposit_url,fiat_iframe_withdrawal_url:$fiat_iframe_withdrawal_url,fiat_transfer_type:$fiat_transfer_type,is_active:$is_active,network_fee_currency_id:$network_fee_currency_id,fiat_deposit_properties:$fiat_deposit_properties,is_crypto_to_fiat:$is_crypto_to_fiat,meta:$meta,payment_route_id:$payment_route_id,serial_ids:$serial_ids,crypto_address_generate_new:$crypto_address_generate_new,verification_type:$verification_type,extend_network_fee:$extend_network_fee,is_development:$is_development,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled)
                         
                 }
                 `,args || {},headers,'update_payment_route')
@@ -5615,8 +5950,8 @@ async update_payment_route({args,  headers}:{args: UpdatePaymentRouteArgs,  head
 async create_payment_limit({args, fields,  headers}:{args: CreatePaymentLimitArgs, fields:((keyof PaymentLimit) | Partial<Record<keyof PaymentLimit,any[]>>)[], headers?:HeadersInit}):Promise<PaymentLimit>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String!,$currency_id: String!,$deposit_enabled: ToggleSwitch!,$deposit_min_amount: Float!,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$deposit_auto_approval_amount: Float!,$withdrawal_enabled: ToggleSwitch!,$withdrawal_min_amount: Float!,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$withdrawal_auto_approval_amount: Float!) {
-                    create_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount)
+                mutation($limit_group_id: String!,$currency_id: String!,$deposit_enabled: ToggleSwitch!,$deposit_min_amount: Float!,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$deposit_auto_approval_amount: Float!,$withdrawal_enabled: ToggleSwitch!,$withdrawal_min_amount: Float!,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$withdrawal_auto_approval_amount: Float!,$auto_reject: ToggleSwitch!) {
+                    create_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount,auto_reject:$auto_reject)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -5627,8 +5962,8 @@ async create_payment_limit({args, fields,  headers}:{args: CreatePaymentLimitArg
 async update_payment_limit({args,  headers}:{args: UpdatePaymentLimitArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($limit_group_id: String,$currency_id: String,$deposit_enabled: ToggleSwitch,$deposit_min_amount: Float,$deposit_auto_approval_amount: Float,$withdrawal_enabled: ToggleSwitch,$withdrawal_min_amount: Float,$withdrawal_auto_approval_amount: Float,$notion_currency: String,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$serial_ids: [number!]!) {
-                    update_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount,notion_currency:$notion_currency,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,serial_ids:$serial_ids)
+                mutation($limit_group_id: String,$currency_id: String,$deposit_enabled: ToggleSwitch,$deposit_min_amount: Float,$deposit_auto_approval_amount: Float,$withdrawal_enabled: ToggleSwitch,$withdrawal_min_amount: Float,$withdrawal_auto_approval_amount: Float,$notion_currency: String,$deposit_daily_limit: Float,$deposit_weekly_limit: Float,$deposit_monthly_limit: Float,$withdrawal_daily_limit: Float,$withdrawal_weekly_limit: Float,$withdrawal_monthly_limit: Float,$serial_ids: [number!]!,$auto_reject: ToggleSwitch) {
+                    update_payment_limit(limit_group_id:$limit_group_id,currency_id:$currency_id,deposit_enabled:$deposit_enabled,deposit_min_amount:$deposit_min_amount,deposit_auto_approval_amount:$deposit_auto_approval_amount,withdrawal_enabled:$withdrawal_enabled,withdrawal_min_amount:$withdrawal_min_amount,withdrawal_auto_approval_amount:$withdrawal_auto_approval_amount,notion_currency:$notion_currency,deposit_daily_limit:$deposit_daily_limit,deposit_weekly_limit:$deposit_weekly_limit,deposit_monthly_limit:$deposit_monthly_limit,withdrawal_daily_limit:$withdrawal_daily_limit,withdrawal_weekly_limit:$withdrawal_weekly_limit,withdrawal_monthly_limit:$withdrawal_monthly_limit,serial_ids:$serial_ids,auto_reject:$auto_reject)
                         
                 }
                 `,args || {},headers,'update_payment_limit')
@@ -6022,16 +6357,6 @@ async delete_trading_limit({args,  headers}:{args: DeleteTradingLimitArgs,  head
                 `,args || {},headers,'delete_trading_limit')
                 }
 
-async send_push({args,  headers}:{args: SendPushArgs,  headers?:HeadersInit}):Promise<boolean>{ 
-            if(!headers) headers = {};
-            return this.gql_request(gql`
-                mutation($title: String!,$message: String!,$body: String!) {
-                    send_push(title:$title,message:$message,body:$body)
-                        
-                }
-                `,args || {},headers,'send_push')
-                }
-
 async update_delayed_request({args, fields,  headers}:{args?: UpdateDelayedRequestArgs, fields:((keyof DelayedRequest) | Partial<Record<keyof DelayedRequest,any[]>>)[], headers?:HeadersInit}):Promise<DelayedRequest>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -6126,6 +6451,16 @@ async send_test_email({args,  headers}:{args: SendTestEmailArgs,  headers?:Heade
                         
                 }
                 `,args || {},headers,'send_test_email')
+                }
+
+async send_test_push({args,  headers}:{args: SendTestPushArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($title: String!,$message: String!,$body: String!,$trigger: NotificationTrigger) {
+                    send_test_push(title:$title,message:$message,body:$body,trigger:$trigger)
+                        
+                }
+                `,args || {},headers,'send_test_push')
                 }
 
 async create_kyc_user_data({args, fields,  headers}:{args: CreateKycUserDataArgs, fields:((keyof KycUserData) | Partial<Record<keyof KycUserData,any[]>>)[], headers?:HeadersInit}):Promise<KycUserData[]>{ 
@@ -6449,8 +6784,8 @@ async delete_instrument_strategy_rule({args,  headers}:{args: DeleteInstrumentSt
 async create_vault({args, fields,  headers}:{args: CreateVaultArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String!,$name: String,$annual_rate_percent: Float!,$max_withdrawal_amount: Float!,$max_deposit_amount: Float!,$min_withdrawal_amount: Float!,$min_deposit_amount: Float!,$cut_off_time_seconds: Int!,$lock_in_period_seconds: Int,$effective_date_from: String!,$effective_date_to: String!,$rate_type: VaultRateType!,$is_active: ToggleSwitch!,$withdrawal_enabled: ToggleSwitch!,$deposit_enabled: ToggleSwitch!,$withdrawal_policy: VaultWithdrawalPolicy!,$withdrawal_delay_seconds: Int!) {
-                    create_vault(currency_id:$currency_id,name:$name,annual_rate_percent:$annual_rate_percent,max_withdrawal_amount:$max_withdrawal_amount,max_deposit_amount:$max_deposit_amount,min_withdrawal_amount:$min_withdrawal_amount,min_deposit_amount:$min_deposit_amount,cut_off_time_seconds:$cut_off_time_seconds,lock_in_period_seconds:$lock_in_period_seconds,effective_date_from:$effective_date_from,effective_date_to:$effective_date_to,rate_type:$rate_type,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,withdrawal_policy:$withdrawal_policy,withdrawal_delay_seconds:$withdrawal_delay_seconds)
+                mutation($currency_id: String!,$name: String,$annual_rate_percent: Float!,$max_withdrawal_amount: Float!,$max_deposit_amount: Float!,$min_withdrawal_amount: Float!,$min_deposit_amount: Float!,$cut_off_time_seconds: Int!,$lock_in_period_seconds: Int,$effective_date_from: String!,$effective_date_to: String,$rate_type: VaultRateType!,$is_active: ToggleSwitch!,$withdrawal_enabled: ToggleSwitch!,$deposit_enabled: ToggleSwitch!,$withdrawal_policy: VaultWithdrawalPolicy,$withdrawal_delay_seconds: Int,$meta: String) {
+                    create_vault(currency_id:$currency_id,name:$name,annual_rate_percent:$annual_rate_percent,max_withdrawal_amount:$max_withdrawal_amount,max_deposit_amount:$max_deposit_amount,min_withdrawal_amount:$min_withdrawal_amount,min_deposit_amount:$min_deposit_amount,cut_off_time_seconds:$cut_off_time_seconds,lock_in_period_seconds:$lock_in_period_seconds,effective_date_from:$effective_date_from,effective_date_to:$effective_date_to,rate_type:$rate_type,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,withdrawal_policy:$withdrawal_policy,withdrawal_delay_seconds:$withdrawal_delay_seconds,meta:$meta)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6461,8 +6796,8 @@ async create_vault({args, fields,  headers}:{args: CreateVaultArgs, fields:((key
 async update_vault({args, fields,  headers}:{args: UpdateVaultArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($currency_id: String,$name: String,$annual_rate_percent: Float,$max_withdrawal_amount: Float,$max_deposit_amount: Float,$min_withdrawal_amount: Float,$min_deposit_amount: Float,$cut_off_time_seconds: Int,$lock_in_period_seconds: Int,$effective_date_from: String,$effective_date_to: String,$rate_type: VaultRateType,$is_active: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$deposit_enabled: ToggleSwitch,$withdrawal_policy: VaultWithdrawalPolicy,$withdrawal_delay_seconds: Int,$vault_id: String!) {
-                    update_vault(currency_id:$currency_id,name:$name,annual_rate_percent:$annual_rate_percent,max_withdrawal_amount:$max_withdrawal_amount,max_deposit_amount:$max_deposit_amount,min_withdrawal_amount:$min_withdrawal_amount,min_deposit_amount:$min_deposit_amount,cut_off_time_seconds:$cut_off_time_seconds,lock_in_period_seconds:$lock_in_period_seconds,effective_date_from:$effective_date_from,effective_date_to:$effective_date_to,rate_type:$rate_type,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,withdrawal_policy:$withdrawal_policy,withdrawal_delay_seconds:$withdrawal_delay_seconds,vault_id:$vault_id)
+                mutation($currency_id: String,$name: String,$annual_rate_percent: Float,$max_withdrawal_amount: Float,$max_deposit_amount: Float,$min_withdrawal_amount: Float,$min_deposit_amount: Float,$cut_off_time_seconds: Int,$lock_in_period_seconds: Int,$effective_date_from: String,$effective_date_to: String,$rate_type: VaultRateType,$is_active: ToggleSwitch,$withdrawal_enabled: ToggleSwitch,$deposit_enabled: ToggleSwitch,$withdrawal_policy: VaultWithdrawalPolicy,$withdrawal_delay_seconds: Int,$meta: String,$vault_id: String!) {
+                    update_vault(currency_id:$currency_id,name:$name,annual_rate_percent:$annual_rate_percent,max_withdrawal_amount:$max_withdrawal_amount,max_deposit_amount:$max_deposit_amount,min_withdrawal_amount:$min_withdrawal_amount,min_deposit_amount:$min_deposit_amount,cut_off_time_seconds:$cut_off_time_seconds,lock_in_period_seconds:$lock_in_period_seconds,effective_date_from:$effective_date_from,effective_date_to:$effective_date_to,rate_type:$rate_type,is_active:$is_active,withdrawal_enabled:$withdrawal_enabled,deposit_enabled:$deposit_enabled,withdrawal_policy:$withdrawal_policy,withdrawal_delay_seconds:$withdrawal_delay_seconds,meta:$meta,vault_id:$vault_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6513,8 +6848,8 @@ async trigger_delayed_vaults_trx_processing({  headers}:{  headers?:HeadersInit}
 async create_vault_withdrawal({args, fields,  headers}:{args: CreateVaultWithdrawalArgs, fields:((keyof VaultTransaction) | Partial<Record<keyof VaultTransaction,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransaction>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($vault_id: String!,$amount: Float!,$user_id: String) {
-                    create_vault_withdrawal(vault_id:$vault_id,amount:$amount,user_id:$user_id)
+                mutation($vault_id: String!,$amount: Float!,$user_id: String,$use_all_funds: Boolean) {
+                    create_vault_withdrawal(vault_id:$vault_id,amount:$amount,user_id:$user_id,use_all_funds:$use_all_funds)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6525,8 +6860,8 @@ async create_vault_withdrawal({args, fields,  headers}:{args: CreateVaultWithdra
 async create_vault_deposit({args, fields,  headers}:{args: CreateVaultDepositArgs, fields:((keyof VaultTransaction) | Partial<Record<keyof VaultTransaction,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransaction>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($vault_id: String!,$amount: Float!,$user_id: String) {
-                    create_vault_deposit(vault_id:$vault_id,amount:$amount,user_id:$user_id)
+                mutation($vault_id: String!,$amount: Float!,$user_id: String,$use_all_funds: Boolean) {
+                    create_vault_deposit(vault_id:$vault_id,amount:$amount,user_id:$user_id,use_all_funds:$use_all_funds)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6537,8 +6872,8 @@ async create_vault_deposit({args, fields,  headers}:{args: CreateVaultDepositArg
 async create_vault_transaction({args, fields,  headers}:{args: CreateVaultTransactionArgs, fields:((keyof VaultTransaction) | Partial<Record<keyof VaultTransaction,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransaction>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($vault_id: String!,$amount: Float!,$transaction_type: AccountTransactionType!,$user_id: String) {
-                    create_vault_transaction(vault_id:$vault_id,amount:$amount,transaction_type:$transaction_type,user_id:$user_id)
+                mutation($vault_id: String!,$amount: Float!,$transaction_type: AccountTransactionType!,$user_id: String,$use_all_funds: Boolean) {
+                    create_vault_transaction(vault_id:$vault_id,amount:$amount,transaction_type:$transaction_type,user_id:$user_id,use_all_funds:$use_all_funds)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6731,8 +7066,8 @@ async renew_license({  headers}:{  headers?:HeadersInit}={}):Promise<boolean>{
 async create_referral_reward({args,  headers}:{args: CreateReferralRewardArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($is_active: ToggleSwitch!,$type: ReferralRewardType!,$meta: String!,$min_deposited_volume_required: Float!,$min_deposited_volume: Float,$min_deposited_volume_currency_id: String,$kyc_required: ToggleSwitch!) {
-                    create_referral_reward(is_active:$is_active,type:$type,meta:$meta,min_deposited_volume_required:$min_deposited_volume_required,min_deposited_volume:$min_deposited_volume,min_deposited_volume_currency_id:$min_deposited_volume_currency_id,kyc_required:$kyc_required)
+                mutation($is_active: ToggleSwitch!,$type: ReferralRewardType!,$meta: String!,$min_deposited_volume_required: Float!,$min_deposited_volume: Float,$min_deposited_volume_currency_id: String,$kyc_required: ToggleSwitch!,$is_delayed: ToggleSwitch,$delayed_period_seconds: Int,$min_staked_vault_required: ToggleSwitch,$min_staked_vault_volume: Float,$min_staked_vault_currency_id: String) {
+                    create_referral_reward(is_active:$is_active,type:$type,meta:$meta,min_deposited_volume_required:$min_deposited_volume_required,min_deposited_volume:$min_deposited_volume,min_deposited_volume_currency_id:$min_deposited_volume_currency_id,kyc_required:$kyc_required,is_delayed:$is_delayed,delayed_period_seconds:$delayed_period_seconds,min_staked_vault_required:$min_staked_vault_required,min_staked_vault_volume:$min_staked_vault_volume,min_staked_vault_currency_id:$min_staked_vault_currency_id)
                         
                 }
                 `,args || {},headers,'create_referral_reward')
@@ -6741,8 +7076,8 @@ async create_referral_reward({args,  headers}:{args: CreateReferralRewardArgs,  
 async update_referral_reward({args,  headers}:{args: UpdateReferralRewardArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($is_active: ToggleSwitch,$meta: String,$min_deposited_volume_required: Float,$min_deposited_volume: Float,$min_deposited_volume_currency_id: String,$kyc_required: ToggleSwitch,$type: ReferralRewardType!) {
-                    update_referral_reward(is_active:$is_active,meta:$meta,min_deposited_volume_required:$min_deposited_volume_required,min_deposited_volume:$min_deposited_volume,min_deposited_volume_currency_id:$min_deposited_volume_currency_id,kyc_required:$kyc_required,type:$type)
+                mutation($is_active: ToggleSwitch,$meta: String,$min_deposited_volume_required: Float,$min_deposited_volume: Float,$min_deposited_volume_currency_id: String,$kyc_required: ToggleSwitch,$delayed_period_seconds: Int,$min_staked_vault_volume: Float,$min_staked_vault_currency_id: String,$type: ReferralRewardType!,$is_delayed: ToggleSwitch,$min_staked_vault_required: ToggleSwitch) {
+                    update_referral_reward(is_active:$is_active,meta:$meta,min_deposited_volume_required:$min_deposited_volume_required,min_deposited_volume:$min_deposited_volume,min_deposited_volume_currency_id:$min_deposited_volume_currency_id,kyc_required:$kyc_required,delayed_period_seconds:$delayed_period_seconds,min_staked_vault_volume:$min_staked_vault_volume,min_staked_vault_currency_id:$min_staked_vault_currency_id,type:$type,is_delayed:$is_delayed,min_staked_vault_required:$min_staked_vault_required)
                         
                 }
                 `,args || {},headers,'update_referral_reward')
@@ -6761,8 +7096,8 @@ async delete_referral_reward({args,  headers}:{args: DeleteReferralRewardArgs,  
 async start_trading_grid({args, fields,  headers}:{args: StartTradingGridArgs, fields:((keyof TradingGrid) | Partial<Record<keyof TradingGrid,any[]>>)[], headers?:HeadersInit}):Promise<TradingGrid>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$instrument_id: String!,$initial_investment_quote_currency: Float!,$mode: TradginGridMode!,$size: Int!,$price_range_from: Float!,$price_range_to: Float!,$stop_loss_percentage: Float,$take_profit_percentage: Float) {
-                    start_trading_grid(user_id:$user_id,instrument_id:$instrument_id,initial_investment_quote_currency:$initial_investment_quote_currency,mode:$mode,size:$size,price_range_from:$price_range_from,price_range_to:$price_range_to,stop_loss_percentage:$stop_loss_percentage,take_profit_percentage:$take_profit_percentage)
+                mutation($user_id: String,$instrument_id: String!,$initial_investment_quote_currency: Float!,$mode: TradginGridMode!,$size: Int!,$price_range_from: Float!,$price_range_to: Float!,$stop_loss_percentage: Float,$take_profit_percentage: Float,$wallet_id: String) {
+                    start_trading_grid(user_id:$user_id,instrument_id:$instrument_id,initial_investment_quote_currency:$initial_investment_quote_currency,mode:$mode,size:$size,price_range_from:$price_range_from,price_range_to:$price_range_to,stop_loss_percentage:$stop_loss_percentage,take_profit_percentage:$take_profit_percentage,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6797,8 +7132,8 @@ async update_trading_grid({args, fields,  headers}:{args: UpdateTradingGridArgs,
 async estimate_trading_grid({args, fields,  headers}:{args: EstimateTradingGridArgs, fields:((keyof EstimateTradingGridResult) | Partial<Record<keyof EstimateTradingGridResult,any[]>>)[], headers?:HeadersInit}):Promise<EstimateTradingGridResult>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($user_id: String,$instrument_id: String!,$initial_investment_quote_currency: Float!,$mode: TradginGridMode!,$size: Int!,$price_range_from: Float!,$price_range_to: Float!,$stop_loss_percentage: Float,$take_profit_percentage: Float,$time_from: Float!,$time_to: Float!) {
-                    estimate_trading_grid(user_id:$user_id,instrument_id:$instrument_id,initial_investment_quote_currency:$initial_investment_quote_currency,mode:$mode,size:$size,price_range_from:$price_range_from,price_range_to:$price_range_to,stop_loss_percentage:$stop_loss_percentage,take_profit_percentage:$take_profit_percentage,time_from:$time_from,time_to:$time_to)
+                mutation($user_id: String,$instrument_id: String!,$initial_investment_quote_currency: Float!,$mode: TradginGridMode!,$size: Int!,$price_range_from: Float!,$price_range_to: Float!,$stop_loss_percentage: Float,$take_profit_percentage: Float,$wallet_id: String,$time_from: Float!,$time_to: Float!) {
+                    estimate_trading_grid(user_id:$user_id,instrument_id:$instrument_id,initial_investment_quote_currency:$initial_investment_quote_currency,mode:$mode,size:$size,price_range_from:$price_range_from,price_range_to:$price_range_to,stop_loss_percentage:$stop_loss_percentage,take_profit_percentage:$take_profit_percentage,wallet_id:$wallet_id,time_from:$time_from,time_to:$time_to)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6806,13 +7141,97 @@ async estimate_trading_grid({args, fields,  headers}:{args: EstimateTradingGridA
                 `,args || {},headers,'estimate_trading_grid')
                 }
 
-
-
-        async open_orders({args, fields,  headers}:{args: OpenOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
+async user_switch_fee_group({args,  headers}:{args: UserSwitchFeeGroupArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$type: OrderType,$side: OrderSide,$instrument_id: String,$message: String,$parent_order_id: String,$user_id: String,$search: String,$status: [OrderStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput) {
-                    open_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,type:$type,side:$side,instrument_id:$instrument_id,message:$message,parent_order_id:$parent_order_id,user_id:$user_id,search:$search,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange)
+                mutation($fee_group_name: FxcmFeeGroups!) {
+                    user_switch_fee_group(fee_group_name:$fee_group_name)
+                        
+                }
+                `,args || {},headers,'user_switch_fee_group')
+                }
+
+async update_withdrawal_notional_fee({args,  headers}:{args: UpdateWithdrawalNotionalFeeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($notional: Float!) {
+                    update_withdrawal_notional_fee(notional:$notional)
+                        
+                }
+                `,args || {},headers,'update_withdrawal_notional_fee')
+                }
+
+async create_trade_tier({args, fields,  headers}:{args: CreateTradeTierArgs, fields:((keyof TradeTier) | Partial<Record<keyof TradeTier,any[]>>)[], headers?:HeadersInit}):Promise<TradeTier>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($fee_group_id: String!,$name: String!,$maker_progressive: Float!,$taker_progressive: Float!,$threshold: Float!) {
+                    create_trade_tier(fee_group_id:$fee_group_id,name:$name,maker_progressive:$maker_progressive,taker_progressive:$taker_progressive,threshold:$threshold)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_trade_tier')
+                }
+
+async update_trade_tier({args,  headers}:{args: UpdateTradeTierArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($tier_id: String,$name: String,$maker_progressive: Float,$taker_progressive: Float,$threshold: Float,$serial_ids: [number!]!) {
+                    update_trade_tier(tier_id:$tier_id,name:$name,maker_progressive:$maker_progressive,taker_progressive:$taker_progressive,threshold:$threshold,serial_ids:$serial_ids)
+                        
+                }
+                `,args || {},headers,'update_trade_tier')
+                }
+
+async delete_trade_tier({args,  headers}:{args: DeleteTradeTierArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($tier_id: String!,$serial_ids: [number!]!) {
+                    delete_trade_tier(tier_id:$tier_id,serial_ids:$serial_ids)
+                        
+                }
+                `,args || {},headers,'delete_trade_tier')
+                }
+
+async delete_trades_volume({args,  headers}:{args: DeleteTradesVolumeArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($user_id: String!,$serial_ids: [number!]!) {
+                    delete_trades_volume(user_id:$user_id,serial_ids:$serial_ids)
+                        
+                }
+                `,args || {},headers,'delete_trades_volume')
+                }
+
+async create_wallet({args, fields,  headers}:{args: CreateWalletArgs, fields:((keyof Wallet) | Partial<Record<keyof Wallet,any[]>>)[], headers?:HeadersInit}):Promise<Wallet>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($name: String!,$user_id: String,$description: String) {
+                    create_wallet(name:$name,user_id:$user_id,description:$description)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'create_wallet')
+                }
+
+
+
+        async version({  headers}:{  headers?:HeadersInit}={}):Promise<string>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    version
+                        
+                }
+                `,{},headers,'version')
+                }
+
+async open_orders({args, fields,  headers}:{args: OpenOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$type: OrderType,$side: OrderSide,$instrument_id: String,$message: String,$parent_order_id: String,$user_id: String,$search: String,$status: [OrderStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$wallet_id: String) {
+                    open_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,type:$type,side:$side,instrument_id:$instrument_id,message:$message,parent_order_id:$parent_order_id,user_id:$user_id,search:$search,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6823,8 +7242,8 @@ async estimate_trading_grid({args, fields,  headers}:{args: EstimateTradingGridA
 async closed_orders({args, fields,  headers}:{args: ClosedOrdersArgs, fields:((keyof Order) | Partial<Record<keyof Order,any[]>>)[], headers?:HeadersInit}):Promise<Order[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$type: OrderType,$side: OrderSide,$instrument_id: String,$message: String,$parent_order_id: String,$user_id: String,$search: String,$status: [OrderStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput) {
-                    closed_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,type:$type,side:$side,instrument_id:$instrument_id,message:$message,parent_order_id:$parent_order_id,user_id:$user_id,search:$search,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange)
+                query($order_id: String,$client_order_id: String,$time_in_force: OrderTimeInForce,$type: OrderType,$side: OrderSide,$instrument_id: String,$message: String,$parent_order_id: String,$user_id: String,$search: String,$status: [OrderStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$wallet_id: String) {
+                    closed_orders(order_id:$order_id,client_order_id:$client_order_id,time_in_force:$time_in_force,type:$type,side:$side,instrument_id:$instrument_id,message:$message,parent_order_id:$parent_order_id,user_id:$user_id,search:$search,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6931,25 +7350,13 @@ async currencies({args, fields,  headers}:{args?: CurrenciesArgs, fields:((keyof
 async payments({args, fields,  headers}:{args: PaymentsArgs, fields:((keyof Payment) | Partial<Record<keyof Payment,any[]>>)[], headers?:HeadersInit}):Promise<Payment[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($payment_id: String,$remote_txid: String,$kyt_status: [PaymentStatus!],$currency_id: String,$type: PaymentType,$psp_service_id: String,$reference: String,$created_by: String,$payment_id_in: [string!]!,$payment_id_not_in: [string!]!,$user_id: String,$user_id_in: [string!]!,$user_id_not_in: [string!]!,$search: String,$status: [PaymentStatus!]!,$approval_status: [PaymentApprovalStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$kyt_status_in: [PaymentKytStatus!]!,$currency_type: CurrencyType,$quote_currency_id: String,$internal_transfer_cross_reference: String) {
-                    payments(payment_id:$payment_id,remote_txid:$remote_txid,kyt_status:$kyt_status,currency_id:$currency_id,type:$type,psp_service_id:$psp_service_id,reference:$reference,created_by:$created_by,payment_id_in:$payment_id_in,payment_id_not_in:$payment_id_not_in,user_id:$user_id,user_id_in:$user_id_in,user_id_not_in:$user_id_not_in,search:$search,status:$status,approval_status:$approval_status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,kyt_status_in:$kyt_status_in,currency_type:$currency_type,quote_currency_id:$quote_currency_id,internal_transfer_cross_reference:$internal_transfer_cross_reference)
+                query($payment_id: String,$remote_txid: String,$kyt_status: [PaymentStatus!],$currency_id: String,$type: PaymentType,$psp_service_id: String,$reference: String,$created_by: String,$payment_id_in: [string!]!,$payment_id_not_in: [string!]!,$user_id: String,$user_id_in: [string!]!,$user_id_not_in: [string!]!,$search: String,$status: [PaymentStatus!]!,$approval_status: [PaymentApprovalStatus!]!,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$kyt_status_in: [PaymentKytStatus!]!,$currency_type: CurrencyType,$quote_currency_id: String,$internal_transfer_cross_reference: String,$crypto_pay_payments: Boolean) {
+                    payments(payment_id:$payment_id,remote_txid:$remote_txid,kyt_status:$kyt_status,currency_id:$currency_id,type:$type,psp_service_id:$psp_service_id,reference:$reference,created_by:$created_by,payment_id_in:$payment_id_in,payment_id_not_in:$payment_id_not_in,user_id:$user_id,user_id_in:$user_id_in,user_id_not_in:$user_id_not_in,search:$search,status:$status,approval_status:$approval_status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,kyt_status_in:$kyt_status_in,currency_type:$currency_type,quote_currency_id:$quote_currency_id,internal_transfer_cross_reference:$internal_transfer_cross_reference,crypto_pay_payments:$crypto_pay_payments)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
                 }
                 `,args || {},headers,'payments')
-                }
-
-async vasps_list({ fields,  headers}:{ fields:((keyof Vasp) | Partial<Record<keyof Vasp,any[]>>)[], headers?:HeadersInit}):Promise<Vasp[]>{ 
-            if(!headers) headers = {};
-            return this.gql_request(gql`
-                query {
-                    vasps_list
-                        {
-                            ${buildGraphQLQuery(fields)}
-                        }
-                }
-                `,{},headers,'vasps_list')
                 }
 
 async deposit_address_crypto({args, fields,  headers}:{args: DepositAddressCryptoArgs, fields:((keyof DepositAddressCrypto) | Partial<Record<keyof DepositAddressCrypto,any[]>>)[], headers?:HeadersInit}):Promise<DepositAddressCrypto>{ 
@@ -6979,8 +7386,8 @@ async deposit_addresses_crypto({args, fields,  headers}:{args?: DepositAddresses
 async conversions({args, fields,  headers}:{args: ConversionsArgs, fields:((keyof Conversion) | Partial<Record<keyof Conversion,any[]>>)[], headers?:HeadersInit}):Promise<Conversion[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$search: String,$reference: String,$status_in: [ConversionStatus!]!,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput) {
-                    conversions(user_id:$user_id,search:$search,reference:$reference,status_in:$status_in,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange)
+                query($user_id: String,$search: String,$reference: String,$status_in: [ConversionStatus!]!,$conversion_quote_id: String,$source_currency_id: String,$target_currency_id: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$wallet_id: String) {
+                    conversions(user_id:$user_id,search:$search,reference:$reference,status_in:$status_in,conversion_quote_id:$conversion_quote_id,source_currency_id:$source_currency_id,target_currency_id:$target_currency_id,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -7015,7 +7422,7 @@ async conversion_quotes_risks({args, fields,  headers}:{args?: ConversionQuotesR
 async users({args, fields,  headers}:{args?: UsersArgs, fields:((keyof User) | Partial<Record<keyof User,any[]>>)[], headers?:HeadersInit}):Promise<User[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($parent_user_id: String,$username: String,$email: String,$is_active: ToggleSwitch,$is_deleted: ToggleSwitch,$fee_group_id: String,$limit_group_id: String,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserStatus,$kyc_level: String,$status: UserStatus,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$mfa_status: String) {
+                query($parent_user_id: String,$username: String,$email: String,$is_active: ToggleSwitch,$is_deleted: ToggleSwitch,$fee_group_id: String,$limit_group_id: String,$user_id: String,$search: String,$kyc_property: String,$kyc_value: String,$kyc_status: UserStatus,$kyc_level: String,$status: UserStatus,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$mfa_status: ToggleSwitch) {
                     users(parent_user_id:$parent_user_id,username:$username,email:$email,is_active:$is_active,is_deleted:$is_deleted,fee_group_id:$fee_group_id,limit_group_id:$limit_group_id,user_id:$user_id,search:$search,kyc_property:$kyc_property,kyc_value:$kyc_value,kyc_status:$kyc_status,kyc_level:$kyc_level,status:$status,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,mfa_status:$mfa_status)
                         {
                             ${buildGraphQLQuery(fields)}
@@ -7061,8 +7468,8 @@ async account_transactions({args, fields,  headers}:{args?: AccountTransactionsA
 async accounts_balances({args, fields,  headers}:{args?: AccountsBalancesArgs, fields:((keyof AccountBalance) | Partial<Record<keyof AccountBalance,any[]>>)[], headers?:HeadersInit}):Promise<AccountBalance[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($user_id: String,$currency_id: String,$hide_zero_balances: ToggleSwitch) {
-                    accounts_balances(user_id:$user_id,currency_id:$currency_id,hide_zero_balances:$hide_zero_balances)
+                query($user_id: String,$currency_id: String,$hide_zero_balances: ToggleSwitch,$wallet_id: String) {
+                    accounts_balances(user_id:$user_id,currency_id:$currency_id,hide_zero_balances:$hide_zero_balances,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -7073,8 +7480,8 @@ async accounts_balances({args, fields,  headers}:{args?: AccountsBalancesArgs, f
 async accounts({args, fields,  headers}:{args?: AccountsArgs, fields:((keyof AccountsResult) | Partial<Record<keyof AccountsResult,any[]>>)[], headers?:HeadersInit}):Promise<AccountsResult[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($account_id: String,$currency_id: String,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$hide_zero_balances: ToggleSwitch) {
-                    accounts(account_id:$account_id,currency_id:$currency_id,user_id:$user_id,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,hide_zero_balances:$hide_zero_balances)
+                query($account_id: String,$currency_id: String,$wallet_id: String,$user_id: String,$search: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput,$serialIdRange: SerialIdRangeInput,$hide_zero_balances: ToggleSwitch) {
+                    accounts(account_id:$account_id,currency_id:$currency_id,wallet_id:$wallet_id,user_id:$user_id,search:$search,pager:$pager,sort:$sort,dateRange:$dateRange,serialIdRange:$serialIdRange,hide_zero_balances:$hide_zero_balances)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -7324,6 +7731,18 @@ async products_enabled({args, fields,  headers}:{args: ProductsEnabledArgs, fiel
                 `,args || {},headers,'products_enabled')
                 }
 
+async user_products_enabled({args, fields,  headers}:{args: UserProductsEnabledArgs, fields:((keyof ProductsEnabled) | Partial<Record<keyof ProductsEnabled,any[]>>)[], headers?:HeadersInit}):Promise<ProductsEnabled>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($role: ClientRole!) {
+                    user_products_enabled(role:$role)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'user_products_enabled')
+                }
+
 async accounts_portfolio_report({args, fields,  headers}:{args: AccountsPortfolioReportArgs, fields:((keyof AccountsPortfolioReportItem) | Partial<Record<keyof AccountsPortfolioReportItem,any[]>>)[], headers?:HeadersInit}):Promise<AccountsPortfolioReportItem[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -7450,6 +7869,18 @@ async kyc_preferences({ fields,  headers}:{ fields:((keyof KycPreferences) | Par
                         }
                 }
                 `,{},headers,'kyc_preferences')
+                }
+
+async vasps_list({ fields,  headers}:{ fields:((keyof Vasp) | Partial<Record<keyof Vasp,any[]>>)[], headers?:HeadersInit}):Promise<Vasp[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    vasps_list
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,{},headers,'vasps_list')
                 }
 
 async webhooks({args, fields,  headers}:{args?: WebhooksArgs, fields:((keyof Webhook) | Partial<Record<keyof Webhook,any[]>>)[], headers?:HeadersInit}):Promise<Webhook[]>{ 
@@ -7907,8 +8338,8 @@ async summary_dashboard({args, fields,  headers}:{args: SummaryDashboardArgs, fi
 async unified_transactions({args, fields,  headers}:{args: UnifiedTransactionsArgs, fields:((keyof UnifiedTransaction) | Partial<Record<keyof UnifiedTransaction,any[]>>)[], headers?:HeadersInit}):Promise<UnifiedTransaction[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($start_date: String!,$end_date: String!,$side: OrderSide,$currencies: [string!]!,$transactions_types: [string!]!,$exchanges: [string!]!) {
-                    unified_transactions(start_date:$start_date,end_date:$end_date,side:$side,currencies:$currencies,transactions_types:$transactions_types,exchanges:$exchanges)
+                query($start_date: String!,$end_date: String!,$side: OrderSide,$currencies: [string!]!,$exchanges: [string!]!,$search: String,$pager: PagerInput) {
+                    unified_transactions(start_date:$start_date,end_date:$end_date,side:$side,currencies:$currencies,exchanges:$exchanges,search:$search,pager:$pager)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -7916,11 +8347,21 @@ async unified_transactions({args, fields,  headers}:{args: UnifiedTransactionsAr
                 `,args || {},headers,'unified_transactions')
                 }
 
+async unified_transactions_lps({  headers}:{  headers?:HeadersInit}={}):Promise<string[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    unified_transactions_lps
+                        
+                }
+                `,{},headers,'unified_transactions_lps')
+                }
+
 async vaults_transactions_requests({args, fields,  headers}:{args?: VaultsTransactionsRequestsArgs, fields:((keyof VaultTransactionRequest) | Partial<Record<keyof VaultTransactionRequest,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransactionRequest[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($serial_id: Int,$request_id: String,$user_id: String,$vault_id: String,$transaction_type: AccountTransactionType,$transaction_class: VaultsTransactionClass,$status: VaultTransactionRequestStatus,$approved_by: String,$search: String,$pager: PagerInput,$date_range: DateRangeInput,$sort: SortInput) {
-                    vaults_transactions_requests(serial_id:$serial_id,request_id:$request_id,user_id:$user_id,vault_id:$vault_id,transaction_type:$transaction_type,transaction_class:$transaction_class,status:$status,approved_by:$approved_by,search:$search,pager:$pager,date_range:$date_range,sort:$sort)
+                query($serial_id: Int,$request_id: String,$user_id: String,$vault_id: String,$transaction_type: AccountTransactionType,$transaction_class: VaultsTransactionClass,$status: VaultTransactionRequestStatus,$approved_by: String,$search: String,$pager: PagerInput,$date_range: DateRangeInput,$sort: SortInput,$currency_id: String) {
+                    vaults_transactions_requests(serial_id:$serial_id,request_id:$request_id,user_id:$user_id,vault_id:$vault_id,transaction_type:$transaction_type,transaction_class:$transaction_class,status:$status,approved_by:$approved_by,search:$search,pager:$pager,date_range:$date_range,sort:$sort,currency_id:$currency_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -8059,8 +8500,8 @@ async whoami({ fields,  headers}:{ fields:((keyof WhoAmIResult) | Partial<Record
 async referrals_transactions_info({args, fields,  headers}:{args?: ReferralsTransactionsInfoArgs, fields:((keyof ReferralTransactionInfo) | Partial<Record<keyof ReferralTransactionInfo,any[]>>)[], headers?:HeadersInit}):Promise<ReferralTransactionInfo[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($account_transaction_id: String,$target_user_id: String,$referral_id: String,$reward_type: ReferralRewardType,$currency_id: String,$date_range: DateRangeInput,$search: String,$pager: PagerInput,$sort: SortInput) {
-                    referrals_transactions_info(account_transaction_id:$account_transaction_id,target_user_id:$target_user_id,referral_id:$referral_id,reward_type:$reward_type,currency_id:$currency_id,date_range:$date_range,search:$search,pager:$pager,sort:$sort)
+                query($account_transaction_id: String,$target_user_id: String,$referral_id: String,$reward_type: ReferralRewardType,$currency_id: String,$is_delayed: ToggleSwitch,$date_range: DateRangeInput,$search: String,$pager: PagerInput,$sort: SortInput) {
+                    referrals_transactions_info(account_transaction_id:$account_transaction_id,target_user_id:$target_user_id,referral_id:$referral_id,reward_type:$reward_type,currency_id:$currency_id,is_delayed:$is_delayed,date_range:$date_range,search:$search,pager:$pager,sort:$sort)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -8107,8 +8548,8 @@ async required_actions({ fields,  headers}:{ fields:((keyof RequiredActions) | P
 async trading_grids({args, fields,  headers}:{args?: TradingGridsArgs, fields:((keyof TradingGrid) | Partial<Record<keyof TradingGrid,any[]>>)[], headers?:HeadersInit}):Promise<TradingGrid[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($instrument_id: String,$status: TradingGridStatus,$price_from: Float,$price_to: Float,$pager: PagerInput,$sort: SortInput) {
-                    trading_grids(instrument_id:$instrument_id,status:$status,price_from:$price_from,price_to:$price_to,pager:$pager,sort:$sort)
+                query($instrument_id: String,$status: TradingGridStatus,$price_from: Float,$price_to: Float,$pager: PagerInput,$sort: SortInput,$wallet_id: String) {
+                    trading_grids(instrument_id:$instrument_id,status:$status,price_from:$price_from,price_to:$price_to,pager:$pager,sort:$sort,wallet_id:$wallet_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -8126,6 +8567,76 @@ async trading_grid_levels({args, fields,  headers}:{args?: TradingGridLevelsArgs
                         }
                 }
                 `,args || {},headers,'trading_grid_levels')
+                }
+
+async user_fees_config({ fields,  headers}:{ fields:((keyof FxcmFeesConfigType) | Partial<Record<keyof FxcmFeesConfigType,any[]>>)[], headers?:HeadersInit}):Promise<FxcmFeesConfigType>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    user_fees_config
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,{},headers,'user_fees_config')
+                }
+
+async estimate_payment_notional_fee({args,  headers}:{args: EstimatePaymentNotionalFeeArgs,  headers?:HeadersInit}):Promise<number>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($currency_id: String!,$type: PaymentType!,$amount: Float!) {
+                    estimate_payment_notional_fee(currency_id:$currency_id,type:$type,amount:$amount)
+                        
+                }
+                `,args || {},headers,'estimate_payment_notional_fee')
+                }
+
+async cash_holdings_report({args, fields,  headers}:{args?: CashHoldingsReportArgs, fields:((keyof CashHoldingsReport) | Partial<Record<keyof CashHoldingsReport,any[]>>)[], headers?:HeadersInit}):Promise<CashHoldingsReport[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($user_id: String,$date_range: DateRangeInput) {
+                    cash_holdings_report(user_id:$user_id,date_range:$date_range)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'cash_holdings_report')
+                }
+
+async trade_tiers({args, fields,  headers}:{args?: TradeTiersArgs, fields:((keyof TradeTier) | Partial<Record<keyof TradeTier,any[]>>)[], headers?:HeadersInit}):Promise<TradeTier[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($tier_id: String,$fee_group_id: String,$name: String,$pager: PagerInput,$sort: SortInput) {
+                    trade_tiers(tier_id:$tier_id,fee_group_id:$fee_group_id,name:$name,pager:$pager,sort:$sort)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'trade_tiers')
+                }
+
+async trade_volumes({args, fields,  headers}:{args?: TradeVolumesArgs, fields:((keyof TradesVolume) | Partial<Record<keyof TradesVolume,any[]>>)[], headers?:HeadersInit}):Promise<TradesVolume[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($serial_id: Int,$user_id: String,$pager: PagerInput,$sort: SortInput) {
+                    trade_volumes(serial_id:$serial_id,user_id:$user_id,pager:$pager,sort:$sort)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'trade_volumes')
+                }
+
+async wallets({args, fields,  headers}:{args?: WalletsArgs, fields:((keyof Wallet) | Partial<Record<keyof Wallet,any[]>>)[], headers?:HeadersInit}):Promise<Wallet[]>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query($wallet_id: String,$user_id: String,$name: String,$description: String,$pager: PagerInput,$sort: SortInput,$dateRange: DateRangeInput) {
+                    wallets(wallet_id:$wallet_id,user_id:$user_id,name:$name,description:$description,pager:$pager,sort:$sort,dateRange:$dateRange)
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,args || {},headers,'wallets')
                 }
 
 async user_ip_geo_history({args, fields,  headers}:{args?: UserIpGeoHistoryArgs, fields:((keyof UserIpGeoHistory) | Partial<Record<keyof UserIpGeoHistory,any[]>>)[], headers?:HeadersInit}):Promise<UserIpGeoHistory[]>{ 
