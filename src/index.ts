@@ -433,7 +433,9 @@ open_derivatives_positions = 'open_derivatives_positions',
 closed_derivatives_positions = 'closed_derivatives_positions',
 derivatives_trading_fees = 'derivatives_trading_fees',
 update_derivatives_trading_fee = 'update_derivatives_trading_fee',
-derivatives_dashboards = 'derivatives_dashboards'
+derivatives_dashboards = 'derivatives_dashboards',
+create_derivatives_hedging_order = 'create_derivatives_hedging_order',
+derivatives_hedging_orders = 'derivatives_hedging_orders'
 }
 
 export enum KytProvider {
