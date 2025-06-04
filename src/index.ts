@@ -65,6 +65,7 @@ margin_call = 'margin_call',
 margin_liquidation = 'margin_liquidation',
 derivatives_order_open = 'derivatives_order_open',
 derivatives_order_completed = 'derivatives_order_completed',
+derivatives_order_partially_filled = 'derivatives_order_partially_filled',
 derivatives_order_cancelled = 'derivatives_order_cancelled',
 derivatives_order_rejected = 'derivatives_order_rejected'
 }
