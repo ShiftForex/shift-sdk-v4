@@ -62,7 +62,11 @@ vault_deactivated = 'vault_deactivated',
 vault_interests_accrued = 'vault_interests_accrued',
 referral_rewarded = 'referral_rewarded',
 margin_call = 'margin_call',
-margin_liquidation = 'margin_liquidation'
+margin_liquidation = 'margin_liquidation',
+derivatives_order_new = 'derivatives_order_new',
+derivatives_order_completed = 'derivatives_order_completed',
+derivatives_order_cancelled = 'derivatives_order_cancelled',
+derivatives_order_rejected = 'derivatives_order_rejected'
 }
 
 export enum OrderTimeInForce {
@@ -126,6 +130,12 @@ not_started = 'not_started'
 export enum KycType {
 individual = 'individual',
 corporate = 'corporate'
+}
+
+export enum ToggleMfaPool {
+optional = 'optional',
+on = 'on',
+off = 'off'
 }
 
 export enum AccountTransactionClass {
@@ -680,6 +690,7 @@ scorechain_screenings = 'scorechain_screenings',
 scorechain_minimal_risk_score = 'scorechain_minimal_risk_score',
 instruments_strategies_rules = 'instruments_strategies_rules',
 instruments_strategies_alerts = 'instruments_strategies_alerts',
+instruments_strategies_alerts_settings = 'instruments_strategies_alerts_settings',
 vaults = 'vaults',
 vaults_average_user_apy = 'vaults_average_user_apy',
 estimate_vault_interests = 'estimate_vault_interests',
@@ -913,6 +924,7 @@ reprocess_kyt_payment = 'reprocess_kyt_payment',
 create_instrument_strategy_rule = 'create_instrument_strategy_rule',
 update_instrument_strategy_rule = 'update_instrument_strategy_rule',
 delete_instrument_strategy_rule = 'delete_instrument_strategy_rule',
+update_instruments_strategies_alerts_settings = 'update_instruments_strategies_alerts_settings',
 create_vault = 'create_vault',
 update_vault = 'update_vault',
 trigger_vaults_interests_calculation = 'trigger_vaults_interests_calculation',
@@ -956,7 +968,8 @@ create_trade_tier = 'create_trade_tier',
 update_trade_tier = 'update_trade_tier',
 delete_trade_tier = 'delete_trade_tier',
 delete_trades_volume = 'delete_trades_volume',
-create_wallet = 'create_wallet'
+create_wallet = 'create_wallet',
+eventus_upload_life_cycle_data_for_date = 'eventus_upload_life_cycle_data_for_date'
 }
 
 export enum CounterpartyType {
@@ -1133,6 +1146,54 @@ total?: number;
 created_at_iso: string;
 updated_at_iso: string;
 expires_at_iso?: string;
+}
+
+export interface InstrumentPriceHistory{
+instrument_id: string;
+high: number;
+low: number;
+open: number;
+close: number;
+volume_from?: number;
+volume_to?: number;
+price_24h_change?: number;
+ts: string;
+ts_iso: string;
+}
+
+export interface InstrumentPrice{
+instrument_id: string;
+ask?: number;
+bid?: number;
+price_24h_change?: number;
+volume?: number;
+ts: string;
+bid_volume_l3?: number;
+bid_vwap_l3?: number;
+bid_volume_l5?: number;
+bid_vwap_l5?: number;
+ask_volume_l3?: number;
+ask_vwap_l3?: number;
+ask_volume_l5?: number;
+ask_vwap_l5?: number;
+ts_iso: string;
+}
+
+export interface OrderbookItem{
+price: number;
+quantity: number;
+exchange?: string;
+}
+
+export interface OrderbookUpdateResult{
+instrument_id: string;
+sell: OrderbookItem[];
+buy: OrderbookItem[];
+ts: string;
+total_volume?: number;
+best_ask?: number;
+best_bid?: number;
+ts_iso: string;
 }
 
 export interface Currency{
@@ -1321,6 +1382,7 @@ updated_at: string;
 password_hash?: string;
 last_login_at?: string;
 last_login_ip?: string;
+mfa_status?: string;
 }
 
 export interface PermissionShare{
@@ -1348,6 +1410,7 @@ cognito_pool_id: string;
 role: Role;
 jwks: string;
 is_active: ToggleSwitch;
+mfa_status: ToggleMfaPool;
 }
 
 export interface AccountTransaction{
@@ -1466,23 +1529,6 @@ fees_sync_enabled: ToggleSwitch;
 created_at_iso: string;
 }
 
-export interface OrderbookItem{
-price: number;
-quantity: number;
-exchange?: string;
-}
-
-export interface OrderbookUpdateResult{
-instrument_id: string;
-sell: OrderbookItem[];
-buy: OrderbookItem[];
-ts: string;
-total_volume?: number;
-best_ask?: number;
-best_bid?: number;
-ts_iso: string;
-}
-
 export interface FeeGroup{
 serial_id?: number;
 fee_group_id: string;
@@ -1556,24 +1602,6 @@ notion_currency?: string;
 limit_group: LimitGroup;
 }
 
-export interface InstrumentPrice{
-instrument_id: string;
-ask?: number;
-bid?: number;
-price_24h_change?: number;
-volume?: number;
-ts: string;
-bid_volume_l3?: number;
-bid_vwap_l3?: number;
-bid_volume_l5?: number;
-bid_vwap_l5?: number;
-ask_volume_l3?: number;
-ask_vwap_l3?: number;
-ask_volume_l5?: number;
-ask_vwap_l5?: number;
-ts_iso: string;
-}
-
 export interface HedgingOrder{
 serial_id: number;
 hedging_order_id: string;
@@ -1630,19 +1658,6 @@ time_from?: string;
 time_to?: string;
 }
 
-export interface InstrumentPriceHistory{
-instrument_id: string;
-high: number;
-low: number;
-open: number;
-close: number;
-volume_from?: number;
-volume_to?: number;
-price_24h_change?: number;
-ts: string;
-ts_iso: string;
-}
-
 export interface InstrumentStrategy{
 serial_id?: number;
 instrument_strategy_id?: string;
@@ -1679,6 +1694,7 @@ version?: number;
 min_spread?: number;
 on_min_spread_violation?: OnMinSpreadViolation;
 maximum_publish_quantity: number;
+allow_negative_markup?: ToggleSwitch;
 updated_at_iso: string;
 hedge_balance: number;
 }
@@ -1867,6 +1883,23 @@ withdrawal_weekly_limit: number;
 withdrawal_monthly_limit: number;
 is_active: ToggleSwitch;
 limit_group: LimitGroup;
+}
+
+export interface TradesVolume{
+serial_id: number;
+user_id: string;
+volume: number;
+created_at: string;
+}
+
+export interface TradeTier{
+serial_id: number;
+tier_id: string;
+fee_group_id: string;
+name: string;
+maker_progressive: number;
+taker_progressive: number;
+threshold: number;
 }
 
 export interface KytScreening{
@@ -2116,23 +2149,6 @@ expires_at_iso: string;
 current_time_iso: string;
 }
 
-export interface TradesVolume{
-serial_id: number;
-user_id: string;
-volume: number;
-created_at: string;
-}
-
-export interface TradeTier{
-serial_id: number;
-tier_id: string;
-fee_group_id: string;
-name: string;
-maker_progressive: number;
-taker_progressive: number;
-threshold: number;
-}
-
 export interface ReferralTransactionInfo{
 serial_id?: number;
 referral_transaction_id: string;
@@ -2146,10 +2162,13 @@ is_delayed: ToggleSwitch;
 delayed_until?: string;
 comment?: string;
 created_at: string;
-account_transaction: AccountTransaction;
+updated_at: string;
+account_transaction?: AccountTransaction;
 target_user?: User;
 parent_user?: User;
 created_at_iso: string;
+updated_at_iso?: string;
+delayed_until_iso?: string;
 }
 
 export interface Webhook{
@@ -2278,7 +2297,10 @@ updated_at: string;
 vault?: Vault;
 user?: User;
 balance_quoted?: number;
+today_earned?: VaultTransactionTodayEarned;
+total_earned?: VaultTransactionTotalEarned;
 free_balance?: number;
+exposed_vault_balance?: number;
 created_at_iso: string;
 updated_at_iso: string;
 }
@@ -2302,6 +2324,26 @@ vault: Vault;
 created_at_iso: string;
 updated_at_iso: string;
 approved_at_iso?: string;
+}
+
+export interface VaultTransactionEarned{
+vault_id: string;
+currency_id: string;
+user_id: string;
+total_earned: string;
+total_earned_quoted: string;
+today_earned: string;
+today_earned_quoted: string;
+days_30_earned: string;
+days_7_earned: string;
+}
+
+export interface VaultTransactionCalculatedEarned{
+vaults: VaultTransactionEarned[];
+vaults_transactions_total_sum: number;
+vaults_transactions_today_total_sum: number;
+vaults_transactions_7d_total_sum: number;
+vaults_transactions_30d_total_sum: number;
 }
 
 export interface Referral{
@@ -2345,19 +2387,6 @@ created_at_iso: string;
 updated_at_iso: string;
 }
 
-export interface CashHoldingsReport{
-serial_id: number;
-type: string;
-transaction_class: string;
-user_id: string;
-wallet_id: string;
-currency_id: string;
-amount: number;
-post_balance: number;
-note?: string;
-created_at?: string;
-}
-
 export interface FxcmFeesConfigType{
 withdrawalFeePercentage: number;
 withdrawalMinNotional: number;
@@ -2373,6 +2402,19 @@ FxcmFees?: FxcmFees;
 export interface RebateStructure{
 notional_level: number;
 rebate: number;
+}
+
+export interface CashHoldingsReport{
+serial_id: number;
+type: string;
+transaction_class: string;
+user_id: string;
+wallet_id: string;
+currency_id: string;
+amount: number;
+post_balance: number;
+note?: string;
+created_at?: string;
 }
 
 export interface TradingGrid{
@@ -2676,16 +2718,27 @@ last_name?: string;
 geo?: GeoData;
 }
 
+export interface InstrumentsStrategiesAlertsSettings{
+email_active: ToggleSwitch;
+slack_active: ToggleSwitch;
+emails: string[];
+slack_webhooks: string[];
+}
+
 export interface VaultRequestResponse{
 status: string;
 message: string;
 data?: VaultTransaction;
 }
 
-export interface VaultTransactionTotal{
-vault_id: string;
-user_id: string;
-total_earned: number;
+export interface VaultTransactionTodayEarned{
+today_earned: string;
+today_earned_quoted: string;
+}
+
+export interface VaultTransactionTotalEarned{
+total_earned: string;
+total_earned_quoted: string;
 }
 
 export interface Summary{
@@ -2814,7 +2867,7 @@ enabled: boolean;
 }
 
 
-export type QueryType = 'version'|'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'admins'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'trader_mfa_provider'|'admin_mfa_provider'|'is_margin_trading_enabled'|'products_enabled'|'user_products_enabled'|'elliptic_filters'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'all_permission_subjects'|'permissions_share'|'kyc_preferences'|'vasps_list'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'currency_prices'|'convert_currency_amount'|'ip_whitelist'|'hedging_accounts'|'margin_account_transactions'|'margin_users_free_balances'|'admin_properties'|'admin_mfa_status'|'elliptic_screenings'|'elliptic_risk_threshold'|'scorechain_screenings'|'scorechain_minimal_risk_score'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'vaults'|'vaults_average_user_apy'|'estimate_vault_interests'|'vaults_accounts'|'vaults_total_user_balance_quoted'|'vaults_transactions'|'vaults_transactions_total_sum'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'unified_transactions'|'unified_transactions_lps'|'vaults_transactions_requests'|'referrals'|'aggregated_payments_limits'|'audit_trail_log'|'my_audit_trail_log'|'admin_events_log'|'referrals_history'|'referred_users_count'|'referrer_total_reward_quoted'|'blacklist_items'|'system_logs'|'logs_config'|'whoami'|'is_trading_allowed'|'referrals_transactions_info'|'license'|'referral_rewards'|'required_actions'|'trading_grids'|'trading_grid_levels'|'user_fees_config'|'estimate_payment_notional_fee'|'cash_holdings_report'|'trade_tiers'|'trade_volumes'|'wallets'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
+export type QueryType = 'version'|'open_orders'|'closed_orders'|'estimate_order'|'trades'|'sso_settings'|'healthcheck'|'admins'|'instruments'|'instrument_price_bars'|'currencies'|'payments'|'deposit_address_crypto'|'deposit_addresses_crypto'|'conversions'|'conversion_quotes'|'conversion_quotes_risks'|'users'|'total_users'|'user'|'account_transactions'|'accounts_balances'|'accounts'|'limits_groups'|'fees_groups'|'payments_fees'|'trading_fees'|'payments_routes'|'crypto_networks'|'psp_services'|'payments_limits'|'api_keys'|'cognito_pools'|'instruments_strategies'|'hedging_orders'|'system_settings'|'notification_settings'|'default_notifications'|'delayed_mutations'|'geo_restrictions'|'trader_mfa_provider'|'admin_mfa_provider'|'is_margin_trading_enabled'|'products_enabled'|'user_products_enabled'|'elliptic_filters'|'accounts_portfolio_report'|'orders_summary_report'|'conversions_summary_report'|'liquidity_report'|'daily_balances_report'|'open_exposure_report'|'permissions'|'permissions_subjects'|'all_permission_subjects'|'permissions_share'|'kyc_preferences'|'vasps_list'|'webhooks'|'hedging_adapter_ids'|'hedging_adapters'|'timeline'|'trading_limits'|'trading_volumes'|'countries'|'provinces'|'delayed_requests'|'kyc_user_data'|'permission_presets'|'instruments_strategies_schedule'|'currencies_prices'|'currency_prices'|'convert_currency_amount'|'ip_whitelist'|'hedging_accounts'|'margin_account_transactions'|'margin_users_free_balances'|'admin_properties'|'admin_mfa_status'|'elliptic_screenings'|'elliptic_risk_threshold'|'scorechain_screenings'|'scorechain_minimal_risk_score'|'instruments_strategies_rules'|'instruments_strategies_alerts'|'instruments_strategies_alerts_settings'|'vaults'|'vaults_average_user_apy'|'estimate_vault_interests'|'vaults_accounts'|'vaults_total_user_balance_quoted'|'vaults_transactions'|'vaults_transactions_total_sum'|'portfolio_history'|'profits_dashboard'|'conversions_dashboard'|'volume_dashboard'|'deposits_dashboard'|'withdrawals_dashboard'|'summary_dashboard'|'unified_transactions'|'unified_transactions_lps'|'vaults_transactions_requests'|'referrals'|'aggregated_payments_limits'|'audit_trail_log'|'my_audit_trail_log'|'admin_events_log'|'referrals_history'|'referred_users_count'|'referrer_total_reward_quoted'|'blacklist_items'|'system_logs'|'logs_config'|'whoami'|'is_trading_allowed'|'referrals_transactions_info'|'license'|'referral_rewards'|'required_actions'|'trading_grids'|'trading_grid_levels'|'user_fees_config'|'estimate_payment_notional_fee'|'cash_holdings_report'|'trade_tiers'|'trade_volumes'|'wallets'|'user_ip_geo_history'|'user_ip_geo_history_overview'|'user_ip_geo_history_detail'
 
 export interface PagerInput{
 limit?: number;
@@ -2832,7 +2885,7 @@ serial_id_to?: number;
 }
 
 
-export type MutationType = 'restart_system'|'create_order'|'update_open_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'checkout'|'restrictions_check'|'register_trader_local'|'trader_signin_local'|'create_admins'|'delete_admin'|'admin_signin_local'|'create_local_admin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'update_service_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'operate_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'trigger_create_hedging_remote_order_job'|'trigger_complete_hedging_remote_order_job'|'trigger_reject_hedging_remote_order_job'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_elliptic_filters'|'update_admin_permissions'|'create_kyc_manual_request'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'emit_event'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'create_admin_mfa_secret'|'update_user_mfa_status'|'update_admin_mfa_status'|'verify_user_mfa_token'|'verify_admin_mfa_token'|'send_test_email'|'send_test_push'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_margin_account_transaction'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_elliptic_risk_threshold'|'update_scorechain_minimal_risk_score'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'create_vault'|'update_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'trigger_expired_vaults_processing'|'trigger_delayed_vaults_trx_processing'|'create_vault_withdrawal'|'create_vault_deposit'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_referral'|'claim_referral'|'calculate_payments_limits'|'create_aggregated_payment_limit'|'update_aggregated_payment_limit'|'delete_aggregated_payment_limit'|'sync_config'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'|'create_system_config_log'|'update_system_config_log'|'delete_system_config_log'|'reset_demo_balances'|'reschedule_delayed_referral_transactions'|'activate_license'|'renew_license'|'create_referral_reward'|'update_referral_reward'|'delete_referral_reward'|'start_trading_grid'|'stop_trading_grid'|'update_trading_grid'|'estimate_trading_grid'|'user_switch_fee_group'|'update_withdrawal_notional_fee'|'create_trade_tier'|'update_trade_tier'|'delete_trade_tier'|'delete_trades_volume'|'create_wallet'
+export type MutationType = 'restart_system'|'create_order'|'update_open_order'|'cancel_multiple_orders'|'cancel_order'|'cancel_all_orders'|'service_signin'|'checkin'|'checkout'|'restrictions_check'|'register_trader_local'|'trader_signin_local'|'create_admins'|'delete_admin'|'admin_signin_local'|'create_local_admin'|'create_instrument'|'update_instrument'|'delete_instrument'|'fill_instrument'|'create_currency'|'update_currency'|'delete_currency'|'validate_address_crypto'|'reprocess_payment'|'update_payment_approval_status'|'create_withdrawal_crypto'|'create_withdrawal_fiat'|'create_payment_manual'|'create_conversion_order'|'create_conversion_quote'|'update_user_fee_group'|'update_user_limit_group'|'delete_user'|'add_push_token'|'clear_push_tokens'|'change_user_password'|'update_user_password'|'update_user'|'create_user'|'update_anti_phishing_code'|'create_account_transaction'|'create_limit_group'|'update_limit_group'|'delete_limit_group'|'create_fee_group'|'update_fee_group'|'delete_fee_group'|'estimate_payment_fee'|'estimate_network_fee'|'update_payment_fee'|'create_trading_fee'|'update_trading_fee'|'delete_trading_fee'|'create_payment_session'|'create_payment_route'|'delete_payment_route'|'update_payment_route'|'create_payment_limit'|'update_payment_limit'|'delete_payment_limit'|'create_api_key'|'update_api_key'|'delete_api_key'|'update_service_api_key'|'create_cognito_pool'|'update_cognito_pool'|'delete_cognito_pool'|'create_instrument_strategy'|'update_instrument_strategy'|'update_instrument_strategy_hedge_balance'|'operate_instrument_strategy_hedge_balance'|'delete_instrument_strategy'|'trigger_create_hedging_remote_order_job'|'trigger_complete_hedging_remote_order_job'|'trigger_reject_hedging_remote_order_job'|'update_system_setting'|'update_system_settings'|'update_maintenance_mode'|'update_notifications_settings'|'update_default_notifications'|'update_delayed_mutations'|'update_geo_restrictions'|'update_elliptic_filters'|'update_admin_permissions'|'create_kyc_manual_request'|'create_kyc_session'|'update_kyc_preferences'|'create_webhook'|'update_webhook'|'delete_webhook'|'emit_event'|'create_hedging_adapter'|'update_hedging_adapter'|'delete_hedging_adapter'|'create_trading_limit'|'update_trading_limit'|'delete_trading_limit'|'update_delayed_request'|'delete_delayed_request'|'create_user_mfa_secret'|'create_admin_mfa_secret'|'update_user_mfa_status'|'update_admin_mfa_status'|'verify_user_mfa_token'|'verify_admin_mfa_token'|'send_test_email'|'send_test_push'|'create_kyc_user_data'|'update_kyc_user_data'|'delete_kyc_user_data'|'create_permission_preset'|'update_permission_preset'|'delete_permission_preset'|'create_instruments_strategies_schedule'|'update_instruments_strategies_schedule'|'delete_instruments_strategies_schedule'|'create_currency_price'|'update_currency_price'|'delete_currency_price'|'set_currency_price'|'create_ip_whitelist_items'|'update_ip_whitelist_item'|'delete_ip_whitelist_item'|'update_hedging_account'|'send_margin_trade_notif'|'create_margin_account_transaction'|'update_admin_properties'|'create_upload'|'complete_upload'|'update_elliptic_risk_threshold'|'update_scorechain_minimal_risk_score'|'update_payment_kyt_status'|'reprocess_kyt_payment'|'create_instrument_strategy_rule'|'update_instrument_strategy_rule'|'delete_instrument_strategy_rule'|'update_instruments_strategies_alerts_settings'|'create_vault'|'update_vault'|'trigger_vaults_interests_calculation'|'trigger_vaults_locks_withdrawals'|'trigger_expired_vaults_processing'|'trigger_delayed_vaults_trx_processing'|'create_vault_withdrawal'|'create_vault_deposit'|'create_vault_transaction'|'create_vault_manual_transactions'|'update_vault_transaction_request'|'cancel_vault_transaction_request'|'create_referral'|'claim_referral'|'calculate_payments_limits'|'create_aggregated_payment_limit'|'update_aggregated_payment_limit'|'delete_aggregated_payment_limit'|'sync_config'|'create_ip_blacklist_item'|'create_ip_blacklist_items'|'update_ip_blacklist_item'|'remove_ip_blacklist_item'|'create_system_config_log'|'update_system_config_log'|'delete_system_config_log'|'reset_demo_balances'|'reschedule_delayed_referral_transactions'|'activate_license'|'renew_license'|'create_referral_reward'|'update_referral_reward'|'delete_referral_reward'|'start_trading_grid'|'stop_trading_grid'|'update_trading_grid'|'estimate_trading_grid'|'user_switch_fee_group'|'update_withdrawal_notional_fee'|'create_trade_tier'|'update_trade_tier'|'delete_trade_tier'|'delete_trades_volume'|'create_wallet'|'eventus_upload_life_cycle_data_for_date'
 
 export interface TravelRulePropertiesArgs{
 counterparty: TravelRuleCounterParty;
@@ -3623,6 +3676,7 @@ role: Role;
 jwks: string;
 name?: string;
 is_active?: ToggleSwitch;
+mfa_status?: ToggleMfaPool;
 }
 
 export interface UpdateCognitoPoolArgs{
@@ -3630,6 +3684,7 @@ name?: string;
 role?: Role;
 jwks?: string;
 is_active?: ToggleSwitch;
+mfa_status?: ToggleMfaPool;
 cognito_pool_id: string;
 }
 
@@ -3670,6 +3725,7 @@ version?: number;
 min_spread?: number;
 on_min_spread_violation?: OnMinSpreadViolation;
 maximum_publish_quantity?: number;
+allow_negative_markup?: ToggleSwitch;
 }
 
 export interface UpdateInstrumentStrategyArgs{
@@ -3692,6 +3748,7 @@ is_active?: ToggleSwitch;
 version?: number;
 min_spread?: number;
 on_min_spread_violation?: OnMinSpreadViolation;
+allow_negative_markup?: ToggleSwitch;
 hedging_enabled?: ToggleSwitch;
 hedging_order_price?: InstrumentStrategyHedgingOrderPrice;
 hedging_order_type?: OrderType;
@@ -4124,6 +4181,13 @@ export interface DeleteInstrumentStrategyRuleArgs{
 instrument_strategy_id: string;
 }
 
+export interface UpdateInstrumentsStrategiesAlertsSettingsArgs{
+email_active: ToggleSwitch;
+slack_active: ToggleSwitch;
+emails: string[];
+slack_webhooks: string[];
+}
+
 export interface CreateVaultArgs{
 currency_id: string;
 name?: string;
@@ -4442,6 +4506,12 @@ export interface CreateWalletArgs{
 name: string;
 user_id?: string;
 description?: string;
+}
+
+export interface EventusUploadLifeCycleDataForDateArgs{
+temporaryKey: string;
+date: string;
+dryRun: string;
 }
 
 
@@ -5089,6 +5159,9 @@ pager?: PagerInput;
 sort?: SortInput;
 }
 
+export interface InstrumentsStrategiesAlertsSettingsArgs{
+}
+
 export interface VaultsArgs{
 vault_id?: string;
 currency_id?: string;
@@ -5145,7 +5218,7 @@ export interface VaultsTransactionsTotalSumArgs{
 vault_id?: string;
 user_id?: string;
 pager?: PagerInput;
-date?: DateTime;
+quote_currency_id: string;
 }
 
 export interface PortfolioHistoryArgs{
@@ -6147,8 +6220,8 @@ async update_service_api_key({  headers}:{  headers?:HeadersInit}={}):Promise<bo
 async create_cognito_pool({args, fields,  headers}:{args: CreateCognitoPoolArgs, fields:((keyof CognitoPool) | Partial<Record<keyof CognitoPool,any[]>>)[], headers?:HeadersInit}):Promise<CognitoPool>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($cognito_pool_id: String!,$role: Role!,$jwks: String!,$name: String,$is_active: ToggleSwitch) {
-                    create_cognito_pool(cognito_pool_id:$cognito_pool_id,role:$role,jwks:$jwks,name:$name,is_active:$is_active)
+                mutation($cognito_pool_id: String!,$role: Role!,$jwks: String!,$name: String,$is_active: ToggleSwitch,$mfa_status: ToggleMfaPool) {
+                    create_cognito_pool(cognito_pool_id:$cognito_pool_id,role:$role,jwks:$jwks,name:$name,is_active:$is_active,mfa_status:$mfa_status)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6159,8 +6232,8 @@ async create_cognito_pool({args, fields,  headers}:{args: CreateCognitoPoolArgs,
 async update_cognito_pool({args,  headers}:{args: UpdateCognitoPoolArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($name: String,$role: Role,$jwks: String,$is_active: ToggleSwitch,$cognito_pool_id: String!) {
-                    update_cognito_pool(name:$name,role:$role,jwks:$jwks,is_active:$is_active,cognito_pool_id:$cognito_pool_id)
+                mutation($name: String,$role: Role,$jwks: String,$is_active: ToggleSwitch,$mfa_status: ToggleMfaPool,$cognito_pool_id: String!) {
+                    update_cognito_pool(name:$name,role:$role,jwks:$jwks,is_active:$is_active,mfa_status:$mfa_status,cognito_pool_id:$cognito_pool_id)
                         
                 }
                 `,args || {},headers,'update_cognito_pool')
@@ -6179,8 +6252,8 @@ async delete_cognito_pool({args,  headers}:{args: DeleteCognitoPoolArgs,  header
 async create_instrument_strategy({args, fields,  headers}:{args: CreateInstrumentStrategyArgs, fields:((keyof InstrumentStrategy) | Partial<Record<keyof InstrumentStrategy,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentStrategy>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String!,$instrument_id: String!,$remote_instrument_id: String,$loop_interval: Int!,$active_layers_count: Int!,$layer_discount_factor: Float!,$markup_ask: Float!,$markup_bid: Float!,$order_min_quantity: Float!,$order_max_quantity: Float!,$hedge_quantity_trigger_buy: Float!,$hedge_quantity_trigger_sell: Float!,$hedge_quantity_increment: Float!,$conversions_balance: Int,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$strategy_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch!,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$maximum_publish_quantity: Float) {
-                    create_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,conversions_balance:$conversions_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,strategy_settings_sync_enabled:$strategy_settings_sync_enabled,meta:$meta,is_active:$is_active,version:$version,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,maximum_publish_quantity:$maximum_publish_quantity)
+                mutation($hedging_adapter_id: String!,$instrument_id: String!,$remote_instrument_id: String,$loop_interval: Int!,$active_layers_count: Int!,$layer_discount_factor: Float!,$markup_ask: Float!,$markup_bid: Float!,$order_min_quantity: Float!,$order_max_quantity: Float!,$hedge_quantity_trigger_buy: Float!,$hedge_quantity_trigger_sell: Float!,$hedge_quantity_increment: Float!,$conversions_balance: Int,$hedging_enabled: ToggleSwitch,$hedging_order_type: OrderType,$hedging_order_time_in_force: OrderTimeInForce,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_ttl_ms: Int,$hedging_error_attempts_threshold: Int,$hedging_error_attempts_count: Int,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$instruments_settings_sync_enabled: ToggleSwitch,$strategy_settings_sync_enabled: ToggleSwitch,$meta: String,$is_active: ToggleSwitch!,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$maximum_publish_quantity: Float,$allow_negative_markup: ToggleSwitch) {
+                    create_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,conversions_balance:$conversions_balance,hedging_enabled:$hedging_enabled,hedging_order_type:$hedging_order_type,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_order_price:$hedging_order_price,hedging_order_ttl_ms:$hedging_order_ttl_ms,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_error_attempts_count:$hedging_error_attempts_count,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,strategy_settings_sync_enabled:$strategy_settings_sync_enabled,meta:$meta,is_active:$is_active,version:$version,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,maximum_publish_quantity:$maximum_publish_quantity,allow_negative_markup:$allow_negative_markup)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
@@ -6191,8 +6264,8 @@ async create_instrument_strategy({args, fields,  headers}:{args: CreateInstrumen
 async update_instrument_strategy({args,  headers}:{args: UpdateInstrumentStrategyArgs,  headers?:HeadersInit}):Promise<boolean>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                mutation($hedging_adapter_id: String,$instrument_id: String,$remote_instrument_id: String,$loop_interval: Int,$active_layers_count: Int,$layer_discount_factor: Float,$markup_ask: Float,$markup_bid: Float,$order_min_quantity: Float,$order_max_quantity: Float,$hedge_quantity_trigger_buy: Float,$hedge_quantity_trigger_sell: Float,$hedge_quantity_increment: Float,$hedging_order_ttl_ms: Int,$meta: String,$is_active: ToggleSwitch,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$hedging_enabled: ToggleSwitch,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_type: OrderType,$instruments_settings_sync_enabled: ToggleSwitch,$strategy_settings_sync_enabled: ToggleSwitch,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$hedging_error_attempts_threshold: Int,$hedging_order_time_in_force: OrderTimeInForce,$hedging_error_attempts_count: Int,$maximum_publish_quantity: Float,$instrument_strategy_id: String,$serial_ids: [number!]!) {
-                    update_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedging_order_ttl_ms:$hedging_order_ttl_ms,meta:$meta,is_active:$is_active,version:$version,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,hedging_enabled:$hedging_enabled,hedging_order_price:$hedging_order_price,hedging_order_type:$hedging_order_type,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,strategy_settings_sync_enabled:$strategy_settings_sync_enabled,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_error_attempts_count:$hedging_error_attempts_count,maximum_publish_quantity:$maximum_publish_quantity,instrument_strategy_id:$instrument_strategy_id,serial_ids:$serial_ids)
+                mutation($hedging_adapter_id: String,$instrument_id: String,$remote_instrument_id: String,$loop_interval: Int,$active_layers_count: Int,$layer_discount_factor: Float,$markup_ask: Float,$markup_bid: Float,$order_min_quantity: Float,$order_max_quantity: Float,$hedge_quantity_trigger_buy: Float,$hedge_quantity_trigger_sell: Float,$hedge_quantity_increment: Float,$hedging_order_ttl_ms: Int,$meta: String,$is_active: ToggleSwitch,$version: Int,$min_spread: Float,$on_min_spread_violation: OnMinSpreadViolation,$allow_negative_markup: ToggleSwitch,$hedging_enabled: ToggleSwitch,$hedging_order_price: InstrumentStrategyHedgingOrderPrice,$hedging_order_type: OrderType,$instruments_settings_sync_enabled: ToggleSwitch,$strategy_settings_sync_enabled: ToggleSwitch,$disable_hedging_on_error_attempts_threshold_exceeded: ToggleSwitch,$disable_strategy_on_error_attempts_threshold_exceeded: ToggleSwitch,$hedging_error_attempts_threshold: Int,$hedging_order_time_in_force: OrderTimeInForce,$hedging_error_attempts_count: Int,$maximum_publish_quantity: Float,$instrument_strategy_id: String,$serial_ids: [number!]!) {
+                    update_instrument_strategy(hedging_adapter_id:$hedging_adapter_id,instrument_id:$instrument_id,remote_instrument_id:$remote_instrument_id,loop_interval:$loop_interval,active_layers_count:$active_layers_count,layer_discount_factor:$layer_discount_factor,markup_ask:$markup_ask,markup_bid:$markup_bid,order_min_quantity:$order_min_quantity,order_max_quantity:$order_max_quantity,hedge_quantity_trigger_buy:$hedge_quantity_trigger_buy,hedge_quantity_trigger_sell:$hedge_quantity_trigger_sell,hedge_quantity_increment:$hedge_quantity_increment,hedging_order_ttl_ms:$hedging_order_ttl_ms,meta:$meta,is_active:$is_active,version:$version,min_spread:$min_spread,on_min_spread_violation:$on_min_spread_violation,allow_negative_markup:$allow_negative_markup,hedging_enabled:$hedging_enabled,hedging_order_price:$hedging_order_price,hedging_order_type:$hedging_order_type,instruments_settings_sync_enabled:$instruments_settings_sync_enabled,strategy_settings_sync_enabled:$strategy_settings_sync_enabled,disable_hedging_on_error_attempts_threshold_exceeded:$disable_hedging_on_error_attempts_threshold_exceeded,disable_strategy_on_error_attempts_threshold_exceeded:$disable_strategy_on_error_attempts_threshold_exceeded,hedging_error_attempts_threshold:$hedging_error_attempts_threshold,hedging_order_time_in_force:$hedging_order_time_in_force,hedging_error_attempts_count:$hedging_error_attempts_count,maximum_publish_quantity:$maximum_publish_quantity,instrument_strategy_id:$instrument_strategy_id,serial_ids:$serial_ids)
                         
                 }
                 `,args || {},headers,'update_instrument_strategy')
@@ -6914,6 +6987,16 @@ async delete_instrument_strategy_rule({args,  headers}:{args: DeleteInstrumentSt
                 `,args || {},headers,'delete_instrument_strategy_rule')
                 }
 
+async update_instruments_strategies_alerts_settings({args,  headers}:{args: UpdateInstrumentsStrategiesAlertsSettingsArgs,  headers?:HeadersInit}):Promise<boolean>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($email_active: ToggleSwitch!,$slack_active: ToggleSwitch!,$emails: [string!]!,$slack_webhooks: [string!]!) {
+                    update_instruments_strategies_alerts_settings(email_active:$email_active,slack_active:$slack_active,emails:$emails,slack_webhooks:$slack_webhooks)
+                        
+                }
+                `,args || {},headers,'update_instruments_strategies_alerts_settings')
+                }
+
 async create_vault({args, fields,  headers}:{args: CreateVaultArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -7388,6 +7471,16 @@ async create_wallet({args, fields,  headers}:{args: CreateWalletArgs, fields:((k
                         }
                 }
                 `,args || {},headers,'create_wallet')
+                }
+
+async eventus_upload_life_cycle_data_for_date({args,  headers}:{args: EventusUploadLifeCycleDataForDateArgs,  headers?:HeadersInit}):Promise<string>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                mutation($temporaryKey: String!,$date: String!,$dryRun: String!) {
+                    eventus_upload_life_cycle_data_for_date(temporaryKey:$temporaryKey,date:$date,dryRun:$dryRun)
+                        
+                }
+                `,args || {},headers,'eventus_upload_life_cycle_data_for_date')
                 }
 
 
@@ -8384,6 +8477,18 @@ async instruments_strategies_alerts({args, fields,  headers}:{args?: Instruments
                 `,args || {},headers,'instruments_strategies_alerts')
                 }
 
+async instruments_strategies_alerts_settings({ fields,  headers}:{ fields:((keyof InstrumentsStrategiesAlertsSettings) | Partial<Record<keyof InstrumentsStrategiesAlertsSettings,any[]>>)[], headers?:HeadersInit}):Promise<InstrumentsStrategiesAlertsSettings>{ 
+            if(!headers) headers = {};
+            return this.gql_request(gql`
+                query {
+                    instruments_strategies_alerts_settings
+                        {
+                            ${buildGraphQLQuery(fields)}
+                        }
+                }
+                `,{},headers,'instruments_strategies_alerts_settings')
+                }
+
 async vaults({args, fields,  headers}:{args?: VaultsArgs, fields:((keyof Vault) | Partial<Record<keyof Vault,any[]>>)[], headers?:HeadersInit}):Promise<Vault[]>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
@@ -8450,11 +8555,11 @@ async vaults_transactions({args, fields,  headers}:{args?: VaultsTransactionsArg
                 `,args || {},headers,'vaults_transactions')
                 }
 
-async vaults_transactions_total_sum({args, fields,  headers}:{args?: VaultsTransactionsTotalSumArgs, fields:((keyof VaultTransactionTotal) | Partial<Record<keyof VaultTransactionTotal,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransactionTotal[]>{ 
+async vaults_transactions_total_sum({args, fields,  headers}:{args: VaultsTransactionsTotalSumArgs, fields:((keyof VaultTransactionCalculatedEarned) | Partial<Record<keyof VaultTransactionCalculatedEarned,any[]>>)[], headers?:HeadersInit}):Promise<VaultTransactionCalculatedEarned>{ 
             if(!headers) headers = {};
             return this.gql_request(gql`
-                query($vault_id: String,$user_id: String,$pager: PagerInput,$date: DateTime) {
-                    vaults_transactions_total_sum(vault_id:$vault_id,user_id:$user_id,pager:$pager,date:$date)
+                query($vault_id: String,$user_id: String,$pager: PagerInput,$quote_currency_id: String!) {
+                    vaults_transactions_total_sum(vault_id:$vault_id,user_id:$user_id,pager:$pager,quote_currency_id:$quote_currency_id)
                         {
                             ${buildGraphQLQuery(fields)}
                         }
